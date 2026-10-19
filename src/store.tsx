@@ -24,6 +24,8 @@ import {
   Student,
   Subject,
   Teacher,
+  TIPE_WAKTU,
+  TipeWaktu,
 } from './types';
 import { uid } from './utils';
 import { useAuth } from './lib/auth';
@@ -80,16 +82,16 @@ function migrasiDataLama(userId: string): Project | null {
 
 function demoProject(): Project {
   const periode: Period[] = [
-    { id: 'p1', nama: 'Jam ke-1', mulai: '07:00', selesai: '07:40', istirahat: false },
-    { id: 'p2', nama: 'Jam ke-2', mulai: '07:40', selesai: '08:20', istirahat: false },
-    { id: 'p3', nama: 'Jam ke-3', mulai: '08:20', selesai: '09:00', istirahat: false },
-    { id: 'i1', nama: 'Istirahat', mulai: '09:00', selesai: '09:20', istirahat: true },
-    { id: 'p4', nama: 'Jam ke-4', mulai: '09:20', selesai: '10:00', istirahat: false },
-    { id: 'p5', nama: 'Jam ke-5', mulai: '10:00', selesai: '10:40', istirahat: false },
-    { id: 'i2', nama: 'Istirahat', mulai: '10:40', selesai: '11:00', istirahat: true },
-    { id: 'p6', nama: 'Jam ke-6', mulai: '11:00', selesai: '11:40', istirahat: false },
-    { id: 'p7', nama: 'Jam ke-7', mulai: '11:40', selesai: '12:20', istirahat: false },
-    { id: 'p8', nama: 'Jam ke-8', mulai: '12:20', selesai: '13:00', istirahat: false },
+    { id: 'p1', nama: 'Jam ke-1', mulai: '07:00', selesai: '07:40', tipe: 'pelajaran' },
+    { id: 'p2', nama: 'Jam ke-2', mulai: '07:40', selesai: '08:20', tipe: 'pelajaran' },
+    { id: 'p3', nama: 'Jam ke-3', mulai: '08:20', selesai: '09:00', tipe: 'pelajaran' },
+    { id: 'i1', nama: 'Istirahat', mulai: '09:00', selesai: '09:20', tipe: 'istirahat' },
+    { id: 'p4', nama: 'Jam ke-4', mulai: '09:20', selesai: '10:00', tipe: 'pelajaran' },
+    { id: 'p5', nama: 'Jam ke-5', mulai: '10:00', selesai: '10:40', tipe: 'pelajaran' },
+    { id: 'i2', nama: 'Istirahat', mulai: '10:40', selesai: '11:00', tipe: 'istirahat' },
+    { id: 'p6', nama: 'Jam ke-6', mulai: '11:00', selesai: '11:40', tipe: 'pelajaran' },
+    { id: 'p7', nama: 'Jam ke-7', mulai: '11:40', selesai: '12:20', tipe: 'pelajaran' },
+    { id: 'p8', nama: 'Jam ke-8', mulai: '12:20', selesai: '13:00', tipe: 'pelajaran' },
   ];
 
   type SubjDef = [string, string, string, string, string, boolean];
@@ -368,9 +370,36 @@ function sanitize(raw: unknown): Project | null {
   const proj = {
     ...(base as unknown as Record<string, unknown>),
     ...r,
+    periode: migrasiPeriode(r.periode),
     opsi: { ...base.opsi, ...(r.opsi as object) },
   } as unknown as Project;
   return migrasiWarna(proj, r);
+}
+
+/**
+ * Migrasi data lama: `istirahat: boolean` (model sebelumnya) → `tipe` enum.
+ * Baris lama bertanda istirahat menjadi tipe "istirahat"; selain itu "pelajaran".
+ * Data baru dengan `tipe` valid dibiarkan apa adanya.
+ */
+function migrasiPeriode(raw: unknown): Period[] {
+  const arr = Array.isArray(raw) ? (raw as Record<string, unknown>[]) : [];
+  return arr.map((p) => {
+    const tipeValid =
+      typeof p.tipe === 'string' && (TIPE_WAKTU as readonly string[]).includes(p.tipe);
+    const tipe: TipeWaktu = tipeValid
+      ? (p.tipe as TipeWaktu)
+      : p.istirahat === true
+        ? 'istirahat'
+        : 'pelajaran';
+    return {
+      id: String(p.id ?? uid('p')),
+      nama: String(p.nama ?? ''),
+      mulai: String(p.mulai ?? ''),
+      selesai: String(p.selesai ?? ''),
+      tipe,
+      tipeKet: typeof p.tipeKet === 'string' ? p.tipeKet : '',
+    };
+  });
 }
 
 interface Ctx {

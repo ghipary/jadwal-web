@@ -2,7 +2,7 @@
 // baris = hari × jam pelajaran, kolom = kelas, isi sel = kode (nomor guru +
 // kode mapel), dengan legenda kode → guru → mata pelajaran di sisi kanan.
 
-import { Assignment, DAYS, Project } from './types';
+import { Assignment, DAYS, labelTipeWaktu, Project, TipeWaktu } from './types';
 import { buildXlsx, colName, StyleBook, XlsRow, XlsSheet } from './xlsx';
 
 export interface SelMatriks {
@@ -16,7 +16,8 @@ export interface BarisMatriks {
   periodeId: string;
   jam: string;
   label: string;
-  istirahat: boolean;
+  /** Tipe waktu baris — hanya "pelajaran" yang terisi kode; selain itu baris gabungan. */
+  tipe: TipeWaktu;
 }
 
 export interface BlokHari {
@@ -78,8 +79,11 @@ export function buatMatriks(project: Project): Matriks {
         hari,
         periodeId: per.id,
         jam: `${per.mulai} - ${per.selesai}`,
-        label: per.istirahat ? per.nama.toUpperCase() : per.nama,
-        istirahat: per.istirahat,
+        label:
+          per.tipe === 'pelajaran'
+            ? per.nama
+            : `${labelTipeWaktu(per)}${per.nama && per.nama !== labelTipeWaktu(per) ? ` (${per.nama})` : ''}`.toUpperCase(),
+        tipe: per.tipe,
       });
     }
     blok.push({ hari, nama: DAYS[hari], mulai, jumlah: baris.length - mulai });
@@ -143,7 +147,12 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
   const sHari = gaya.add({ bold: true, tengah: true, border: true, isi: 'E0E7FF' });
   const sJam = gaya.add({ tengah: true, border: true });
   const sKode = gaya.add({ tengah: true, border: true });
+  // Gaya baris di luar jam pelajaran — dibedakan per tipe.
   const sIst = gaya.add({ italic: true, tengah: true, border: true, isi: 'F1F5F9' });
+  const sApel = gaya.add({ bold: true, tengah: true, border: true, isi: 'DBEAFE' });
+  const sKustom = gaya.add({ italic: true, tengah: true, border: true, isi: 'F5F3FF' });
+  const gayaWaktu = (t: TipeWaktu) =>
+    t === 'apel' ? sApel : t === 'kustom' ? sKustom : t === 'istirahat' ? sIst : sJam;
   const sLegKode = gaya.add({ tengah: true, border: true, bold: true });
   const sLegKiri = gaya.add({ border: true });
 
@@ -181,9 +190,9 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
       const sel: XlsRow['sel'] = [];
       if (i === 0) sel.push({ teks: b.nama, gaya: sHari });
       else sel.push(null);
-      sel.push({ teks: br.jam, gaya: br.istirahat ? sIst : sJam });
-      if (br.istirahat) {
-        sel.push({ teks: br.label, gaya: sIst });
+      sel.push({ teks: br.jam, gaya: br.tipe === 'pelajaran' ? sJam : gayaWaktu(br.tipe) });
+      if (br.tipe !== 'pelajaran') {
+        sel.push({ teks: br.label, gaya: gayaWaktu(br.tipe) });
         for (let x = 1; x < nKelas; x++) sel.push(null);
       } else {
         for (const k of m.kelas) {
@@ -196,7 +205,7 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
     const rAkhir = barisKe(baris.length - 1);
     if (rAkhir > rAwal) merge.push(`A${rAwal}:A${rAkhir}`);
     slice.forEach((br, i) => {
-      if (br.istirahat) merge.push(`C${rAwal + i}:${colName(2 + nKelas)}${rAwal + i}`);
+      if (br.tipe !== 'pelajaran') merge.push(`C${rAwal + i}:${colName(2 + nKelas)}${rAwal + i}`);
     });
   }
 

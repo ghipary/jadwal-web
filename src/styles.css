@@ -800,8 +800,16 @@ select.input {
   border-bottom: none;
 }
 
-.slotpicker tr.istirahat {
+.slotpicker tr.waktu-istirahat {
   background: #f4f7f2;
+}
+
+.slotpicker tr.waktu-apel {
+  background: #eff6ff;
+}
+
+.slotpicker tr.waktu-kustom {
+  background: #f5f3ff;
 }
 
 .slotcell {
@@ -1148,14 +1156,27 @@ select.input {
   background: #fff;
 }
 
-.tt tr.baris-istirahat td {
+.tt tr.baris-waktu td {
   height: 30px;
-  background: #f4f7f2;
   text-align: center;
   color: var(--ink-3);
   font-size: 11.5px;
   font-weight: 600;
   padding: 5px;
+}
+
+.tt tr.baris-istirahat td {
+  background: #f4f7f2;
+}
+
+.tt tr.baris-apel td {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.tt tr.baris-kustom td {
+  background: #f5f3ff;
+  color: #6d28d9;
 }
 
 .tt td.kosong {
@@ -1718,6 +1739,21 @@ table.mx {
   background: #f1f5f9;
   color: #64748b;
   letter-spacing: 0.08em;
+}
+
+/* Varian baris matriks di luar jam pelajaran — beda warna per tipe waktu. */
+.mx td.c-ist-apel {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.mx td.c-ist-kustom {
+  background: #f5f3ff;
+  color: #6d28d9;
+  font-style: normal;
+  font-weight: 600;
 }
 
 table.mx-legend {

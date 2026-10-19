@@ -148,8 +148,8 @@ export function HalGenerate() {
           <div className="kv">
             <span className="k">Slot tersedia per kelas</span>
             <span className="v">
-              {project.periode.filter((p) => !p.istirahat).length} jam × 6 hari ={' '}
-              {project.periode.filter((p) => !p.istirahat).length * 6} slot
+              {project.periode.filter((p) => p.tipe === 'pelajaran').length} jam × 6 hari ={' '}
+              {project.periode.filter((p) => p.tipe === 'pelajaran').length * 6} slot
             </span>
           </div>
           <div className="kv">

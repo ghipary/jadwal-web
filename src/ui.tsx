@@ -1,7 +1,7 @@
 // Komponen UI bersama: ikon, tombol, modal, tabs, empty state, dan renderer form.
 
 import { ReactNode, useEffect } from 'react';
-import { DAYS, SlotKey, slotKey } from './types';
+import { DAYS, labelTipeWaktu, SlotKey, slotKey } from './types';
 import { useProject } from './store';
 
 // ---------------------------------------------------------------------------
@@ -588,10 +588,12 @@ export function SlotPicker({
         </thead>
         <tbody>
           {periods.map((per) => (
-            <tr key={per.id} className={per.istirahat ? 'istirahat' : ''}>
+            <tr key={per.id} className={per.tipe !== 'pelajaran' ? `waktu-${per.tipe}` : ''}>
               <th>
                 {per.nama}
-                <span>{per.istirahat ? ' · istirahat' : ` · ${per.mulai}`}</span>
+                <span>
+                  {per.tipe === 'pelajaran' ? ` · ${per.mulai}` : ` · ${labelTipeWaktu(per).toLowerCase()}`}
+                </span>
               </th>
               {DAYS.map((_, h) => {
                 const k = slotKey(h, per.id);
@@ -601,8 +603,8 @@ export function SlotPicker({
                     <button
                       type="button"
                       title={`${DAYS[h]} ${per.nama}`}
-                      className={`slotcell ${on ? 'on' : ''} ${per.istirahat ? 'mati' : ''}`}
-                      onClick={() => !per.istirahat && toggle(k)}
+                      className={`slotcell ${on ? 'on' : ''} ${per.tipe !== 'pelajaran' ? 'mati' : ''}`}
+                      onClick={() => per.tipe === 'pelajaran' && toggle(k)}
                     />
                   </td>
                 );

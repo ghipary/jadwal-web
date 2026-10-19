@@ -1,7 +1,7 @@
 // Grid jadwal mingguan (Senin–Sabtu) — dipakai halaman Jadwal dan Publikasi.
 
 import { DragEvent, useState } from 'react';
-import { Assignment, DAYS, Project, slotKey } from './types';
+import { Assignment, DAYS, labelTipeWaktu, Project, slotKey } from './types';
 import { hexA } from './utils';
 
 export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
@@ -95,16 +95,19 @@ export function TimetableGrid({
         </thead>
         <tbody>
           {project.periode.map((per) => {
-            if (per.istirahat) {
+            if (per.tipe !== 'pelajaran') {
+              const ikon = per.tipe === 'istirahat' ? '☕' : per.tipe === 'apel' ? '🏳️' : '★';
               return (
-                <tr key={per.id} className="baris-istirahat">
+                <tr key={per.id} className={`baris-waktu baris-${per.tipe}`}>
                   <th className="jam-cell">
                     {per.nama}
                     <span className="waktu">
                       {per.mulai}–{per.selesai}
                     </span>
                   </th>
-                  <td colSpan={DAYS.length}>☕ Istirahat</td>
+                  <td colSpan={DAYS.length}>
+                    {ikon} {labelTipeWaktu(per)}
+                  </td>
                 </tr>
               );
             }

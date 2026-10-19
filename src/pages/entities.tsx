@@ -1,6 +1,6 @@
 // Halaman-halaman data: Guru, Kelas, Siswa, Mapel, Ruang, Jam, Batasan.
 
-import { DAYS, LABEL_TIPE_RUANG, PALET_GURU, TIPE_RUANG_KEBUTUHAN, TIPE_RUANG_OPTIONS } from '../types';
+import { DAYS, LABEL_TIPE_RUANG, PALET_GURU, TIPE_RUANG_KEBUTUHAN, TIPE_RUANG_OPTIONS, TIPE_WAKTU_OPTIONS, labelTipeWaktu } from '../types';
 import type {
   Block,
   Period,
@@ -10,7 +10,7 @@ import type {
   Teacher,
 } from '../types';
 import { useProject } from '../store';
-import { Btn, Icon } from '../ui';
+import { Btn, Icon, type FieldDef } from '../ui';
 import { DataPage, EntityConfig } from './DataPage';
 import { uid } from '../utils';
 
@@ -393,13 +393,13 @@ export function HalJam() {
   const cfg: EntityConfig<Period> = {
     collection: 'periode',
     judul: 'Jam Pelajaran',
-    desc: 'Urutan jam pelajaran tiap hari. Baris yang ditandai istirahat tidak akan dipakai generator. Atur urutan dengan tombol panah.',
+    desc: 'Urutan jam sekolah tiap hari. Baris ber-tipe selain “Pelajaran” (istirahat, apel, kustom) tidak akan dipakai generator. Atur urutan dengan tombol panah.',
     ikon: 'jam',
     placeholderCari: 'Cari jam…',
     labelHapus: (r) => r.nama,
     judulForm: (r) => (r?.id ? 'Ubah Jam Pelajaran' : 'Tambah Jam Pelajaran'),
     descForm: 'Waktu ditulis 24 jam, contoh 07:00. Urutan baris = urutan tampil di grid.',
-    blank: () => ({ id: uid('p'), nama: '', mulai: '', selesai: '', istirahat: false }),
+    blank: () => ({ id: uid('p'), nama: '', mulai: '', selesai: '', tipe: 'pelajaran', tipeKet: '' }),
     aksiTambahan: (r) => {
       const i = project.periode.findIndex((p) => p.id === r.id);
       return (
@@ -423,25 +423,41 @@ export function HalJam() {
       { label: 'Mulai', render: (r) => r.mulai || '—' },
       { label: 'Selesai', render: (r) => r.selesai || '—' },
       {
-        label: 'Status',
+        label: 'Tipe Waktu',
         render: (r) =>
-          r.istirahat ? (
+          r.tipe === 'pelajaran' ? (
+            <span className="badge badge-hijau">Pelajaran</span>
+          ) : r.tipe === 'istirahat' ? (
             <span className="badge badge-kuning">Istirahat</span>
+          ) : r.tipe === 'apel' ? (
+            <span className="badge badge-biru">Apel</span>
           ) : (
-            <span className="badge badge-hijau">Jam Pelajaran</span>
+            <span className="badge badge-abu">{labelTipeWaktu(r)}</span>
           ),
       },
     ],
-    fields: [
+    fields: (form) => [
       { key: 'nama', label: 'Nama', type: 'text', placeholder: 'Contoh: Jam ke-1' },
       { key: 'mulai', label: 'Mulai', type: 'text', placeholder: '07:00' },
       { key: 'selesai', label: 'Selesai', type: 'text', placeholder: '07:40' },
       {
-        key: 'istirahat',
-        label: 'Istirahat',
-        type: 'check',
-        hint: 'Tandai sebagai istirahat (tidak bisa dipakai untuk pelajaran).',
+        key: 'tipe',
+        label: 'Tipe Waktu',
+        type: 'select',
+        options: [...TIPE_WAKTU_OPTIONS],
+        hint: 'Hanya “Pelajaran” yang boleh dipakai menampung pelajaran; tipe lain dianggap di luar jam pelajaran.',
       },
+      ...(form.tipe === 'kustom'
+        ? [
+            {
+              key: 'tipeKet',
+              label: 'Nama Tipe (Kustom)',
+              type: 'text',
+              placeholder: 'Contoh: Senam Pagi, Upacara…',
+              hint: 'Nama yang tampil di grid & ekspor untuk tipe “Lainnya”.',
+            } as FieldDef<Period>,
+          ]
+        : []),
     ],
   };
   return <DataPage cfg={cfg} />;
@@ -480,7 +496,7 @@ export function HalBlokir() {
       jenis: 'kelas',
       refId: project.kelas[0]?.id ?? '',
       hari: 0,
-      periodeId: project.periode.find((p) => !p.istirahat)?.id ?? '',
+      periodeId: project.periode.find((p) => p.tipe === 'pelajaran')?.id ?? '',
       alasan: '',
     }),
     kolom: [
@@ -533,7 +549,7 @@ export function HalBlokir() {
         type: 'select',
         options: project.periode.map((p) => ({
           value: p.id,
-          label: `${p.nama} (${p.mulai}–${p.selesai})${p.istirahat ? ' · istirahat' : ''}`,
+          label: `${p.nama} (${p.mulai}–${p.selesai})${p.tipe === 'pelajaran' ? '' : ` · ${labelTipeWaktu(p).toLowerCase()}`}`,
         })),
       },
       { key: 'alasan', label: 'Alasan (opsional)', type: 'text', placeholder: 'Contoh: Rapat guru' },

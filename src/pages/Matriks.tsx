@@ -101,8 +101,8 @@ export function HalMatriks() {
                         </td>
                       ) : null}
                       <td className="c-jam">{br.jam}</td>
-                      {br.istirahat ? (
-                        <td colSpan={m.kelas.length} className="c-ist">
+                      {br.tipe !== 'pelajaran' ? (
+                        <td colSpan={m.kelas.length} className={`c-ist c-ist-${br.tipe}`}>
                           {br.label}
                         </td>
                       ) : (

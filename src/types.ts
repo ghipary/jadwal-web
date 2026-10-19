@@ -18,11 +18,39 @@ export function parseSlotKey(key: SlotKey): { hari: number; periodeId: string } 
   return { hari: Number(key.slice(0, i)), periodeId: key.slice(i + 1) };
 }
 
+/**
+ * Tipe waktu sebuah baris jam. Hanya `pelajaran` yang boleh dipakai menampung
+ * pelajaran oleh generator; tipe lain (istirahat/apel/kustom) = di luar jam pelajaran.
+ */
+export const TIPE_WAKTU = ['pelajaran', 'istirahat', 'apel', 'kustom'] as const;
+export type TipeWaktu = (typeof TIPE_WAKTU)[number];
+
+export const LABEL_TIPE_WAKTU: Record<TipeWaktu, string> = {
+  pelajaran: 'Pelajaran',
+  istirahat: 'Istirahat',
+  apel: 'Apel',
+  kustom: 'Kustom',
+};
+
+export const TIPE_WAKTU_OPTIONS = TIPE_WAKTU.map((t) => ({
+  value: t,
+  label: LABEL_TIPE_WAKTU[t],
+}));
+
 export interface Period extends HasId {
   nama: string;
   mulai: string;
   selesai: string;
-  istirahat: boolean;
+  /** Tipe waktu — hanya "pelajaran" yang dipakai generator. */
+  tipe: TipeWaktu;
+  /** Nama tipe bila `tipe === 'kustom'` (mis. "Senam Pagi"). */
+  tipeKet?: string;
+}
+
+/** Label tampilan tipe waktu — tipe kustom memakai keterangannya sendiri. */
+export function labelTipeWaktu(p: Pick<Period, 'tipe' | 'tipeKet'>): string {
+  if (p.tipe === 'kustom') return p.tipeKet?.trim() || LABEL_TIPE_WAKTU.kustom;
+  return LABEL_TIPE_WAKTU[p.tipe];
 }
 
 export interface Teacher extends HasId {

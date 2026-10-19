@@ -8,6 +8,7 @@ import {
   Assignment,
   Conflict,
   DAYS,
+  labelTipeWaktu,
   Period,
   Project,
   Requirement,
@@ -40,7 +41,9 @@ export interface HasilGenerate {
 }
 
 export function periodeAktif(p: Project): Period[] {
-  return p.periode.filter((x) => !x.istirahat);
+  // Hanya baris bertipe "pelajaran" yang boleh dipakai menampung pelajaran;
+  // istirahat/apel/kustom tetap ditampilkan di grid tetapi kosong dari jadwal.
+  return p.periode.filter((x) => x.tipe === 'pelajaran');
 }
 
 export function slotLabel(p: Project, hari: number, periodeId: string): string {
@@ -398,15 +401,15 @@ export function checkConflicts(p: Project): Conflict[] {
     }
   }
 
-  // 2. Jadwal pada jam istirahat / data tidak valid.
+  // 2. Jadwal pada baris di luar jam pelajaran (istirahat/apel/kustom) / data tidak valid.
   for (const j of p.jadwal) {
     const per = perM.get(j.periodeId);
-    if (!per || per.istirahat) {
+    if (!per || per.tipe !== 'pelajaran') {
       out.push({
         id: `istirahat|${j.id}`,
         tipe: 'istirahat',
         tingkat: 'error',
-        pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) dijadwalkan di ${slotLabel(p, j.hari, j.periodeId)} — bukan jam pelajaran.`,
+        pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) dijadwalkan di ${slotLabel(p, j.hari, j.periodeId)} — bertipe ${per ? labelTipeWaktu(per).toLowerCase() : 'di luar jam pelajaran'}, bukan jam pelajaran.`,
         refJadwal: [j.id],
       });
     }

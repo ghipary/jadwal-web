@@ -7,6 +7,7 @@ import {
   Block,
   DAYS,
   LABEL_TIPE_RUANG,
+  LABEL_TIPE_WAKTU,
   PALET_GURU,
   parseSlotKey,
   Period,
@@ -20,6 +21,7 @@ import {
   Subject,
   Teacher,
   TIPES_RUANG,
+  TipeWaktu,
 } from './types';
 import { uid } from './utils';
 
@@ -131,8 +133,14 @@ export function buatTemplateXlsx(project: Project): Uint8Array {
 
   add(
     NAMA_SHEET.periode,
-    ['Nama', 'Mulai', 'Selesai', 'Istirahat'],
-    project.periode.map((p) => [p.nama, p.mulai, p.selesai, yaTidak(p.istirahat)]),
+    ['Nama', 'Mulai', 'Selesai', 'Tipe Waktu', 'Keterangan'],
+    project.periode.map((p) => [
+      p.nama,
+      p.mulai,
+      p.selesai,
+      LABEL_TIPE_WAKTU[p.tipe],
+      p.tipe === 'kustom' ? (p.tipeKet ?? '') : '',
+    ]),
   );
 
   add(
@@ -213,6 +221,29 @@ function ya(v: unknown): boolean {
   return /^(ya|y|1|true|yes)$/i.test(str(v));
 }
 
+/**
+ * Baca kolom tipe waktu dari sheet "Jam Pelajaran".
+ * Format baru: "Tipe Waktu" (Pelajaran/Istirahat/Apel/Kustom) + "Keterangan".
+ * Format lama (template sebelumnya): kolom "Istirahat" berisi Ya/Tidak —
+ * tetap diterima agar file template lama tetap terbaca (Ya → istirahat).
+ */
+function bacaTipeWaktu(r: Record<string, unknown>): { tipe: TipeWaktu; tipeKet: string } {
+  const teks = str(r['Tipe Waktu']).toLowerCase();
+  const ket = str(r['Keterangan']);
+  if (teks) {
+    if (teks.startsWith('istirahat')) return { tipe: 'istirahat', tipeKet: '' };
+    if (teks.startsWith('apel')) return { tipe: 'apel', tipeKet: '' };
+    if (teks.startsWith('kustom') || teks.startsWith('lainnya'))
+      return { tipe: 'kustom', tipeKet: ket || str(r['Tipe Waktu']) };
+    if (teks.startsWith('pelajaran')) return { tipe: 'pelajaran', tipeKet: '' };
+    // Teks bebas di kolom Tipe Waktu → dianggap tipe kustom.
+    return { tipe: 'kustom', tipeKet: ket || str(r['Tipe Waktu']) };
+  }
+  // Fallback format lama.
+  if (ya(r['Istirahat'])) return { tipe: 'istirahat', tipeKet: '' };
+  return { tipe: 'pelajaran', tipeKet: '' };
+}
+
 /** Peta tipe ruang: terima nilai mentah maupun label ("Lab Komputer" → lab-komputer). */
 const PETA_TIPE = new Map<string, string>();
 for (const t of [...TIPES_RUANG, 'semua']) PETA_TIPE.set(t, t);
@@ -267,13 +298,17 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
   // 1. Jam Pelajaran (dulu — dipakai resolving slot guru & batasan).
   const periode: Period[] = barisSheet(wb, NAMA_SHEET.periode)
     .filter((r) => str(r['Nama']))
-    .map((r) => ({
-      id: uid('p'),
-      nama: str(r['Nama']),
-      mulai: str(r['Mulai']),
-      selesai: str(r['Selesai']),
-      istirahat: ya(r['Istirahat']),
-    }));
+    .map((r) => {
+      const { tipe, tipeKet } = bacaTipeWaktu(r);
+      return {
+        id: uid('p'),
+        nama: str(r['Nama']),
+        mulai: str(r['Mulai']),
+        selesai: str(r['Selesai']),
+        tipe,
+        tipeKet,
+      };
+    });
 
   // 2. Mata Pelajaran.
   const mapel: Subject[] = [];
