@@ -623,9 +623,10 @@ export function FormField<T>({
       const arr = Array.isArray(value)
         ? (value as unknown[]).map((x) => Math.floor(Number(x))).filter((n) => Number.isInteger(n))
         : [];
-      // Kosong = semua hari aktif (perilaku bawaan). Tombol pertama menandai
-      // "semua hari" secara eksplisit agar pengguna mudah mengembalikannya.
+      // Kosong = semua hari aktif. Saat mode "semua", seluruh tombol hari ikut
+      // tampil aktif; mengklik salah satunya berarti MELEPAS hari itu.
       const semua = arr.length === 0;
+      const terpilih = (i: number) => (semua ? true : arr.includes(i));
       control = (
         <div className="hari-pilih">
           <div className="multi">
@@ -633,26 +634,29 @@ export function FormField<T>({
               type="button"
               className={`chip ${semua ? 'chip-on' : ''}`}
               title="Aktif di semua hari"
+              aria-pressed={semua}
               onClick={() => onChange([])}
             >
               {semua ? <Icon name="cek" size={12} /> : null}
               Semua Hari
             </button>
             {hari.map((nama, i) => {
-              const on = !semua && arr.includes(i);
+              const on = terpilih(i);
               return (
                 <button
                   type="button"
                   key={`${i}-${nama}`}
                   className={`chip ${on ? 'chip-on' : ''}`}
-                  title={nama}
+                  title={on ? `Matikan ${nama}` : `Aktifkan ${nama}`}
+                  aria-pressed={on}
                   onClick={() => {
-                    // Dari mode "semua" → mulai dari seluruh hari lalu lepas satu.
+                    // Basis selalu daftar hari lengkap saat mode "semua", lalu
+                    // toggle satu hari tanpa mengubah array aslinya (immutabel).
                     const dasar = semua ? hari.map((_, x) => x) : arr;
-                    const next = on
+                    const next = dasar.includes(i)
                       ? dasar.filter((x) => x !== i)
-                      : [...new Set([...dasar, i])].sort((a, b) => a - b);
-                    // Bila hasilnya mencakup seluruh hari, simpan kosong (semua).
+                      : [...dasar, i].sort((a, b) => a - b);
+                    // Bila justru seluruh hari terpilih, simpan kosong (= semua).
                     onChange(next.length === hari.length ? [] : next);
                   }}
                 >

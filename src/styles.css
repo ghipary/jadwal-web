@@ -1544,6 +1544,30 @@ select.input {
   gap: 6px;
 }
 
+/* Tombol hari: jelas terlihat aktif (hijau) vs tidak aktif (abu-abu). */
+.hari-pilih .chip {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #64748b;
+}
+
+.hari-pilih .chip:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.hari-pilih .chip.chip-on {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(19, 128, 70, 0.35);
+}
+
+.hari-pilih .chip.chip-on:hover {
+  background: #0f6a3a;
+  color: #fff;
+}
+
 .les-tambah {
   display: grid;
   place-items: center;

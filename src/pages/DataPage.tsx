@@ -178,7 +178,11 @@ export function DataPage<T extends HasId>({
                 <FormField
                   def={f}
                   value={(form as unknown as Record<string, unknown>)[f.key]}
-                  onChange={(v) => setForm({ ...form, [f.key]: v } as T)}
+                  onChange={(v) =>
+                    setForm((prev) =>
+                      prev ? ({ ...prev, [f.key]: v } as T) : prev,
+                    )
+                  }
                 />
               </div>
             ))}
