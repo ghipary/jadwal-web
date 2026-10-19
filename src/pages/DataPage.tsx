@@ -174,7 +174,7 @@ export function DataPage<T extends HasId>({
         {form ? (
           <div className="form-grid">
             {defs.map((f) => (
-              <div key={f.key} className={f.type === 'slots' || f.type === 'textarea' || f.type === 'multi' ? 'span2' : ''}>
+              <div key={f.key} className={f.type === 'slots' || f.type === 'textarea' || f.type === 'multi' || f.type === 'hari' ? 'span2' : ''}>
                 <FormField
                   def={f}
                   value={(form as unknown as Record<string, unknown>)[f.key]}

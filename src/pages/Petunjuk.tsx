@@ -126,22 +126,24 @@ const BAB: Bab[] = [
         id: 'hari',
         no: 4,
         judul: 'Atur Hari & Jam Pelajaran',
-        tujuan: 'Hari dan jam adalah kerangka waktu jadwal; tiap hari bisa beda jumlah JP.',
+        tujuan:
+          'Hari dan jam adalah kerangka waktu jadwal; tiap hari bisa beda jumlah JP dan jam istirahat.',
         rute: '/jam',
         aksi: [
           'Buka Data Sekolah → Jam Pelajaran.',
           'Tambahkan baris jam: nama (mis. "Jam 1"), jam mulai, jam selesai, dan tipe (Pelajaran / Istirahat / Apel / Kustom).',
+          'Pada field "Aktif pada Hari", centang hari-hari tempat jam ini berlaku. Kosong = aktif semua hari.',
           'Kembali ke bilah kiri, pada bagian atas daftar Hari tekan "+ Tambah Hari" untuk menambah hari, atau ikon pensil untuk mengubah nama hari.',
-          'Di modal Hari, atur Batas Maksimal JP dan matikan slot tertentu sebagai slot non-aktif.',
+          'Di modal Hari, atur Batas Maksimal JP bila perlu. Slot non-aktif kini jarang dipakai karena tiap jam sudah bisa dibatasi per hari.',
         ],
         contoh: {
-          judul: 'Contoh nyata JP berbeda per hari',
+          judul: 'Contoh nyata jam berbeda per hari',
           teks:
-            'Senin–Kamis: 8 JP; Jumat: 6 JP (karena ada ibadah & senam); Sabtu: 4 JP. Jam istirahat (09:30–09:45) bertipe "Istirahat" sehingga tidak dihitung sebagai JP.',
+            'Senin–Kamis memakai J4 (09:20–10:00). Khusus Jumat, istirahat maju ke 09:00–09:20 dan pulang lebih awal, sehingga J4 hanya dicentang untuk Senin–Kamis (bukan Jumat). Cukup satu daftar jam — tanpa perlu mengakali slot non-aktif.',
         },
         bukti:
-          'Grid jadwal menampilkan baris jam sampai batas JP hari itu saja; baris setelah JP terakhir disembunyikan, dan baris istirahat berwarna khusus.',
-        tips: 'Maksimal JP 0 berarti tanpa batas (memakai seluruh JP). Slot non-aktif berguna untuk jam wajib kosong, mis. Jumat setelah dzuhur.',
+          'Kolom "Hari Aktif" menampilkan "Semua hari" atau daftar hari. Grid & matriks hanya menampilkan jam pada hari yang dicentang; Jumat otomatis memakai istirahatnya sendiri dan jumlah JP-nya berkurang.',
+        tips: 'Maksimal JP 0 berarti tanpa batas. Untuk jam yang hanya berlaku beberapa hari (mis. istirahat Jumat), cukup atur "Aktif pada Hari" — lebih mudah daripada mematikan slot satu per satu.',
       },
       {
         id: 'guru',
@@ -362,7 +364,7 @@ const BAB: Bab[] = [
         bukti:
           'Notifikasi hijau "Impor Excel berhasil" dengan ringkasan jumlah baris tiap jenis data; bila bermasalah, muncul pesan impor dibatalkan.',
         tips:
-          'Tombol "Jadwal (Excel)" mengekspor jadwal dalam tabel rapi: Hari, Jam Mulai, Jam Selesai, Kelas, Mapel, Guru, Ruang.',
+          'Sheet "Jam Pelajaran" punya kolom "hariAktif" — isi nama hari dipisah titik-koma (contoh: Senin; Selasa; Rabu; Kamis; Sabtu). Kosong berarti aktif semua hari. Tombol "Jadwal (Excel)" mengekspor tabel rapi beserta kop sekolah di baris teratas.',
       },
       {
         id: 'publikasi',

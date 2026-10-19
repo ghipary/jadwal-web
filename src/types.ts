@@ -49,6 +49,38 @@ export interface Period extends HasId {
   tipe: TipeWaktu;
   /** Nama tipe bila `tipe === 'kustom'` (mis. "Senam Pagi"). */
   tipeKet?: string;
+  /**
+   * Indeks hari (sejajar dengan `Project.hari`) tempat periode ini aktif.
+   * Kosong/undefined = aktif di SEMUA hari (perilaku data lama).
+   *
+   * Contoh nyata: istirahat "09:00–09:20" hanya untuk hari Jumat, sedangkan
+   * J4 reguler untuk Senin–Kamis. Cukup isi `hariAktif` di sini — tidak perlu
+   * lagi mematikan slot lewat `hariKonfig.slotNonAktif`.
+   */
+  hariAktif?: number[];
+}
+
+/**
+ * Apakah periode `per` mencakup hari ke-`hari`?
+ * `hariAktif` kosong/tidak ada = aktif semua hari.
+ */
+export function periodeAktifDiHari(per: Pick<Period, 'hariAktif'>, hari: number): boolean {
+  if (!Array.isArray(per.hariAktif) || per.hariAktif.length === 0) return true;
+  return per.hariAktif.includes(hari);
+}
+
+/**
+ * Daftar hari (indeks) tempat periode aktif. Kosong/undefined = semua hari
+ * pada `p.hari`.
+ */
+export function hariPeriode(
+  p: Pick<Project, 'hari'>,
+  per: Pick<Period, 'hariAktif'>,
+): number[] {
+  if (!Array.isArray(per.hariAktif) || per.hariAktif.length === 0) {
+    return p.hari.map((_, i) => i);
+  }
+  return per.hariAktif.filter((i) => i >= 0 && i < p.hari.length);
 }
 
 /** Label tampilan tipe waktu — tipe kustom memakai keterangannya sendiri. */
@@ -233,8 +265,9 @@ export function konfigHari(p: Pick<Project, 'hari' | 'hariKonfig'>, hari: number
 
 /**
  * Daftar baris JP yang AKTIF pada hari tertentu — baris tipe "pelajaran"
- * yang tidak dimatikan dan masih berada di batas maksimal JP hari itu.
- * Dipakai grid, matriks cetak, dan generator agar konsisten.
+ * yang hari itu termasuk `hariAktif`-nya, tidak dimatikan, dan masih berada
+ * di batas maksimal JP hari itu. Dipakai grid, matriks cetak, dan generator
+ * agar konsisten.
  */
 export function periodeAktifHari(
   p: Pick<Project, 'periode' | 'hari' | 'hariKonfig'>,
@@ -243,9 +276,12 @@ export function periodeAktifHari(
   const k = konfigHari(p, hari);
   const non = new Set(k.slotNonAktif);
   const out: Period[] = [];
-  let urut = 0; // urutan JP pada hari ini (berlaku walau ada yang dimatikan)
+  // Nomor urut JP dihitung hanya dari JP yang berlaku hari itu, agar batas
+  // maksJP tidak "termakan" oleh jam yang memang tidak ada di hari tersebut.
+  let urut = 0;
   for (const per of p.periode) {
     if (per.tipe !== 'pelajaran') continue;
+    if (!periodeAktifDiHari(per, hari)) continue;
     urut++;
     if (non.has(per.id)) continue;
     if (k.maksJP > 0 && urut > k.maksJP) continue;

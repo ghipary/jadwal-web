@@ -1539,6 +1539,11 @@ select.input {
   gap: 6px;
 }
 
+/* Pemilih hari aktif pada periode (Jam Pelajaran). */
+.hari-pilih .multi {
+  gap: 6px;
+}
+
 .les-tambah {
   display: grid;
   place-items: center;

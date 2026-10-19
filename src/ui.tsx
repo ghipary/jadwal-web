@@ -480,7 +480,8 @@ export interface FieldDef<T> {
     | 'color'
     | 'check'
     | 'slots'
-    | 'pola';
+    | 'pola'
+    | 'hari';
   options?: Option[];
   placeholder?: string;
   hint?: string;
@@ -488,6 +489,8 @@ export interface FieldDef<T> {
   max?: number;
   /** Paksa nilai diubah ke number saat disimpan (mis. select yang bernilai numerik). */
   numeric?: boolean;
+  /** Daftar nama hari untuk `type: 'hari'` (indeks array = nilai tersimpan). */
+  hari?: string[];
 }
 
 export function FormField<T>({
@@ -611,6 +614,54 @@ export function FormField<T>({
               Kosong = tiap JP ditempatkan satu-satu (bukan blok berurutan).
             </span>
           )}
+        </div>
+      );
+      break;
+    }
+    case 'hari': {
+      const hari = def.hari ?? [];
+      const arr = Array.isArray(value)
+        ? (value as unknown[]).map((x) => Math.floor(Number(x))).filter((n) => Number.isInteger(n))
+        : [];
+      // Kosong = semua hari aktif (perilaku bawaan). Tombol pertama menandai
+      // "semua hari" secara eksplisit agar pengguna mudah mengembalikannya.
+      const semua = arr.length === 0;
+      control = (
+        <div className="hari-pilih">
+          <div className="multi">
+            <button
+              type="button"
+              className={`chip ${semua ? 'chip-on' : ''}`}
+              title="Aktif di semua hari"
+              onClick={() => onChange([])}
+            >
+              {semua ? <Icon name="cek" size={12} /> : null}
+              Semua Hari
+            </button>
+            {hari.map((nama, i) => {
+              const on = !semua && arr.includes(i);
+              return (
+                <button
+                  type="button"
+                  key={`${i}-${nama}`}
+                  className={`chip ${on ? 'chip-on' : ''}`}
+                  title={nama}
+                  onClick={() => {
+                    // Dari mode "semua" → mulai dari seluruh hari lalu lepas satu.
+                    const dasar = semua ? hari.map((_, x) => x) : arr;
+                    const next = on
+                      ? dasar.filter((x) => x !== i)
+                      : [...new Set([...dasar, i])].sort((a, b) => a - b);
+                    // Bila hasilnya mencakup seluruh hari, simpan kosong (semua).
+                    onChange(next.length === hari.length ? [] : next);
+                  }}
+                >
+                  {on ? <Icon name="cek" size={12} /> : null}
+                  {nama}
+                </button>
+              );
+            })}
+          </div>
         </div>
       );
       break;

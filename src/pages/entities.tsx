@@ -423,6 +423,22 @@ function petaSlotHari(daftar: SlotKey[], peta: (h: number) => number | null): Sl
   return [...new Set(out)];
 }
 
+/**
+ * Peta ulang indeks hari pada `periode.hariAktif` (mis. saat hari
+ * dihapus/diurutkan) agar periode tetap menempel pada hari yang benar.
+ */
+function petaHariPeriode(
+  periode: Period[],
+  peta: (h: number) => number | null,
+): Period[] {
+  return periode.map((p) => ({
+    ...p,
+    hariAktif: [...new Set((p.hariAktif ?? []).map(peta).filter((x): x is number => x !== null))].sort(
+      (a, b) => a - b,
+    ),
+  }));
+}
+
 /** Susun konfigurasi hari sejajar `project.hari` (bawaan bila belum ada). */
 function konfigLengkap(project: Project): HariKonfig[] {
   return project.hari.map((_, i) => ({
@@ -524,6 +540,7 @@ function HariAktifCard() {
       hariKonfig: konfig,
       jadwal: project.jadwal.map((j) => ({ ...j, hari: peta(j.hari) })),
       blokir: project.blokir.map((b) => ({ ...b, hari: peta(b.hari) })),
+      periode: petaHariPeriode(project.periode, peta),
       guru: project.guru.map((g) => ({
         ...g,
         slotDiinginkan: petaSlotHari(g.slotDiinginkan, peta),
@@ -565,6 +582,7 @@ function HariAktifCard() {
       blokir: project.blokir
         .filter((b) => b.hari !== idx)
         .map((b) => ({ ...b, hari: peta(b.hari) as number })),
+      periode: petaHariPeriode(project.periode, peta),
       guru: project.guru.map((g) => ({
         ...g,
         slotDiinginkan: petaSlotHari(g.slotDiinginkan, peta),
@@ -748,7 +766,9 @@ function HariAktifCard() {
               </div>
               <span className="hint">
                 Klik slot untuk mematikan/mengaktifkan JP tertentu khusus hari ini. Slot di luar
-                batas maks. JP ikut non-aktif dan tidak akan dipakai generator.
+                batas maks. JP ikut non-aktif dan tidak akan dipakai generator. Untuk jam yang
+                hanya berlaku di hari tertentu, lebih mudah mengatur “Aktif pada Hari” di halaman
+                Jam Pelajaran.
               </span>
             </div>
           </div>
@@ -772,13 +792,13 @@ export function HalJam() {
   const cfg: EntityConfig<Period> = {
     collection: 'periode',
     judul: 'Jam Pelajaran',
-    desc: 'Urutan jam sekolah tiap hari. Baris ber-tipe selain “Pelajaran” (istirahat, apel, kustom) tidak akan dipakai generator. Atur urutan dengan tombol panah.',
+    desc: 'Urutan jam sekolah tiap hari. Baris ber-tipe selain “Pelajaran” (istirahat, apel, kustom) tidak akan dipakai generator. Tiap jam bisa dibatasi ke hari tertentu lewat kolom “Aktif pada Hari”. Atur urutan dengan tombol panah.',
     ikon: 'jam',
     placeholderCari: 'Cari jam…',
     labelHapus: (r) => r.nama,
     judulForm: (r) => (r?.id ? 'Ubah Jam Pelajaran' : 'Tambah Jam Pelajaran'),
     descForm: 'Waktu ditulis 24 jam, contoh 07:00. Urutan baris = urutan tampil di grid.',
-    blank: () => ({ id: uid('p'), nama: '', mulai: '', selesai: '', tipe: 'pelajaran', tipeKet: '' }),
+    blank: () => ({ id: uid('p'), nama: '', mulai: '', selesai: '', tipe: 'pelajaran', tipeKet: '', hariAktif: [] }),
     aksiTambahan: (r) => {
       const i = project.periode.findIndex((p) => p.id === r.id);
       return (
@@ -814,6 +834,21 @@ export function HalJam() {
             <span className="badge badge-abu">{labelTipeWaktu(r)}</span>
           ),
       },
+      {
+        label: 'Hari Aktif',
+        render: (r) =>
+          !r.hariAktif || r.hariAktif.length === 0 ? (
+            <span className="badge badge-abu">Semua hari</span>
+          ) : (
+            <span className="badge badge-hijau">
+              {r.hariAktif
+                .slice()
+                .sort((a, b) => a - b)
+                .map((i) => project.hari[i] ?? '?')
+                .join(', ')}
+            </span>
+          ),
+      },
     ],
     fields: (form) => [
       { key: 'nama', label: 'Nama', type: 'text', placeholder: 'Contoh: Jam ke-1' },
@@ -837,6 +872,13 @@ export function HalJam() {
             } as FieldDef<Period>,
           ]
         : []),
+      {
+        key: 'hariAktif',
+        label: 'Aktif pada Hari',
+        type: 'hari',
+        hari: project.hari,
+        hint: 'Kosong = aktif semua hari. Klik “Semua Hari” untuk mengembalikan. Contoh: istirahat “09:00–09:20” hanya untuk Jumat, atau J4 hanya Senin–Kamis.',
+      } as FieldDef<Period>,
     ],
   };
   return <DataPage cfg={cfg} atas={<HariAktifCard />} />;

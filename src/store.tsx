@@ -87,17 +87,19 @@ function migrasiDataLama(userId: string): Project | null {
 // ---------------------------------------------------------------------------
 
 function demoProject(): Project {
+  // `hariAktif: []` = aktif semua hari. Contoh per-hari: istirahat Jumat
+  // bisa dibuat terpisah dengan `hariAktif: [4]` (Jumat).
   const periode: Period[] = [
-    { id: 'p1', nama: 'Jam ke-1', mulai: '07:00', selesai: '07:40', tipe: 'pelajaran' },
-    { id: 'p2', nama: 'Jam ke-2', mulai: '07:40', selesai: '08:20', tipe: 'pelajaran' },
-    { id: 'p3', nama: 'Jam ke-3', mulai: '08:20', selesai: '09:00', tipe: 'pelajaran' },
-    { id: 'i1', nama: 'Istirahat', mulai: '09:00', selesai: '09:20', tipe: 'istirahat' },
-    { id: 'p4', nama: 'Jam ke-4', mulai: '09:20', selesai: '10:00', tipe: 'pelajaran' },
-    { id: 'p5', nama: 'Jam ke-5', mulai: '10:00', selesai: '10:40', tipe: 'pelajaran' },
-    { id: 'i2', nama: 'Istirahat', mulai: '10:40', selesai: '11:00', tipe: 'istirahat' },
-    { id: 'p6', nama: 'Jam ke-6', mulai: '11:00', selesai: '11:40', tipe: 'pelajaran' },
-    { id: 'p7', nama: 'Jam ke-7', mulai: '11:40', selesai: '12:20', tipe: 'pelajaran' },
-    { id: 'p8', nama: 'Jam ke-8', mulai: '12:20', selesai: '13:00', tipe: 'pelajaran' },
+    { id: 'p1', nama: 'Jam ke-1', mulai: '07:00', selesai: '07:40', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'p2', nama: 'Jam ke-2', mulai: '07:40', selesai: '08:20', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'p3', nama: 'Jam ke-3', mulai: '08:20', selesai: '09:00', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'i1', nama: 'Istirahat', mulai: '09:00', selesai: '09:20', tipe: 'istirahat', hariAktif: [] },
+    { id: 'p4', nama: 'Jam ke-4', mulai: '09:20', selesai: '10:00', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'p5', nama: 'Jam ke-5', mulai: '10:00', selesai: '10:40', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'i2', nama: 'Istirahat', mulai: '10:40', selesai: '11:00', tipe: 'istirahat', hariAktif: [] },
+    { id: 'p6', nama: 'Jam ke-6', mulai: '11:00', selesai: '11:40', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'p7', nama: 'Jam ke-7', mulai: '11:40', selesai: '12:20', tipe: 'pelajaran', hariAktif: [] },
+    { id: 'p8', nama: 'Jam ke-8', mulai: '12:20', selesai: '13:00', tipe: 'pelajaran', hariAktif: [] },
   ];
 
   type SubjDef = [string, string, string, string, string, boolean];
@@ -451,6 +453,11 @@ function rapikanReferensiHari(p: Project): Project {
         slotNonAktif: (k.slotNonAktif ?? []).filter((id) => periodeAda.has(id)),
       };
     }),
+    // Referensi hari pada `hariAktif` tiap periode juga dipangkas.
+    periode: p.periode.map((per) => ({
+      ...per,
+      hariAktif: (per.hariAktif ?? []).filter(valid),
+    })),
   };
 }
 
@@ -508,6 +515,16 @@ function migrasiPeriode(raw: unknown): Period[] {
       : p.istirahat === true
         ? 'istirahat'
         : 'pelajaran';
+    // `hariAktif` = indeks hari; nilai tak sah dibuang. Kosong = semua hari.
+    const hariAktif = Array.isArray(p.hariAktif)
+      ? [
+          ...new Set(
+            (p.hariAktif as unknown[])
+              .map((x) => Math.floor(Number(x)))
+              .filter((n) => Number.isInteger(n) && n >= 0),
+          ),
+        ].sort((a, b) => a - b)
+      : [];
     return {
       id: String(p.id ?? uid('p')),
       nama: String(p.nama ?? ''),
@@ -515,6 +532,7 @@ function migrasiPeriode(raw: unknown): Period[] {
       selesai: String(p.selesai ?? ''),
       tipe,
       tipeKet: typeof p.tipeKet === 'string' ? p.tipeKet : '',
+      hariAktif,
     };
   });
 }

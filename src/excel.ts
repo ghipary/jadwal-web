@@ -115,7 +115,7 @@ export const HEADER: Record<keyof typeof NAMA_SHEET, Sel> = {
   siswa: ['nama', 'kelasId', 'pilihan'],
   mapel: ['kode', 'nama', 'tipeRuang', 'pilihan'],
   ruang: ['nama', 'tipe', 'kapasitas'],
-  periode: ['nama', 'mulai', 'selesai', 'tipe', 'tipeKet'],
+  periode: ['nama', 'mulai', 'selesai', 'tipe', 'tipeKet', 'hariAktif'],
   kebutuhan: ['kelasId', 'mapelId', 'guruId', 'ruangId', 'jumlahJam', 'polaJP'],
   blokir: ['jenis', 'refId', 'hari', 'periodeId', 'alasan'],
 };
@@ -129,7 +129,7 @@ const CONTOH: Record<keyof typeof NAMA_SHEET, Sel> = {
   siswa: ['Contoh Siswa', 'X-1', ''],
   mapel: ['MTK', 'Matematika', 'Ruang Reguler', 'Tidak'],
   ruang: ['R-1', 'Ruang Reguler', 40],
-  periode: ['Jam ke-1', '07:00', '07:40', 'Pelajaran', ''],
+  periode: ['Jam ke-1', '07:00', '07:40', 'Pelajaran', '', 'Senin; Selasa; Rabu; Kamis; Sabtu'],
   kebutuhan: ['X-1', 'Matematika', 'Contoh Guru', 'Otomatis', 4, '2;1'],
   blokir: ['Kelas', 'X-1', 'Senin', 'Jam ke-1', 'Contoh'],
 };
@@ -168,13 +168,12 @@ export function buatTemplateXlsx(
     'petunjuk',
     denganContoh
       ? [
-          ['1. Hari', 'Satu nama hari per baris. Kolom maksJP = batas JP hari itu (0 = tanpa batas).', 'Senin = 7 JP, Jumat = 5 JP'],
-          ['2. Guru', 'mapelIds diisi nama/kode mapel dipisah titik koma. polaJP = pola blok JP.', 'polaJP: 2;1 berarti 3 JP dipecah 2+1'],
+          ['1. Hari', 'Satu nama hari per baris. Kolom maksJP = batas JP hari itu (0 = tanpa batas).', 'Senin = 7 JP, Jumat = 5 JP'],          ['2. Guru', 'mapelIds diisi nama/kode mapel dipisah titik koma. polaJP = pola blok JP.', 'polaJP: 2;1 berarti 3 JP dipecah 2+1'],
           ['3. Kelas', 'waliKelasId diisi nama/kode guru (opsional).', 'X-1, XI-2, XII-3'],
           ['4. Siswa', 'kelasId harus sudah ada di sheet Kelas.', 'pilihan diisi dipisah titik koma.'],
           ['5. Mata Pelajaran', 'tipeRuang: Ruang Reguler / Lab Komputer / Lab Sains / Lapangan / Semua.', 'pilihan: Ya / Tidak'],
           ['6. Ruang', 'Tipe mengikuti daftar tipe ruang. kapasitas diisi angka.', 'Kapasitas 40.'],
-          ['7. Jam Pelajaran', 'tipe: Pelajaran / Istirahat / Apel / Kustom.', 'Hanya tipe Pelajaran yang dipakai generator.'],
+          ['7. Jam Pelajaran', 'tipe: Pelajaran / Istirahat / Apel / Kustom. hariAktif: nama hari dipisah koma/titik-koma (kosong = semua hari).', 'hariAktif contoh: "Senin; Selasa; Rabu; Kamis; Sabtu"'],
           ['8. Kebutuhan Jam', 'kelasId/mapelId/guruId harus sudah terdaftar.', 'ruangId "Otomatis" bila tidak ditentukan.'],
           ['9. Batasan', 'jenis: Kelas / Guru / Ruang. hari & periodeId harus valid.', 'Isi alasan bila perlu.'],
           ['Catatan', `Baris pertama pada template kosong adalah contoh (ditandai "${PENANDA_CONTOH}") dan diabaikan otomatis.`, 'Jangan mengganti nama sheet atau judul kolom.'],
@@ -277,6 +276,13 @@ export function buatTemplateXlsx(
         p.selesai,
         LABEL_TIPE_WAKTU[p.tipe],
         p.tipe === 'kustom' ? (p.tipeKet ?? '') : '',
+        // Kosong = aktif semua hari.
+        (p.hariAktif ?? [])
+          .slice()
+          .sort((a, b) => a - b)
+          .map((i) => project.hari[i] ?? '')
+          .filter(Boolean)
+          .join('; '),
       ]),
     ),
   );
@@ -366,6 +372,8 @@ const ALIAS_HEADER: Record<string, Record<string, string>> = {
   [NAMA_SHEET.periode]: {
     'tipe waktu': 'tipe',
     keterangan: 'tipeKet',
+    'hari aktif': 'hariAktif',
+    hari: 'hariAktif',
   },
   [NAMA_SHEET.kebutuhan]: {
     kelas: 'kelasId',
@@ -446,6 +454,31 @@ function parsePola(v: unknown): number[] {
 function ya(v: unknown): boolean {
   if (typeof v === 'boolean') return v;
   return /^(ya|y|1|true|yes)$/i.test(str(v));
+}
+
+/**
+ * Baca kolom `hariAktif` pada sheet "Jam Pelajaran": nama hari dipisah
+ * koma/titik-koma, indeks hari (angka 1-based) juga diterima. Kosong = semua
+ * hari (mengembalikan array kosong). Nama/indeks yang tak dikenal diabaikan.
+ */
+function parseHariAktif(v: unknown, hari: string[]): number[] {
+  const teks = str(v);
+  if (!teks) return [];
+  const byNama = new Map(hari.map((n, i) => [n.trim().toLowerCase(), i]));
+  const out = new Set<number>();
+  for (const bagian of teks.split(/[;,]/)) {
+    const t = bagian.trim();
+    if (!t) continue;
+    const byName = byNama.get(t.toLowerCase());
+    if (byName !== undefined) {
+      out.add(byName);
+      continue;
+    }
+    // Terima juga angka hari (1 = hari pertama).
+    const n = Math.floor(Number(t));
+    if (Number.isInteger(n) && n >= 1 && n <= hari.length) out.add(n - 1);
+  }
+  return [...out].sort((a, b) => a - b);
 }
 
 /**
@@ -587,6 +620,8 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       selesai: str(r['selesai']),
       tipe,
       tipeKet,
+      // Kosong = aktif semua hari.
+      hariAktif: parseHariAktif(r['hariAktif'], hari),
     });
   }
 

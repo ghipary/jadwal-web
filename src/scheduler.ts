@@ -520,7 +520,7 @@ export function checkConflicts(p: Project): Conflict[] {
         id: `nonaktif|${j.id}`,
         tipe: 'nonaktif',
         tingkat: 'error',
-        pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) berada di ${slotLabel(p, j.hari, j.periodeId)} — JP tersebut non-aktif pada hari ${p.hari[j.hari] ?? '?'} (batas maks. JP / dimatikan manual).`,
+        pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) berada di ${slotLabel(p, j.hari, j.periodeId)} — JP tersebut tidak aktif pada hari ${p.hari[j.hari] ?? '?'} (jam hanya berlaku hari lain, batas maks. JP, atau dimatikan manual).`,
         refJadwal: [j.id],
       });
     }
