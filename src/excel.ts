@@ -449,21 +449,33 @@ function ya(v: unknown): boolean {
 }
 
 /**
+ * Sinonim kolom "tipe" yang berarti jam pelajaran (KBM = Kegiatan Belajar
+ * Mengajar, PBM = Proses Belajar Mengajar, dsb.). Nilai ini WAJIB dikenali
+ * sebagai `pelajaran` — kalau tidak, seluruh JP jadi non-aktif dan generator
+ * selalu gagal ("tidak ada JP aktif pada hari ini").
+ */
+const KATA_PELAJARAN =
+  /^(pelajaran|jam pelajaran|kbm|pbm|kegiatan belajar|belajar mengajar|belajar)/;
+
+/**
  * Baca kolom tipe waktu dari sheet "Jam Pelajaran".
  * Format baru: `tipe` (Pelajaran/Istirahat/Apel/Kustom) + `tipeKet`.
  * Format lama: kolom "Istirahat" berisi Ya/Tidak, tetap diterima.
  */
 function bacaTipeWaktu(r: Baris): { tipe: TipeWaktu; tipeKet: string } {
-  const teks = str(r['tipe'] ?? r['Tipe Waktu'] ?? r['tipeWaktu']).toLowerCase();
+  const mentah = str(r['tipe'] ?? r['Tipe Waktu'] ?? r['tipeWaktu']);
+  const teks = mentah.toLowerCase();
   const ket = str(r['tipeKet'] ?? r['Keterangan']);
   if (teks) {
-    if (teks.startsWith('istirahat')) return { tipe: 'istirahat', tipeKet: '' };
-    if (teks.startsWith('apel')) return { tipe: 'apel', tipeKet: '' };
-    if (teks.startsWith('kustom') || teks.startsWith('lainnya'))
+    if (teks.startsWith('istirahat') || teks.startsWith('rehat'))
+      return { tipe: 'istirahat', tipeKet: '' };
+    if (teks.startsWith('apel') || teks.startsWith('upacara'))
+      return { tipe: 'apel', tipeKet: '' };
+    if (teks.startsWith('kustom') || teks.startsWith('lainnya') || teks.startsWith('lain-lain'))
       return { tipe: 'kustom', tipeKet: ket || teks };
-    if (teks.startsWith('pelajaran')) return { tipe: 'pelajaran', tipeKet: '' };
+    if (KATA_PELAJARAN.test(teks)) return { tipe: 'pelajaran', tipeKet: '' };
     // Teks bebas di kolom tipe → dianggap tipe kustom.
-    return { tipe: 'kustom', tipeKet: ket || str(r['tipe']) };
+    return { tipe: 'kustom', tipeKet: ket || mentah };
   }
   // Fallback format lama.
   if (ya(r['istirahat'])) return { tipe: 'istirahat', tipeKet: '' };
@@ -578,16 +590,31 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
     });
   }
 
+  // Validasi: tanpa satu pun baris bertipe "pelajaran", generator pasti gagal
+  // total (0 JP aktif). Lebih baik hentikan impor dengan pesan yang jelas.
+  if (periode.length && !periode.some((p) => p.tipe === 'pelajaran')) {
+    galat.push(
+      'Jam Pelajaran: tidak ada baris bertipe "Pelajaran". Periksa kolom "tipe" — ' +
+        'nilai yang dikenali: Pelajaran, Istirahat, Apel, Kustom (juga KBM/PBM untuk pelajaran). ' +
+        'Generator tidak bisa menyusun jadwal tanpa JP bertipe Pelajaran.',
+    );
+  }
+
   // 1b. slotNonAktif per hari (nama JP → id periode).
+  // Dicocokkan lewat NAMA hari (bukan indeks baris mentah) agar tetap benar
+  // meski ada baris yang dilewati (nama kosong/duplikat/baris contoh).
   const periodeIdByName = new Map(periode.map((p) => [p.nama.toLowerCase(), p.id]));
-  barisSheet(wb, NAMA_SHEET.hari).forEach((r, i) => {
-    if (barisContoh(r) || i >= konfig.length) return;
-    const teks = str(r['slotNonAktif']);
-    konfig[i].slotNonAktif = teks
+  for (const r of barisSheet(wb, NAMA_SHEET.hari)) {
+    if (barisContoh(r)) continue;
+    const nama =
+      str(r['nama']) || str(r['Nama Hari']) || str(r['Nama']) || str(r['hari']);
+    const i = hari.indexOf(nama);
+    if (i < 0) continue;
+    konfig[i].slotNonAktif = str(r['slotNonAktif'])
       .split(/[;,]/)
       .map((x) => periodeIdByName.get(x.trim().toLowerCase()))
       .filter((x): x is string => Boolean(x));
-  });
+  }
 
   // 2. Mata Pelajaran.
   const mapel: Subject[] = [];

@@ -320,13 +320,23 @@ export async function generate(
           else if (req.ruangId && !ruangM.has(req.ruangId)) bump('ruang tetap tidak ditemukan');
           else if (!p.ruang.length) bump('belum ada data ruang');
         }
-        if (!aktifHari[hari].length) bump('tidak ada JP aktif pada hari ini');
       }
       const top = Object.entries(counts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 2)
         .map(([k, v]) => `${k} (${v} slot)`);
-      return top.length ? top.join(', ') : 'tidak ada slot tersisa';
+      // Hitung hari yang benar-benar tidak punya JP aktif. Ini penyebab paling
+      // fatal (biasanya karena tipe baris "Jam Pelajaran" tidak dikenali),
+      // dan pesannya dibuat eksplisit dalam satuan HARI — bukan jumlah slot.
+      const hariTanpaJp = p.hari.filter((_, h) => !aktifHari[h].length).length;
+      const bagian: string[] = [];
+      if (hariTanpaJp) {
+        bagian.push(
+          `tidak ada JP aktif pada hari ini (${hariTanpaJp} hari dari ${p.hari.length} hari kosong)`,
+        );
+      }
+      bagian.push(...top);
+      return bagian.length ? bagian.join(', ') : 'tidak ada slot tersisa';
     };
 
     const gagal: GagalItem[] = [];
