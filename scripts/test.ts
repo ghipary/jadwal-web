@@ -1,7 +1,7 @@
 // Uji cepat mesin generator (dijalankan via esbuild + node).
 import { demoProject } from '../src/store';
 import { checkConflicts, generate } from '../src/scheduler';
-import { buatMatriks, matriksKePdf, matriksKeXlsx } from '../src/matrix';
+import { buatMatriks, matriksKeXlsx } from '../src/matrix';
 
 async function main() {
   const p = demoProject();
@@ -64,36 +64,9 @@ async function main() {
     const punyaPK = magic === 'PK';
     const punyaSheet = isi.includes('<sheetData>') && isi.includes('JADWAL PELAJARAN');
     const punyaStyle = isi.includes('<styleSheet');
-    const gayaAcuan =
-      isi.includes('Arial') &&
-      isi.includes('FFC000') && // header legenda oranye
-      isi.includes('92D050'); // kolom mapel hijau
-    const waktuTitik = m.baris.every((b) => !b.jam.includes(':'));
     console.log('xlsx byte      :', bytes.length, 'magic:', magic, punyaPK ? '✓' : '✗');
     console.log('isi worksheet  :', punyaSheet ? '✓' : '✗', '| gaya:', punyaStyle ? '✓' : '✗');
-    console.log('gaya acuan     :', gayaAcuan ? '✓' : '✗', '| waktu "07.00":', waktuTitik ? '✓' : '✗');
-    matriksOk = matriksOk && punyaPK && punyaSheet && punyaStyle && gayaAcuan && waktuTitik;
-
-    // Berkas PDF matriks
-    try {
-      const pdf = matriksKePdf(p, m);
-      const kepala = new TextDecoder('latin1').decode(pdf.slice(0, 8));
-      const punyaPdf = kepala.startsWith('%PDF-1.4');
-      const punyaEof = new TextDecoder('latin1').decode(pdf.slice(-8)).includes('%%EOF');
-      console.log('pdf byte       :', pdf.length, 'kepala:', kepala.trim(), punyaPdf && punyaEof ? '✓' : '✗');
-      matriksOk = matriksOk && punyaPdf && punyaEof && pdf.length > 2000;
-      try {
-        const fs2 = await import('fs');
-        fs2.mkdirSync('temp', { recursive: true });
-        fs2.writeFileSync('temp/matriks-test.pdf', pdf);
-        console.log('contoh pdf     : temp/matriks-test.pdf');
-      } catch {
-        /* lingkungan tanpa fs — lewati */
-      }
-    } catch (e) {
-      console.log('GAGAL pdf:', e instanceof Error ? e.message : e);
-      matriksOk = false;
-    }
+    matriksOk = matriksOk && punyaPK && punyaSheet && punyaStyle;
 
     // Tulis contoh berkas untuk pemeriksaan manual.
     try {

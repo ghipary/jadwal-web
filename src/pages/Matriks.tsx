@@ -1,12 +1,10 @@
 // Halaman Matriks: tabel matriks ala lembar cetak resmi sekolah
-// (baris = hari × jam, kolom = kelas, isi = kode guru+mapel), meniru
-// berkas acuan "Jadwal SMA.xlsx". Ekspor .xlsx dan .pdf memakai tata
-// letak yang sama persis dengan pratinjau di bawah ini.
+// (baris = hari × jam, kolom = kelas, isi = kode guru+mapel) + ekspor Excel
+// .xlsx dengan format yang sama persis.
 
 import { Fragment, useMemo, useState } from 'react';
 import { useProject } from '../store';
-import { buatMatriks, matriksKePdf, matriksKeXlsx } from '../matrix';
-import { downloadPdf } from '../pdf';
+import { buatMatriks, matriksKeXlsx } from '../matrix';
 import { downloadXlsx } from '../xlsx';
 import { Banner, Btn, EmptyState, PageHead } from '../ui';
 
@@ -35,29 +33,17 @@ export function HalMatriks() {
 
   const namaSekolah = project.info.nama || 'SEKOLAH';
   const ta = project.info.tahunAjaran || '—';
-  const slug = namaSekolah.replace(/[^\w-]+/g, '_').toLowerCase() || 'sekolah';
 
-  const eksporExcel = () => {
+  const ekspor = () => {
     try {
       setGalat('');
-      downloadXlsx(`jadwal-matriks-${slug}.xlsx`, matriksKeXlsx(project, m));
+      const bytes = matriksKeXlsx(project, m);
+      const slug = namaSekolah.replace(/[^\w-]+/g, '_').toLowerCase();
+      downloadXlsx(`matriks-jadwal-${slug}.xlsx`, bytes);
     } catch {
-      setGalat('Gagal membuat berkas Excel. Coba lagi atau gunakan tombol Unduh PDF.');
+      setGalat('Gagal membuat berkas Excel. Coba lagi atau gunakan Cetak → Simpan sebagai PDF.');
     }
   };
-
-  const eksporPdf = () => {
-    try {
-      setGalat('');
-      downloadPdf(`jadwal-matriks-${slug}.pdf`, matriksKePdf(project, m));
-    } catch {
-      setGalat('Gagal membuat berkas PDF. Coba lagi.');
-    }
-  };
-
-  const nK = m.kelas.length;
-  const legendaSisa = Math.max(0, m.legenda.length + 1 - m.baris.length);
-  const legendaUntuk = (r: number) => (r >= 1 ? m.legenda[r - 1] : undefined);
 
   return (
     <>
@@ -67,13 +53,10 @@ export function HalMatriks() {
         actions={
           <>
             <Btn variant="ghost" icon="cetak" onClick={() => window.print()}>
-              Cetak
+              Cetak / PDF
             </Btn>
-            <Btn variant="ghost" icon="unduh" onClick={eksporPdf}>
-              Unduh PDF
-            </Btn>
-            <Btn variant="primary" icon="unduh" onClick={eksporExcel}>
-              Unduh Excel
+            <Btn variant="primary" icon="unduh" onClick={ekspor}>
+              Ekspor Excel
             </Btn>
           </>
         }
@@ -86,8 +69,8 @@ export function HalMatriks() {
       ) : null}
 
       <Banner tone="info" icon="info">
-        Pratinjau di bawah sama persis dengan berkas hasil unduhan (<b>.xlsx</b> dan{' '}
-        <b>.pdf</b>, A4 lanskap). Kode di tiap sel dirujuk ke tabel legenda di kanan.
+        Tampilan ini sama persis dengan lembar cetak: gunakan <b>Cetak / PDF</b> untuk hasil
+        A4-landscape, atau <b>Ekspor Excel</b> untuk berkas .xlsx dengan legenda kode di kanan.
       </Banner>
 
       <div className="mx-doc">
@@ -104,73 +87,56 @@ export function HalMatriks() {
                 {m.kelas.map((k) => (
                   <th key={k.id}>{k.nama}</th>
                 ))}
-                {m.legenda.length ? (
-                  <>
-                    <th className="lg-head" rowSpan={2}>
-                      KODE
-                    </th>
-                    <th className="lg-head" rowSpan={2}>
-                      NAMA
-                    </th>
-                    <th className="lg-head l-mapel" rowSpan={2}>
-                      MATA PELAJARAN
-                    </th>
-                  </>
-                ) : null}
               </tr>
             </thead>
             <tbody>
               {m.blok.map((b) => (
                 <Fragment key={b.hari}>
-                  {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => {
-                    const r = b.mulai + i;
-                    const leg = legendaUntuk(r);
-                    return (
-                      <tr key={`${b.hari}-${br.periodeId}`}>
-                        {i === 0 ? (
-                          <td className="c-hari" rowSpan={b.jumlah}>
-                            {b.nama}
-                          </td>
-                        ) : null}
-                        <td className="c-jam">{br.jam}</td>
-                        {br.istirahat ? (
-                          <td colSpan={nK} className="c-ist">
-                            {br.label}
-                          </td>
-                        ) : (
-                          m.kelas.map((k) => {
-                            const s = m.sel.get(`${br.hari}|${br.periodeId}|${k.id}`);
-                            return (
-                              <td key={k.id} className="c-kode">
-                                {s?.kode ?? ''}
-                              </td>
-                            );
-                          })
-                        )}
-                        {r >= 1 && m.legenda.length ? (
-                          <>
-                            <td className="lg-kode">{leg?.kode ?? ''}</td>
-                            <td className="lg-nama">{leg?.guru ?? ''}</td>
-                            <td className={`lg-mapel${leg ? ' isi' : ''}`}>{leg?.mapel ?? ''}</td>
-                          </>
-                        ) : null}
-                      </tr>
-                    );
-                  })}
+                  {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => (
+                    <tr key={`${b.hari}-${br.periodeId}`}>
+                      {i === 0 ? (
+                        <td className="c-hari" rowSpan={b.jumlah}>
+                          {b.nama}
+                        </td>
+                      ) : null}
+                      <td className="c-jam">{br.jam}</td>
+                      {br.istirahat ? (
+                        <td colSpan={m.kelas.length} className="c-ist">
+                          {br.label}
+                        </td>
+                      ) : (
+                        m.kelas.map((k) => {
+                          const s = m.sel.get(`${br.hari}|${br.periodeId}|${k.id}`);
+                          return (
+                            <td key={k.id} className={s ? 'c-kode' : ''}>
+                              {s?.kode ?? ''}
+                            </td>
+                          );
+                        })
+                      )}
+                    </tr>
+                  ))}
                 </Fragment>
               ))}
-              {Array.from({ length: legendaSisa }).map((_, i) => {
-                const r = m.baris.length + i;
-                const leg = m.legenda[r - 1];
-                return (
-                  <tr key={`leg-${i}`}>
-                    <td colSpan={2 + nK} />
-                    <td className="lg-kode">{leg?.kode ?? ''}</td>
-                    <td className="lg-nama">{leg?.guru ?? ''}</td>
-                    <td className="lg-mapel isi">{leg?.mapel ?? ''}</td>
-                  </tr>
-                );
-              })}
+            </tbody>
+          </table>
+
+          <table className="mx-legend">
+            <thead>
+              <tr>
+                <th>KODE</th>
+                <th>NAMA</th>
+                <th>MATA PELAJARAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              {m.legenda.map((e) => (
+                <tr key={e.kode}>
+                  <td className="c-kode">{e.kode}</td>
+                  <td>{e.guru}</td>
+                  <td>{e.mapel}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

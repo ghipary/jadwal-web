@@ -2,7 +2,6 @@ node_modules
 dist
 .vercel
 temp
-File Acuan PDF dan EXCEL
 *.local
 .DS_Store
 
