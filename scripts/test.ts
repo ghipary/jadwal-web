@@ -226,6 +226,63 @@ async function main() {
     console.log('blok terbentuk (2 JP + 1 JP):', ukuran.join(' + ') || '-', adaBlok2 && adaTunggal ? '✓' : '✗');
     console.log('konflik error              :', konflik3.length, konflik3.length === 0 ? '✓' : '✗');
     polaOk = uraiOk && totalOk && adaBlok2 && adaTunggal && konflik3.length === 0;
+
+    // --- STRICT BLOCK PLACEMENT pada seluruh kebutuhan -------------------
+    // Semua kebutuhan diberi pola yang PAS membagi jumlah jamnya, lalu solver
+    // harus: (1) menempatkan 100% jam, (2) 0 konflik, (3) tak pernah membuat
+    // blok parsial (ukuran blok selalu salah satu anggota pola).
+    const ps = demoProject();
+    for (const k of ps.kebutuhan) {
+      if (k.jumlahJam === 2) k.polaJP = [2];
+      else if (k.jumlahJam === 3) k.polaJP = [3];
+      else if (k.jumlahJam === 4) k.polaJP = [2, 2];
+    }
+    const hasilS = await generate(ps);
+    ps.jadwal = hasilS.jadwal;
+    const konflikS = checkConflicts(ps).filter((k) => k.tingkat === 'error');
+    let totalJamS = 0;
+    let parsial = 0;
+    let langgar = 0;
+    for (const k of ps.kebutuhan) {
+      const milikK = ps.jadwal.filter(
+        (j) => j.kelasId === k.kelasId && j.mapelId === k.mapelId && j.guruId === k.guruId,
+      );
+      totalJamS += milikK.length;
+      if (k.polaJP.length && milikK.length !== k.jumlahJam) parsial++;
+      const perBlok = new Map<string, number>();
+      for (const j of milikK) {
+        const key = j.blokId ?? `t_${j.hari}_${j.periodeId}`;
+        perBlok.set(key, (perBlok.get(key) ?? 0) + 1);
+      }
+      for (const n of perBlok.values()) {
+        if (k.polaJP.length && !k.polaJP.includes(n)) langgar++;
+      }
+    }
+    const totalKebutuhanS = ps.kebutuhan.reduce((a, k) => a + k.jumlahJam, 0);
+    const penuhS = totalJamS === totalKebutuhanS;
+    console.log('strict: jam terjadwal     :', totalJamS, '/', totalKebutuhanS, penuhS ? '✓' : '✗');
+    console.log('strict: konflik error     :', konflikS.length, konflikS.length === 0 ? '✓' : '✗');
+    console.log('strict: kebutuhan parsial :', parsial, parsial === 0 ? '✓' : '✗');
+    console.log('strict: blok langgar pola :', langgar, langgar === 0 ? '✓' : '✗');
+    polaOk = polaOk && penuhS && konflikS.length === 0 && parsial === 0 && langgar === 0;
+
+    // --- Pola TAK MUNGKIN (mis. [4] tanpa 4 JP berurutan) → gagal bersih ---
+    // Tidak boleh ada blok parsial: kebutuhan harus GAGAL utuh, bukan terisi
+    // sebagian tanpa memenuhi pola.
+    const pm = demoProject();
+    const reqM = pm.kebutuhan.find((k) => k.jumlahJam === 4 && k.kelasId === 'k_x1')!;
+    reqM.polaJP = [4]; // demo hanya punya maksimal 3 JP berurutan (terpisah istirahat)
+    pm.jadwal = [];
+    const hasilM = await generate(pm);
+    pm.jadwal = hasilM.jadwal;
+    const milikM = pm.jadwal.filter(
+      (j) => j.kelasId === reqM.kelasId && j.mapelId === reqM.mapelId && j.guruId === reqM.guruId,
+    );
+    const gagalM = hasilM.laporan.gagal.some((g) => g.req.id === reqM.id);
+    const bersihM = milikM.length === 0; // tak ada penempatan parsial
+    console.log('pola [4] tak mungkin → gagal:', gagalM && bersihM ? '✓' : '✗', `(terisi ${milikM.length}/4)`);
+    polaOk = polaOk && gagalM && bersihM;
+
     console.log('status polaJP              :', polaOk ? 'LULUS ✅' : 'GAGAL ❌');
   } catch (e) {
     console.log('GAGAL uji polaJP:', e instanceof Error ? e.message : e);

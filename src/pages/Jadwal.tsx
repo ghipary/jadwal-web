@@ -401,7 +401,7 @@ export function HalJadwal() {
     <>
       <PageHead
         title="Jadwal Pelajaran"
-        desc="Seret kartu untuk memindah jam, klik kartu untuk mengubah ruang/menandai tetap/menghapus, klik tombol + di sel kosong untuk menambah."
+        desc="Seret kartu untuk memindah jam, klik kartu untuk mengubah ruang/menandai tetap/menghapus, klik sel kosong untuk menambah pelajaran."
         actions={
           <>
             <Btn variant="ghost" icon="unduh" onClick={eksporCSV}>

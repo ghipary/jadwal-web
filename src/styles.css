@@ -1268,7 +1268,7 @@ select.input {
 }
 
 .tt {
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
   min-width: 900px;
@@ -1277,64 +1277,60 @@ select.input {
 
 .tt th,
 .tt td {
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-
-.tt th:last-child,
-.tt td:last-child {
-  border-right: none;
+  border: 1px solid #d7dee7;
+  height: 34px;
+  padding: 0;
 }
 
 .tt thead th {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: #fbfcfa;
-  padding: 11px 10px;
-  font-size: 12px;
+  background: #eef2f7;
+  padding: 7px 10px;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--ink-2);
   text-align: center;
+  letter-spacing: 0.01em;
 }
 
 .tt thead th .sub {
   display: block;
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--ink-3);
   font-weight: 500;
 }
 
 .tt th.jam-cell {
-  width: 132px;
+  width: 116px;
   text-align: left;
-  background: #fbfcfa;
-  padding: 9px 12px;
-  font-size: 12.5px;
+  background: #eef2f7;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
   color: var(--ink-2);
+  white-space: nowrap;
 }
 
 .tt th.jam-cell .waktu {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--ink-3);
   font-weight: 500;
 }
 
 .tt td {
-  height: 74px;
-  padding: 5px;
   vertical-align: top;
   background: #fff;
 }
 
+/* Baris jam non-pelajaran (istirahat/apel/kustom): satu baris gabungan. */
 .tt tr.baris-waktu td {
-  height: 30px;
+  height: 24px;
   text-align: center;
   color: var(--ink-3);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 5px;
+  padding: 3px 6px;
+  vertical-align: middle;
 }
 
 .tt tr.baris-istirahat td {
@@ -1351,12 +1347,14 @@ select.input {
   color: #6d28d9;
 }
 
-.tt td.kosong {
+/* Sel kosong yang aktif: bisa diklik untuk menambah. */
+.tt td[role='button'] {
   cursor: pointer;
 }
 
-.tt td.kosong:hover {
+.tt td[role='button']:hover {
   background: var(--brand-soft);
+  box-shadow: inset 0 0 0 2px var(--brand);
 }
 
 .tt td.drag-over {
@@ -1364,28 +1362,26 @@ select.input {
   box-shadow: inset 0 0 0 2px var(--brand);
 }
 
+/* Kartu pelajaran: rapat, ala sel Excel. */
 .les {
   display: block;
   width: 100%;
+  min-height: 32px;
   text-align: left;
   border: none;
-  border-left: 4px solid var(--brand);
+  border-left: 3px solid var(--brand);
   background: #fff;
-  border-radius: 9px;
-  padding: 6px 8px;
+  border-radius: 0;
+  padding: 3px 6px;
   cursor: grab;
-  box-shadow: 0 1px 3px rgba(22, 46, 32, 0.14);
-  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: none;
   font-family: inherit;
   overflow: hidden;
-  margin-bottom: 5px;
+  height: 100%;
 }
 
 .les:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px -6px rgba(22, 46, 32, 0.4);
-  z-index: 2;
-  position: relative;
+  filter: brightness(0.95);
 }
 
 .les:active {
@@ -1394,8 +1390,9 @@ select.input {
 
 .les .nama {
   display: block;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 700;
+  line-height: 1.25;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -1404,7 +1401,8 @@ select.input {
 
 .les .meta {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
+  line-height: 1.2;
   color: var(--ink-2);
   white-space: nowrap;
   overflow: hidden;
@@ -1416,12 +1414,11 @@ select.input {
 }
 
 .les-tetap {
-  border-style: solid;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35), 0 1px 3px rgba(22, 46, 32, 0.14);
+  box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.55);
 }
 
 .les-konflik {
-  box-shadow: 0 0 0 2px var(--bahaya), 0 1px 3px rgba(22, 46, 32, 0.14);
+  box-shadow: inset 0 0 0 2px var(--bahaya);
 }
 
 .les-redup {
@@ -1432,33 +1429,17 @@ select.input {
 /* Bagian blok JP (block scheduling) — tampak menyatu & tak bisa diseret terpisah */
 .les-blok {
   border-radius: 0;
-  box-shadow: 0 0 0 1.5px rgba(19, 128, 70, 0.35);
-  margin-bottom: 0;
+  box-shadow: inset 0 0 0 1.5px rgba(19, 128, 70, 0.35);
 }
 
 .tt td.cell-blok {
-  padding: 5px 5px 0;
+  padding: 0;
 }
 
 /* Sel di luar JP aktif hari itu (batas maks. / dimatikan manual) */
-.tt td.cell-libur {
-  background: repeating-linear-gradient(
-    -45deg,
-    #f1f5f9,
-    #f1f5f9 6px,
-    #e9eef5 6px,
-    #e9eef5 12px
-  );
+.tt td.cell-mati {
+  background: #f1f5f9;
   cursor: not-allowed;
-}
-
-.tt td.cell-libur .libur-tanda {
-  display: grid;
-  place-items: center;
-  height: 100%;
-  min-height: 60px;
-  color: #cbd5e1;
-  font-weight: 700;
 }
 
 /* Sel blok menyatu pada matriks */
@@ -1550,25 +1531,6 @@ select.input {
 .hari-pilih .chip.chip-on:hover {
   background: #0f6a3a;
   color: #fff;
-}
-
-.les-tambah {
-  display: grid;
-  place-items: center;
-  min-height: 56px;
-  border: 1.5px dashed var(--line-2);
-  border-radius: 9px;
-  color: var(--ink-3);
-  background: none;
-  cursor: pointer;
-  width: 100%;
-  transition: 0.14s;
-}
-
-.les-tambah:hover {
-  border-color: var(--brand);
-  color: var(--brand);
-  background: var(--brand-soft);
 }
 
 .tt-legend {
@@ -2787,18 +2749,18 @@ table.mx-legend {
 
   .tt {
     min-width: 0;
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .tt td {
     height: auto;
-    min-height: 52px;
   }
 
   .les {
     box-shadow: none;
     border: 1px solid #bbb;
-    border-left-width: 4px;
+    border-left-width: 3px;
+    min-height: 0;
   }
 
   /* Matriks: A4 landscape, tanpa bingkai kartu. */

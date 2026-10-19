@@ -100,21 +100,42 @@ function polaEfektif(req: Requirement, polaGuru: number[] | undefined): number[]
   return dariKebutuhan.length ? dariKebutuhan : bersih(polaGuru);
 }
 
-/** Pecah sejumlah JP menjadi potongan sesuai pola (pola diulang bila perlu). */
+/**
+ * Pecah sejumlah JP menjadi potongan sesuai pola (STRICT block placement).
+ *
+ * Aturan:
+ *  - Jika `pola` kosong → tiap JP tunggal ([1,1,1,...]) alias bebas.
+ *  - Jika `pola` diisi → potongan HANYA boleh berukuran sama dengan salah satu
+ *    anggota pola. Sisa yang tak bisa membentuk potongan sah TIDAK dipaksakan
+ *    menjadi blok kecil/parsial — sisa itu dikembalikan lewat `sisaSah`.
+ *
+ * Mengembalikan daftar ukuran blok yang sah. Pemanggil memutuskan apakah sisa
+ * yang tak terbagi membuat tugas gagal (mis. jumlah jam bukan kelipatan pola).
+ */
 function pecahMenjadiBlok(sisa: number, pola: number[]): number[] {
   if (sisa <= 0) return [];
   if (!pola.length) return Array.from({ length: sisa }, () => 1);
   const out: number[] = [];
   let s = sisa;
   let i = 0;
+  // Ulangi pola sampai sisa habis. Potongan selalu persis seukuran pola.
   while (s > 0) {
     const dasar = Math.max(1, Math.floor(pola[i % pola.length]));
-    const n = Math.min(dasar, s);
-    out.push(n);
-    s -= n;
+    if (dasar > s) break; // sisa lebih kecil dari blok berikutnya → berhenti
+    out.push(dasar);
+    s -= dasar;
     i++;
   }
   return out;
+}
+
+/**
+ * Sisa JP yang tidak dapat dibentuk menjadi blok sah menurut `pola`.
+ * 0 berarti seluruh jam pas terbagi mengikuti pola.
+ */
+function sisaTakTerbagi(sisa: number, pola: number[]): number {
+  const blok = pecahMenjadiBlok(sisa, pola);
+  return sisa - blok.reduce((a, b) => a + b, 0);
 }
 
 export async function generate(
@@ -184,6 +205,7 @@ export async function generate(
     // Setiap task mengikuti pola distribusi JP milik kebutuhan/guru.
     // Satu kebutuhan dengan pola [2, 1] → DUA task terpisah: blok 2 JP dan 1 JP.
     const items: Task[] = [];
+    const gagal: GagalItem[] = [];
     for (const req of p.kebutuhan) {
       const sudahTetap = tetap.filter(
         (j) =>
@@ -194,8 +216,20 @@ export async function generate(
       const guru = guruM.get(req.guruId);
       const pola = polaEfektif(req, guru?.polaJP);
       const grup = `g_${req.id}`;
-      for (const ukuran of pecahMenjadiBlok(sisa, pola)) {
+      const blok = pecahMenjadiBlok(sisa, pola);
+      for (const ukuran of blok) {
         items.push({ req, ukuran, grup });
+      }
+      // STRICT: sisa yang tak bisa membentuk blok sesuai pola TIDAK dipaksakan
+      // menjadi blok parsial — dilaporkan sebagai kegagalan kebutuhan.
+      const sisaSalah = sisaTakTerbagi(sisa, pola);
+      if (sisaSalah > 0) {
+        gagal.push({
+          req,
+          alasan:
+            `pola JP ${pola.length ? `[${pola.join(', ')}]` : 'bebas'} tidak membagi habis ` +
+            `${sisa} JP (sisa ${sisaSalah} JP tak dapat dibentuk menjadi blok sesuai pola)`,
+        });
       }
     }
 
@@ -354,7 +388,6 @@ export async function generate(
       return bagian.length ? bagian.join(', ') : 'tidak ada slot tersisa';
     };
 
-    const gagal: GagalItem[] = [];
     let penaltiTotal = 0;
 
     // Urutkan task: yang paling sulit dulu — guru dengan sisa jam paling sempit,
@@ -386,12 +419,11 @@ export async function generate(
       return Math.random() - 0.5;
     });
 
-    for (const task of urut) {
+    // Pilih kandidat terbaik untuk sebuah task (weighted random di antara 4
+    // teratas). Mengembalikan `null` bila tidak ada kandidat yang sah.
+    const pilihKandidat = (task: Task): Cand | null => {
       const cands = evalTask(task);
-      if (!cands.length) {
-        gagal.push({ req: task.req, alasan: diag(task) });
-        continue;
-      }
+      if (!cands.length) return null;
       cands.sort((a, b) => a.penalti - b.penalti);
       const top = cands.slice(0, Math.min(4, cands.length));
       const minPen = top[0].penalti;
@@ -400,15 +432,15 @@ export async function generate(
       );
       const sum = bobot.reduce((a, b) => a + b, 0);
       let r = Math.random() * sum;
-      let chosen = top[0];
       for (let i = 0; i < top.length; i++) {
         r -= bobot[i];
-        if (r <= 0) {
-          chosen = top[i];
-          break;
-        }
+        if (r <= 0) return top[i];
       }
+      return top[0];
+    };
 
+    // Tempatkan assignment ke papan (okupansi + beban + daftar `placed`).
+    const tempatkan = (task: Task, chosen: Cand) => {
       const blokId = task.ukuran > 1 ? uid('bl') : undefined;
       for (const periodeId of chosen.slots) {
         const j: Assignment = {
@@ -429,11 +461,110 @@ export async function generate(
         placed.push(j);
       }
       if (task.ukuran > 1) {
-        // Blok multi-JP menandai harinya; potongan lain dari grup yang sama
-        // akan diberi penalti bila memilih hari yang sama.
-        grupHari.set(`${task.grup}|${chosen.hari}`, (grupHari.get(`${task.grup}|${chosen.hari}`) ?? 0) + 1);
+        grupHari.set(
+          `${task.grup}|${chosen.hari}`,
+          (grupHari.get(`${task.grup}|${chosen.hari}`) ?? 0) + 1,
+        );
       }
       penaltiTotal += chosen.penalti;
+    };
+
+    // Satu langkah penempatan: bila kandidat tak ada, lakukan BACKTRACK —
+    // keluarkan task yang sudah ditempatkan yang menghalangi, lalu coba lagi.
+    // Bila berhasil, tugas yang dikeluarkan dimasukkan kembali ke antrean.
+    const empasOpsi = (task: Task): boolean => {
+      const kelas = kelasM.get(task.req.kelasId);
+      if (!kelas) return false;
+      // Slot yang benar-benar diinginkan task ini (semua hari × posisi blok).
+      const sasaran = new Set<string>();
+      const g = guruM.get(task.req.guruId);
+      if (!g) return false;
+      for (let hari = 0; hari < p.hari.length; hari++) {
+        const dayLoad = teacherDay.get(`${g.id}|${hari}`) ?? 0;
+        if (dayLoad + task.ukuran > g.maxPerHari) continue;
+        const aktif = aktifHari[hari];
+        for (let i = 0; i + task.ukuran <= aktif.length; i++) {
+          const run = aktif.slice(i, i + task.ukuran);
+          let nyambung = true;
+          for (let k = 1; k < run.length; k++) {
+            if ((idxAll.get(run[k].id) ?? -1) !== (idxAll.get(run[k - 1].id) ?? -2) + 1) {
+              nyambung = false;
+              break;
+            }
+          }
+          if (!nyambung) continue;
+          for (const per of run) sasaran.add(slotKey(hari, per.id));
+        }
+      }
+      if (!sasaran.size) return false;
+
+      // Keluarkan assignment yang menempati slot sasaran & menyumbat task ini:
+      // kelas sama, atau guru sama (ruang diabaikan — bisa ganti ruang).
+      const korban = placed.filter(
+        (j) => sasaran.has(slotKey(j.hari, j.periodeId)) && (j.kelasId === kelas.id || j.guruId === g.id),
+      );
+      if (!korban.length) return false;
+      const idKorban = new Set(korban.map((j) => j.id));
+      for (const j of korban) {
+        const sk = slotKey(j.hari, j.periodeId);
+        occGet(occ, `k|${j.kelasId}`).delete(sk);
+        occGet(occ, `g|${j.guruId}`).delete(sk);
+        if (j.ruangId) occGet(occ, `r|${j.ruangId}`).delete(sk);
+        penaltiTotal -= 0; // penalti dihitung ulang saat penempatan berikutnya
+      }
+      // Hapus dari `placed` & kurangi beban.
+      const sisaPlaced = placed.filter((j) => !idKorban.has(j.id));
+      placed.length = 0;
+      placed.push(...sisaPlaced);
+      // Hitung ulang peta beban dari awal agar konsisten.
+      teacherWeek.clear();
+      teacherDay.clear();
+      classSubjDay.clear();
+      classDay.clear();
+      grupHari.clear();
+      for (const j of tetap) bumpLoad(j);
+      for (const j of placed) bumpLoad(j);
+      // Kembalikan grup-hari untuk blok yang masih terpasang.
+      for (const j of placed) {
+        if (!j.blokId) continue;
+        grupHari.set(
+          `${`g_${j.reqId}`}|${j.hari}`,
+          (grupHari.get(`${`g_${j.reqId}`}|${j.hari}`) ?? 0) + 1,
+        );
+      }
+      // Kembalikan tugas korban (dikelompokkan oleh reqId) ke antrean.
+      const reqKorban = new Set(korban.map((j) => j.reqId));
+      for (const reqId of reqKorban) {
+        if (!reqId) continue;
+        const t = items.find((it) => it.req.id === reqId);
+        if (t) antrean.push(t);
+      }
+      return true;
+    };
+
+    // Antrean utama: task tersulit lebih dulu. Bila backtrack mengembalikan
+    // tugas, tugas itu diproses lagi di akhir.
+    const antrean: Task[] = [...urut];
+    const gagalSet = new Set<string>();
+
+    while (antrean.length) {
+      const task = antrean.shift()!;
+      let chosen = pilihKandidat(task);
+      if (!chosen) {
+        // Coba backtrack sekali: keluarkan penghalang lalu ulangi.
+        if (empasOpsi(task)) {
+          chosen = pilihKandidat(task);
+        }
+      }
+      if (!chosen) {
+        const key = `${task.req.id}|${task.ukuran}`;
+        if (!gagalSet.has(key)) {
+          gagalSet.add(key);
+          gagal.push({ req: task.req, alasan: diag(task) });
+        }
+        continue;
+      }
+      tempatkan(task, chosen);
     }
 
     const jadwal = [...tetap, ...placed];

@@ -174,22 +174,24 @@ export function TimetableGrid({
       .filter(Boolean)
       .join(' ');
     return (
-      <button
+      <div
         key={a.id}
-        type="button"
         className={kelas}
         style={{
           borderLeftColor: warna,
-          background: hexA(warna, 0.13),
+          background: hexA(warna, 0.14),
         }}
         draggable={editable}
         onDragStart={(e) => onDragStart(e, a)}
-        onClick={() => onOpen?.(a)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpen?.(a);
+        }}
         title={`${m?.nama ?? '?'} — ${kelasM.get(a.kelasId)?.nama ?? ''} / ${guruM.get(a.guruId)?.nama ?? ''} / ${ruangM.get(a.ruangId)?.nama ?? 'tanpa ruang'}${a.blokId ? ' · bagian blok JP (pola berurutan)' : ''}`}
       >
         <span className="nama">{m?.nama ?? '(mapel terhapus)'}</span>
         <span className="meta">{metaFor(a)}</span>
-      </button>
+      </div>
     );
   };
 
@@ -249,7 +251,7 @@ export function TimetableGrid({
                   const cls = [
                     'cell',
                     dropTarget === key ? 'drag-over' : '',
-                    !aktif ? 'cell-libur' : '',
+                    !aktif ? 'cell-mati' : '',
                     rowSpan ? 'cell-blok' : '',
                   ]
                     .filter(Boolean)
@@ -271,32 +273,35 @@ export function TimetableGrid({
                     },
                   };
                   // Slot non-aktif (di luar batas JP hari ini) tanpa isi →
-                  // tampilkan sel mati, tanpa tombol tambah/drag.
+                  // sel abu-abu tipis, tanpa tombol tambah/drag.
                   if (!aktif && list.length === 0 && rowSpan === 0) {
                     return (
-                      <td key={key} className={cls} title={`${project.hari[hari]} · ${per.nama} non-aktif pada hari ini`}>
-                        <span className="libur-tanda">—</span>
-                      </td>
+                      <td
+                        key={key}
+                        className={`${cls} cell-mati`}
+                        title={`${project.hari[hari]} · ${per.nama} non-aktif pada hari ini`}
+                      />
                     );
                   }
+                  // Sel kosong yang aktif: tetap bisa diklik untuk menambah
+                  // pelajaran (tanpa tombol "+" agar tabel tetap padat).
+                  const bisaTambah = editable && scope === 'kelas' && list.length === 0 && aktif && !rowSpan;
                   return (
                     <td
                       key={key}
                       className={cls}
                       rowSpan={rowSpan || undefined}
                       {...(editable && !mergeCover.has(key) ? handlerDrag : {})}
+                      {...(bisaTambah
+                        ? {
+                            onClick: () => onAdd?.(hari, per.id),
+                            title: `Tambah pelajaran · ${project.hari[hari]} · ${per.nama}`,
+                            role: 'button' as const,
+                            tabIndex: 0,
+                          }
+                        : {})}
                     >
                       {list.map(renderLes)}
-                      {editable && scope === 'kelas' && list.length === 0 && aktif && !rowSpan ? (
-                        <button
-                          type="button"
-                          className="les-tambah"
-                          title="Tambah pelajaran"
-                          onClick={() => onAdd?.(hari, per.id)}
-                        >
-                          +
-                        </button>
-                      ) : null}
                     </td>
                   );
                 })}
