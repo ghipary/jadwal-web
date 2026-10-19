@@ -1,15 +1,36 @@
-// Konfigurasi Supabase (mulai kosong, isi KEY/URL nanti)
-// Catatan: Masukkan SUPABASE_URL dan SUPABASE_ANON_KEY di .env (Vite: VITE_*) atau ganti nilai di bawah.
+// Klien Supabase — dikonfigurasi lewat berkas .env.local
+// (VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY).
+// Bila keduanya belum diisi, aplikasi tetap berjalan dalam MODE LOKAL
+// (tanpa sinkronisasi cloud; data hanya tersimpan di browser).
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+type Env = Record<string, string | undefined>;
 
-export const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : (null as unknown as ReturnType<typeof createClient>);
+/**
+ * `import.meta.env` dibaca lewat variabel perantara agar aman juga saat
+ * dibundel untuk pengujian (format CJS), dan tetap tergantikan secara
+ * statis oleh Vite pada build produksi.
+ */
+const env: Env = ((import.meta as ImportMeta & { env?: Env }).env ?? {}) as Env;
 
+export const VITE_SUPABASE_URL = (env.VITE_SUPABASE_URL ?? '').trim();
+export const VITE_SUPABASE_ANON_KEY = (env.VITE_SUPABASE_ANON_KEY ?? '').trim();
+
+/** true bila kunci Supabase sudah diisi — fitur cloud (login + sinkron) aktif. */
+export const supabaseSiap = Boolean(VITE_SUPABASE_URL && VITE_SUPABASE_ANON_KEY);
+
+/** Alias fungsi agar ringkas dipakai di penjaga rute & halaman auth. */
 export function hasSupabase(): boolean {
-  return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+  return supabaseSiap;
 }
+
+export const supabase: SupabaseClient | null = supabaseSiap
+  ? createClient(VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : null;

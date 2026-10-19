@@ -48,15 +48,37 @@ slot terblokir dilanggar · jadwal di luar jam pelajaran · data terhapus — le
 tautan "Lihat di Jadwal".
 
 ### Berkas, backup & publikasi
-- **Simpan/muat proyek (JSON)**, ekspor **CSV** (7 jenis), reset data contoh, kosongkan semua.
-- Data tersimpan otomatis di **localStorage** perangkat.
+- **Simpan/muat proyek (JSON)**, ekspor **CSV** dikelompokkan rapi jadi dua panel grid:
+  **Data Master** (Guru, Kelas, Siswa, Mapel, Ruang) dan **Data Jadwal** (Kebutuhan Jam,
+  Jadwal Lengkap) — masing-masing tombol berikon.
+- Reset data contoh, kosongkan semua, impor massal via template Excel (8 sheet).
+- Data tersimpan otomatis di **localStorage** (per akun).
 - **Publikasi**: buat tautan `#/publikasi?d=…` berisi salinan data terkompresi
-  (deflate + base64url) → penerima melihat jadwal baca-saja tanpa login.
+  (deflate + base64url) → penerima melihat jadwal baca-saja **tanpa login**.
+
+### Landing page, login & isolasi data (multi-tenant)
+- **Halaman Landing publik** (`#/landing`) berisi penjelasan aplikasi + tombol **Masuk** dan
+  **Daftar**, dilanjutkan halaman **Login** (`#/login`) dan **Daftar** (`#/register`)
+  berbasis **Supabase Auth**.
+- **Perlindungan rute**: rute aplikasi dibungkus `RequireAuth` — bila belum masuk, pengunjung
+  diarahkan ke halaman Landing. Rute publik (landing/login/register) dibungkus `PublicOnly`.
+- **Isolasi data (tanpa admin, semua setara)**:
+  - Setiap proyek menyimpan `ownerId` = `user_id` sesi berjalan; perpindahan akun memuat
+    data akun tersebut secara atomik sebelum aplikasi ditampilkan (tidak pernah bercampur).
+  - Lokal: kunci localStorage per pengguna (`jadwalweb:v1:<user_id>`).
+  - Cloud: satu baris `projects` per pengguna dengan **Row Level Security**
+    (`auth.uid() = user_id`) — lihat `supabase/schema.sql`. Tabel `guru`, `kelas`, `jadwal`,
+    dst. tersimpan di dalam kolom `data` (JSONB) yang terikat pada baris `user_id` tsb.
+  - Setiap kueri cloud selalu menyaring `user_id` sesi berjalan.
+- **Tombol Keluar** tersedia di Dashboard dan topbar; tautan publikasi tetap bisa dibuka
+  tanpa login.
+- **Mode Lokal**: bila kunci Supabase belum diisi, aplikasi tetap bisa dicoba lewat
+  “Coba Mode Lokal” (data hanya di browser).
 
 ## 🛠️ Teknologi
 
-Vite · React 18 · TypeScript · React Router (HashRouter) — tanpa backend,
-tanpa CSS framework (desain custom). Deploy statis ke Vercel.
+Vite · React 18 · TypeScript · React Router (HashRouter) · Supabase (Auth + Postgres RLS,
+opsional) — tanpa CSS framework (desain custom). Deploy statis ke Vercel.
 
 ## 🚀 Menjalankan
 
@@ -67,8 +89,28 @@ npm run build      # build produksi ke dist/
 npm run preview    # pratinjau hasil build
 
 npm test           # uji mesin generator (harus: 206/206 jam, 0 konflik)
-npm run test:render # uji render seluruh halaman
+npm run test:render # uji render seluruh halaman + proteksi rute
 ```
+
+## 🔐 Menyiapkan Supabase (login & sinkronisasi cloud)
+
+Tanpa konfigurasi ini aplikasi tetap jalan dalam **Mode Lokal** (tanpa login, data di browser).
+
+1. Buat proyek di [supabase.com](https://supabase.com), buka **SQL Editor** → *New query*,
+   jalankan isi berkas [`supabase/schema.sql`](supabase/schema.sql)
+   (tabel `projects` + kebijakan Row Level Security per `user_id`).
+2. Salin `.env.example` menjadi `.env.local`, lalu isi dari
+   **Project Settings → API**:
+
+   ```bash
+   VITE_SUPABASE_URL=https://xxxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGci...
+   ```
+
+3. Jalankan ulang `npm run dev`. Halaman **Daftar/Masuk** kini memakai Supabase Auth;
+   setiap akun hanya melihat datanya sendiri.
+4. (Opsional) nonaktifkan konfirmasi email di **Authentication → Providers → Email**
+   bila ingin langsung masuk setelah daftar.
 
 ## 📦 Deploy
 

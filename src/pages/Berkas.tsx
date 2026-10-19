@@ -260,25 +260,40 @@ export function HalBerkas() {
         <Card>
           <div className="card-title">Ekspor CSV</div>
           <div className="card-sub">Satu berkas CSV per jenis data (UTF-8, siap dibuka Excel).</div>
-          <div className="field" style={{ gap: 8 }}>
-            <div className="card-sub" style={{ margin: 0 }}>Data Master</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 9 }}>
-              {tombolEksporMaster.map((t) => (
-                <Btn key={t.label} variant="soft" size="sm" icon={t.icon} onClick={t.fn}>
-                  {t.label}
-                </Btn>
-              ))}
-            </div>
-          </div>
-          <div className="field" style={{ gap: 8, marginTop: 4 }}>
-            <div className="card-sub" style={{ margin: 0 }}>Data Jadwal</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 9 }}>
-              {tombolEksporJadwal.map((t) => (
-                <Btn key={t.label} variant="soft" size="sm" icon={t.icon} onClick={t.fn}>
-                  {t.label}
-                </Btn>
-              ))}
-            </div>
+          <div className="ekspor-grid">
+            <section className="ekspor-grup">
+              <div className="ekspor-kepala">
+                <span className="ekspor-kepala-ic">
+                  <Icon name="sekolah" size={14} />
+                </span>
+                Data Master
+                <span className="ekspor-jumlah">{tombolEksporMaster.length} berkas</span>
+              </div>
+              <div className="ekspor-isi">
+                {tombolEksporMaster.map((t) => (
+                  <Btn key={t.label} variant="soft" icon={t.icon} onClick={t.fn}>
+                    {t.label}
+                  </Btn>
+                ))}
+              </div>
+            </section>
+
+            <section className="ekspor-grup">
+              <div className="ekspor-kepala">
+                <span className="ekspor-kepala-ic">
+                  <Icon name="jam" size={14} />
+                </span>
+                Data Jadwal
+                <span className="ekspor-jumlah">{tombolEksporJadwal.length} berkas</span>
+              </div>
+              <div className="ekspor-isi">
+                {tombolEksporJadwal.map((t) => (
+                  <Btn key={t.label} variant="soft" icon={t.icon} onClick={t.fn}>
+                    {t.label}
+                  </Btn>
+                ))}
+              </div>
+            </section>
           </div>
         </Card>
       </div>

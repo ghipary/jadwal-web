@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
 } from 'react';
 import {
   Assignment,
@@ -25,8 +26,53 @@ import {
   Teacher,
 } from './types';
 import { uid } from './utils';
+import { useAuth } from './lib/auth';
+import { muatCloud, simpanCloud } from './lib/cloud';
+import { hasSupabase } from './lib/supabase';
 
 const STORAGE_KEY = 'jadwalweb:v1';
+
+/** Kunci localStorage per pengguna — isolasi data antar akun di satu perangkat. */
+const kunciPengguna = (userId: string) => `${STORAGE_KEY}:${userId}`;
+
+/** Baca proyek milik `userId` dari localStorage (null bila belum ada/tidak sah). */
+function bacaLokal(userId: string): Project | null {
+  try {
+    const raw = localStorage.getItem(kunciPengguna(userId));
+    if (!raw) return null;
+    return sanitize(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+}
+
+/** Tulis proyek milik `userId` ke localStorage. */
+function tulisLokal(userId: string, project: Project): void {
+  try {
+    localStorage.setItem(kunciPengguna(userId), JSON.stringify(project));
+  } catch {
+    // kuota penuh — abaikan
+  }
+}
+
+/**
+ * Data lama (sebelum era multi-akun, kunci tanpa akhiran userId) diadopsi oleh
+ * pengguna pertama yang masuk di perangkat ini, lalu kunci lamanya dihapus agar
+ * tidak bocor ke pengguna berikutnya.
+ */
+function migrasiDataLama(userId: string): Project | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const p = sanitize(JSON.parse(raw));
+    if (!p) return null;
+    localStorage.setItem(kunciPengguna(userId), raw);
+    localStorage.removeItem(STORAGE_KEY);
+    return p;
+  } catch {
+    return null;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Data contoh
@@ -238,14 +284,28 @@ function demoProject(): Project {
 // State
 // ---------------------------------------------------------------------------
 
-type Action = { type: 'set'; patch: Partial<Project> } | { type: 'load'; project: Project };
+/**
+ * Seluruh state berada pada satu objek `Project`, termasuk `ownerId`
+ * (userId pemilik data). Karena isi & pemilik berubah dalam satu aksi yang
+ * sama, perpindahan akun tidak pernah menulis data akun lama ke kunci/storage
+ * milik akun baru — inilah dasar isolasi data multi-tenant di sisi klien.
+ */
+type Action =
+  | { type: 'set'; patch: Partial<Project> }
+  /** Ganti isi proyek; `ownerId` (pemilik) tetap. */
+  | { type: 'load'; project: Project }
+  /** Ganti isi proyek sekaligus pemiliknya — dipakai saat akun berubah. */
+  | { type: 'pasang'; project: Project; ownerId: string | null };
 
 function reducer(state: Project, action: Action): Project {
   switch (action.type) {
     case 'set':
       return { ...state, ...action.patch };
     case 'load':
-      return action.project;
+      // Muat berkas/impor tidak boleh melepas kepemilikan data.
+      return { ...action.project, ownerId: state.ownerId ?? null };
+    case 'pasang':
+      return { ...action.project, ownerId: action.ownerId };
   }
 }
 
@@ -315,37 +375,102 @@ function sanitize(raw: unknown): Project | null {
 
 interface Ctx {
   project: Project;
+  /** userId pemilik data yang sedang dimuat (null = belum terikat akun). */
+  ownerId: string | null;
   set: (patch: Partial<Project>) => void;
   upsert: (key: CollectionKey, item: HasId) => void;
   remove: (key: CollectionKey, id: string) => void;
   loadProject: (p: Project) => void;
   resetDemo: () => void;
-  setOwnerId: (ownerId: string | null) => void;
 }
 
 const ProjectCtx = createContext<Ctx | null>(null);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const [project, dispatch] = useReducer(reducer, undefined, () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const p = sanitize(JSON.parse(raw));
-        if (p) return p;
-      }
-    } catch {
-      // abaikan
-    }
-    return demoProject();
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
+
+  const [project, dispatch] = useReducer(reducer, userId, (awal) => {
+    // Saat aplikasi dibuka: baca data milik akun yang sudah pulih sesinya.
+    const lokal = awal ? (bacaLokal(awal) ?? migrasiDataLama(awal)) : null;
+    return { ...(lokal ?? demoProject()), ownerId: awal };
   });
 
+  const projectRef = useRef(project);
+  projectRef.current = project;
+  const antreSimpan = useRef<Project | null>(null);
+  // false selama pembacaan cloud untuk akun ini belum berhasil — menahan
+  // pengiriman agar data contoh tidak pernah menimpa data asli di server.
+  const cloudAman = useRef(true);
+
+  // --- Perpindahan akun: muat data milik akun tersebut (lokal, lalu cloud) ---
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
-    } catch {
-      // kuota penuh — abaikan
+    if (userId === (projectRef.current.ownerId ?? null)) return;
+
+    // Keluar dari akun → putuskan kepemilikan tanpa menyentuh isi datanya;
+    // efek simpan otomatis berhenti sehingga tidak ada data yang bocor.
+    if (!userId) {
+      dispatch({ type: 'set', patch: { ownerId: null } });
+      return;
     }
+
+    const lokal = bacaLokal(userId) ?? migrasiDataLama(userId);
+    if (lokal) {
+      cloudAman.current = true;
+      dispatch({ type: 'pasang', project: lokal, ownerId: userId });
+      return;
+    }
+
+    // Belum ada data lokal → ambil dari cloud (bila terkonfigurasi).
+    // Bila cloud kosong/gagal, mulai dari data contoh — BUKAN data yang masih
+    // berada di memori (bisa jadi milik akun sebelumnya) agar tidak pernah bocor.
+    // Selama pembacaan cloud BELUM berhasil, tombol sinkron ditahan (cloudAman)
+    // agar data contoh tidak pernah menimpa data asli di server.
+    cloudAman.current = false;
+    let batal = false;
+    void muatCloud(userId).then((hasil) => {
+      if (batal) return;
+      if (hasil.status === 'galat') {
+        console.warn('[sinkron] Memakai data contoh; sinkron cloud ditahan:', hasil.pesan);
+        dispatch({ type: 'pasang', project: demoProject(), ownerId: userId });
+        return;
+      }
+      cloudAman.current = true;
+      const dariCloud = hasil.status === 'ada' ? sanitize(hasil.data) : null;
+      dispatch({ type: 'pasang', project: dariCloud ?? demoProject(), ownerId: userId });
+    });
+    return () => {
+      batal = true;
+    };
+  }, [userId]);
+
+  // --- Simpan: localStorage segera (utama), cloud ditunda (debounce) 800 ms ---
+  useEffect(() => {
+    const ownerId = project.ownerId;
+    if (!ownerId) return;
+    tulisLokal(ownerId, project);
+    if (!hasSupabase() || !cloudAman.current) return;
+
+    antreSimpan.current = project;
+    const t = window.setTimeout(() => {
+      const antre = antreSimpan.current;
+      antreSimpan.current = null;
+      if (antre?.ownerId) void simpanCloud(antre.ownerId, antre);
+    }, 800);
+    return () => window.clearTimeout(t);
   }, [project]);
+
+  // Perubahan terakhir ikut terkirim bila tab ditutup / provider dilepas.
+  useEffect(
+    () => () => {
+      const antre = antreSimpan.current;
+      antreSimpan.current = null;
+      if (antre?.ownerId && cloudAman.current && hasSupabase()) {
+        void simpanCloud(antre.ownerId, antre);
+      }
+    },
+    [],
+  );
 
   const set = useCallback(
     (patch: Partial<Project>) => dispatch({ type: 'set', patch }),
@@ -365,22 +490,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     },
     [project],
   );
-  const loadProject = useCallback(
-    (p: Project) => dispatch({ type: 'load', project: p }),
-    [],
-  );
+  const loadProject = useCallback((p: Project) => dispatch({ type: 'load', project: p }), []);
   const resetDemo = useCallback(
     () => dispatch({ type: 'load', project: demoProject() }),
     [],
   );
-  const setOwnerId = useCallback(
-    (ownerId: string | null) => set({ ownerId }),
-    [set],
-  );
 
   const value = useMemo(
-    () => ({ project, set, upsert, remove, loadProject, resetDemo, setOwnerId }),
-    [project, set, upsert, remove, loadProject, resetDemo, setOwnerId],
+    () => ({ project, ownerId: project.ownerId ?? null, set, upsert, remove, loadProject, resetDemo }),
+    [project, set, upsert, remove, loadProject, resetDemo],
   );
 
   return <ProjectCtx.Provider value={value}>{children}</ProjectCtx.Provider>;

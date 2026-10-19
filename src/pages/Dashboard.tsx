@@ -3,12 +3,19 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '../store';
+import { useAuth } from '../lib/auth';
 import { checkConflicts } from '../scheduler';
 import { Banner, Btn, Card, Icon, PageHead } from '../ui';
 
 export function Dashboard() {
   const { project } = useProject();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const keluar = async () => {
+    await signOut();
+    navigate('/landing', { replace: true });
+  };
 
   const totalKebutuhan = project.kebutuhan.reduce((a, r) => a + r.jumlahJam, 0);
   const terjadwal = project.jadwal.length;
@@ -40,8 +47,17 @@ export function Dashboard() {
         desc={`Tahun Ajaran ${project.info.tahunAjaran} — kelola data sekolah, generate jadwal otomatis, periksa konflik, lalu bagikan hasilnya.`}
         actions={
           <>
+            {user ? (
+              <span className="badge badge-abu" title={`Masuk sebagai ${user.email}`}>
+                <Icon name="siswa" size={13} />
+                {user.nama || user.email}
+              </span>
+            ) : null}
             <Btn variant="ghost" icon="jadwal" onClick={() => navigate('/jadwal')}>
               Buka Jadwal
+            </Btn>
+            <Btn variant="ghost" icon="keluar" onClick={() => void keluar()} title="Keluar dari akun">
+              Keluar
             </Btn>
             <Btn variant="primary" icon="generate" onClick={() => navigate('/generate')}>
               {terjadwal ? 'Generate Ulang' : 'Generate Jadwal'}

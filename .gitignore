@@ -7,3 +7,4 @@ temp
 
 .vercel
 .env*
+!.env.example

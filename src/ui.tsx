@@ -179,6 +179,20 @@ const ICONS: Record<string, ReactNode> = {
       <path d="m8 7 4-4 4 4M8 17l4 4 4-4M7 8l-4 4 4 4M17 8l4 4-4 4" />
     </>
   ),
+  masuk: (
+    <>
+      <path d="M14 3.5h4.5A1.5 1.5 0 0 1 20 5v14a1.5 1.5 0 0 1-1.5 1.5H14" />
+      <path d="M10 8.5 13.5 12 10 15.5" />
+      <path d="M13.5 12H4.5" />
+    </>
+  ),
+  keluar: (
+    <>
+      <path d="M10 3.5H5.5A1.5 1.5 0 0 0 4 5v14a1.5 1.5 0 0 0 1.5 1.5H10" />
+      <path d="M15.5 8.5 19 12l-3.5 3.5" />
+      <path d="M19 12H9.5" />
+    </>
+  ),
   kanan: <path d="m9 5 7 7-7 7" />,
   bawah: <path d="m5 9 7 7 7-7" />,
 };
@@ -256,11 +270,15 @@ export function PageHead({
 export function Card({
   children,
   className = '',
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
-  return <div className={`card ${className}`}>{children}</div>;
+  return <div className={`card ${className}`} style={style}>
+    {children}
+  </div>;
 }
 
 export function Tabs({
