@@ -303,7 +303,8 @@ const BAB: Bab[] = [
         rute: '/jadwal',
         aksi: [
           'Buka menu Utama → Grid Jadwal.',
-          'Pilih tampilan per Kelas, Guru, atau Ruang.',
+          'Tab "Per Sekolah" menampilkan seluruh kelas sekaligus ala tabel Excel (baris = hari × jam, kolom = kelas).',
+          'Pilih tab Per Kelas, Guru, atau Ruang untuk melihat hari di kolom seperti agenda mingguan.',
           'Klik kartu pelajaran untuk mengubah ruang/menandai tetap/menghapus, seret kartu ke sel lain untuk memindah.',
           'Klik sel kosong untuk menambah pelajaran baru, atau gunakan tombol Salin untuk meniru jadwal antar hari.',
         ],
@@ -313,8 +314,8 @@ const BAB: Bab[] = [
             'Kepala sekolah meminta "Upacara" tiap Senin jam 1 (sudah berupa baris Apel) dan Matematika di X-1 pagi hari. Operator menggeser Matematika ke jam 1 Senin lalu menguncinya sebagai tetap sebelum menyusun kelas lain.',
         },
         bukti:
-          'Grid berbentuk tabel padat ala Excel: tinggi baris seragam, kolom = hari, baris = jam pelajaran. Sel kosong polos berwarna putih dan sel di luar JP aktif hari itu berwarna abu-abu tipis (tanpa tombol). Blok JP berurutan tampil menyatu, dan jam terkunci bertanda khusus serta tidak diubah saat Generate Ulang.',
-        tips: 'Karena tampilannya padat, jangan pindahkan blok JP satu-satu agar blok tetap utuh; seret kartu teratas blok untuk memindahkan seluruh blok.',
+          'Tab Per Sekolah persis matriks cetak: kolom HARI (digabung ke bawah), kolom PUKUL, lalu kelas X-1 s.d XII-4 menyamping; baris istirahat/apel digabung horizontal di tengah. Tab lain memakai tabel padat ala Excel dengan kolom = hari. Tinggi baris seragam, sel kosong polos, dan blok JP berurutan tampil menyatu.',
+        tips: 'Matriks Per Sekolah bisa digeser ke samping bila kolom kelas banyak. Jangan pindahkan blok JP satu-satu agar blok tetap utuh; seret kartu teratas blok untuk memindahkan seluruh blok.',
       },
     ],
   },

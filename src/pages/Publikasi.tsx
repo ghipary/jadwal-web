@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Project } from '../types';
 import { parseProyek, useProject } from '../store';
 import { Banner, Btn, Card, EmptyState, PageHead, Tabs } from '../ui';
-import { Scope, TimetableGrid } from '../timetable';
+import { Scope, SekolahMatrix, TimetableGrid } from '../timetable';
 import { decodePayload, encodePayload } from '../utils';
 
 function IsiPublikasi({ data }: { data: Project }) {
@@ -83,21 +83,7 @@ function IsiPublikasi({ data }: { data: Project }) {
         </span>
       </div>
       {scope === 'sekolah' ? (
-        <div className="tt-stack">
-          {data.kelas.map((k) => {
-            const les = data.jadwal.filter((j) => j.kelasId === k.id);
-            return (
-              <TimetableGrid
-                key={k.id}
-                project={data}
-                items={les}
-                scope="kelas"
-                judul={k.nama}
-                subjudul={`${les.length} jam/minggu`}
-              />
-            );
-          })}
-        </div>
+        <SekolahMatrix project={data} />
       ) : (
         <TimetableGrid project={data} items={items} scope={scope} />
       )}

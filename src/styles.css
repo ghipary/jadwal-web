@@ -1261,12 +1261,6 @@ select.input {
   color: var(--ink-3);
 }
 
-.tt-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
 .tt {
   --tt-row: 44px;
   border-collapse: collapse;
@@ -1959,6 +1953,188 @@ select.input {
     margin-left: 0;
     width: 100%;
   }
+}
+
+/* Matriks "Per Sekolah" (tab Grid Jadwal — hari×jam di baris, kelas di kolom) */
+.mx-sekolah-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+table.mx-sekolah {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  --mx-row: 40px;
+}
+
+.mx-sekolah th,
+.mx-sekolah td {
+  border: 1px solid #cbd5e1;
+  padding: 0;
+  height: var(--mx-row);
+  font-size: 11.5px;
+  line-height: 1.15;
+}
+
+.mx-sekolah thead th {
+  background: #e2e8f0;
+  color: var(--ink-2);
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 6px;
+  height: 32px;
+  vertical-align: middle;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.mx-sekolah td.c-hari,
+.mx-sekolah thead th.c-hari {
+  width: 76px;
+  background: #e3f2e9;
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.mx-sekolah td.c-jam,
+.mx-sekolah thead th.c-jam {
+  width: 96px;
+  text-align: center;
+  white-space: nowrap;
+  color: #334155;
+  background: #f8fafc;
+  vertical-align: middle;
+}
+
+.mx-sekolah thead th:not(.c-hari):not(.c-jam) {
+  min-width: 92px;
+}
+
+/* Isi sel kelas: kosong = polos, ada isi = blok mapel. */
+.mx-sekolah td.c-isi {
+  position: relative;
+  vertical-align: middle;
+  background: #fff;
+}
+
+.mx-sekolah td.c-isi.c-kode {
+  padding: 2px;
+}
+
+.mx-sekolah td.c-tambah {
+  cursor: pointer;
+}
+
+.mx-sekolah td.c-tambah::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.12s;
+}
+
+.mx-sekolah td.c-tambah:hover::before {
+  background: var(--brand-soft);
+  box-shadow: inset 0 0 0 2px var(--brand);
+}
+
+.mx-sekolah td.drag-over::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--brand-soft);
+  box-shadow: inset 0 0 0 2px var(--brand);
+}
+
+/* Baris non-pelajaran: digabung horizontal, teks di tengah. */
+.mx-sekolah td.c-ist {
+  text-align: center;
+  font-style: italic;
+  background: #f1f5f9;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+  padding: 0 8px;
+}
+
+.mx-sekolah td.c-ist-apel {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.mx-sekolah td.c-ist-pelajaran {
+  background: #fff;
+}
+
+.mx-sekolah td.c-ist-kustom {
+  background: #f5f3ff;
+  color: #6d28d9;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Blok mapel di dalam sel matriks — mengisi penuh sel, teks rata tengah. */
+.les-mx {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  width: 100%;
+  height: calc(var(--mx-row) * 1 - 4px);
+  min-height: calc(var(--mx-row) - 4px);
+  margin: 2px auto;
+  padding: 2px 5px;
+  border: none;
+  border-left: 3px solid var(--brand);
+  background: #fff;
+  border-radius: 0;
+  text-align: left;
+  cursor: grab;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.mx-sekolah td.c-blok .les-mx {
+  height: calc(var(--mx-row) * var(--mx-span, 1) - 4px);
+  min-height: calc(var(--mx-row) * var(--mx-span, 1) - 4px);
+}
+
+.les-mx:hover {
+  filter: brightness(0.94);
+}
+
+.les-mx:active {
+  cursor: grabbing;
+}
+
+.les-mx .nama {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.les-mx .meta {
+  display: block;
+  font-size: 9.5px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* --------------------------------------------------------------------------
@@ -2793,14 +2969,6 @@ table.mx-legend {
     overflow: visible;
   }
 
-  .tt-stack .tt-scroll {
-    break-after: page;
-  }
-
-  .tt-stack .tt-scroll:last-child {
-    break-after: auto;
-  }
-
   .tt {
     min-width: 0;
     font-size: 10px;
@@ -2812,6 +2980,33 @@ table.mx-legend {
   }
 
   .les {
+    box-shadow: none;
+    border: 1px solid #bbb;
+    border-left-width: 3px;
+  }
+
+  .mx-sekolah-scroll {
+    overflow: visible;
+    border: none;
+    box-shadow: none;
+  }
+
+  table.mx-sekolah {
+    --mx-row: 30px;
+    font-size: 9px;
+  }
+
+  .mx-sekolah thead th {
+    position: static;
+  }
+
+  .mx-sekolah th,
+  .mx-sekolah td {
+    height: var(--mx-row);
+    font-size: 9px;
+  }
+
+  .les-mx {
     box-shadow: none;
     border: 1px solid #bbb;
     border-left-width: 3px;

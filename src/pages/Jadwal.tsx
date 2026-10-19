@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Assignment, slotHariAktif } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
-import { Legend, Scope, TimetableGrid } from '../timetable';
+import { Legend, Scope, SekolahMatrix, TimetableGrid } from '../timetable';
 import { Banner, Btn, EmptyState, FormField, Icon, KopSurat, Modal, PageHead, Tabs } from '../ui';
 import { downloadCSV, uid } from '../utils';
 
@@ -504,33 +504,15 @@ export function HalJadwal() {
       ) : null}
 
       {scope === 'sekolah' ? (
-        <div className="tt-stack">
-          {project.kelas.map((k) => {
-            const les = project.jadwal.filter((j) => j.kelasId === k.id);
-            const butuh = project.kebutuhan
-              .filter((kk) => kk.kelasId === k.id)
-              .reduce((a, kk) => a + kk.jumlahJam, 0);
-            return (
-              <TimetableGrid
-                key={k.id}
-                project={project}
-                items={les}
-                scope="kelas"
-                editable
-                konflik={konflikSet}
-                judul={k.nama}
-                subjudul={
-                  butuh ? `${les.length}/${butuh} jam dari kebutuhan` : `${les.length} jam/minggu`
-                }
-                focusId={focusLes?.id ?? null}
-                hariTampil={hariAktif}
-                onOpen={(a) => setBukaLes({ ...a })}
-                onAdd={(hari, periodeId) => mulaiTambah(k.id, hari, periodeId)}
-                onMove={pindah}
-              />
-            );
-          })}
-        </div>
+        <SekolahMatrix
+          project={project}
+          editable
+          konflik={konflikSet}
+          focusId={focusLes?.id ?? null}
+          onOpen={(a) => setBukaLes({ ...a })}
+          onAdd={(kelasId, hari, periodeId) => mulaiTambah(kelasId, hari, periodeId)}
+          onMove={pindah}
+        />
       ) : (
         <TimetableGrid
           project={project}

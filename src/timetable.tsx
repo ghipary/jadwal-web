@@ -1,6 +1,6 @@
 // Grid jadwal mingguan — dipakai halaman Jadwal dan Publikasi.
 
-import { DragEvent, useState } from 'react';
+import { CSSProperties, DragEvent, Fragment, useState } from 'react';
 import {
   Assignment,
   labelTipeWaktu,
@@ -8,6 +8,7 @@ import {
   Project,
   slotKey,
 } from './types';
+import { buatMatriks, kunciSel } from './matrix';
 import { hexA } from './utils';
 
 export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
@@ -309,6 +310,196 @@ export function TimetableGrid({
               </tr>
             );
           })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * Matriks "Per Sekolah" — format persis tabel Excel:
+ *   baris  = hari (di-rowspan) × jam pelajaran
+ *   kolom  = kelas (X-1 s.d XII-4)
+ *
+ * Berbeda dari `TimetableGrid` (hari di kolom), komponen ini menaruh HARI &
+ * PUKUL di baris dan seluruh kelas berjejer menyamping. Isi sel = blok mapel
+ * sungguhan (nama mapel + guru), bukan kode. Baris di luar jam pelajaran
+ * (istirahat/apel/kustom) digabung horizontal (colspan) selebar kolom kelas.
+ */
+export function SekolahMatrix({
+  project,
+  editable = false,
+  konflik,
+  focusId,
+  onOpen,
+  onAdd,
+  onMove,
+}: {
+  project: Project;
+  editable?: boolean;
+  konflik?: Set<string>;
+  focusId?: string | null;
+  onOpen?: (a: Assignment) => void;
+  onAdd?: (kelasId: string, hari: number, periodeId: string) => void;
+  onMove?: (a: Assignment, hari: number, periodeId: string) => void;
+}) {
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const m = buatMatriks(project);
+
+  const guruM = new Map(project.guru.map((g) => [g.id, g]));
+  const mapelM = new Map(project.mapel.map((x) => [x.id, x]));
+  const kelasM = new Map(project.kelas.map((c) => [c.id, c]));
+
+  const namaSingkatGuru = (id: string) => {
+    const g = guruM.get(id);
+    if (!g) return '(guru terhapus)';
+    const n = g.nama.split(',')[0].split(' ');
+    return n.length > 2 ? `${n[0]} ${n[n.length - 1]}` : g.nama.split(',')[0];
+  };
+
+  const renderBlok = (a: Assignment, span = 1) => {
+    const mpl = mapelM.get(a.mapelId);
+    const warna = guruM.get(a.guruId)?.warna ?? '#94a3b8';
+    const cls = [
+      'les-mx',
+      a.tetap ? 'les-tetap' : '',
+      konflik?.has(a.id) || focusId === a.id ? 'les-konflik' : '',
+      a.blokId ? 'les-blok' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+    return (
+      <div
+        key={a.id}
+        className={cls}
+        style={{
+          borderLeftColor: warna,
+          background: hexA(warna, 0.2),
+          ...(span > 1 ? ({ '--mx-span': String(span) } as CSSProperties) : {}),
+        }}
+        draggable={editable}
+        onDragStart={(e) => {
+          if (!editable) return;
+          e.dataTransfer.setData('text/plain', a.id);
+          e.dataTransfer.effectAllowed = 'move';
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpen?.(a);
+        }}
+        title={`${mpl?.nama ?? '?'} — ${kelasM.get(a.kelasId)?.nama ?? ''} / ${
+          guruM.get(a.guruId)?.nama ?? ''
+        }${a.blokId ? ' · bagian blok JP (pola berurutan)' : ''}`}
+      >
+        <span className="nama">{mpl?.nama ?? '(mapel terhapus)'}</span>
+        <span className="meta">{namaSingkatGuru(a.guruId)}</span>
+      </div>
+    );
+  };
+
+  const jumlahKolomKelas = Math.max(m.kelas.length, 1);
+
+  return (
+    <div className="mx-sekolah-scroll">
+      <table className="mx mx-sekolah">
+        <thead>
+          <tr>
+            <th className="c-hari">HARI</th>
+            <th className="c-jam">PUKUL</th>
+            {m.kelas.map((k) => (
+              <th key={k.id}>{k.nama}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {m.blok
+            .filter((b) => b.jumlah > 0)
+            .map((b) => (
+              <Fragment key={b.hari}>
+                {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => {
+                  const barisIni = b.mulai + i;
+                  const keyBaris = `${br.hari}-${br.periodeId}`;
+                  return (
+                    <tr key={keyBaris}>
+                      {i === 0 ? (
+                        <td className="c-hari" rowSpan={b.jumlah}>
+                          {b.nama}
+                        </td>
+                      ) : null}
+                      <td className="c-jam">{br.jam}</td>
+
+                      {br.tipe !== 'pelajaran' ? (
+                        // Baris non-pelajaran: satu sel digabung horizontal.
+                        <td
+                          colSpan={jumlahKolomKelas}
+                          className={`c-ist c-ist-${br.tipe}`}
+                        >
+                          {br.label}
+                        </td>
+                      ) : (
+                        m.kelas.map((k) => {
+                          const key = kunciSel(br.hari, br.periodeId, k.id);
+                          const blok = m.blokSel.find(
+                            (bl) =>
+                              bl.kelasId === k.id &&
+                              bl.mulai <= barisIni &&
+                              barisIni < bl.mulai + bl.jumlah,
+                          );
+                          // Bagian lanjutan blok berurutan → menyatu ke sel atas.
+                          if (blok && blok.mulai !== barisIni) return null;
+                          const s = m.sel.get(key);
+                          const bisaTambah =
+                            editable && !s && !blok;
+                          const drag = {
+                            onDragOver: (e: DragEvent) => {
+                              if (!editable) return;
+                              e.preventDefault();
+                              setDropTarget(key);
+                            },
+                            onDragLeave: () =>
+                              setDropTarget((t) => (t === key ? null : t)),
+                            onDrop: (e: DragEvent) => {
+                              e.preventDefault();
+                              setDropTarget(null);
+                              if (!editable) return;
+                              const id = e.dataTransfer.getData('text/plain');
+                              const a = project.jadwal.find((x) => x.id === id);
+                              if (a) onMove?.(a, br.hari, br.periodeId);
+                            },
+                          };
+                          return (
+                            <td
+                              key={k.id}
+                              className={[
+                                'c-isi',
+                                s ? 'c-kode' : '',
+                                blok ? 'c-blok' : '',
+                                dropTarget === key ? 'drag-over' : '',
+                                bisaTambah ? 'c-tambah' : '',
+                              ]
+                                .filter(Boolean)
+                                .join(' ')}
+                              rowSpan={blok ? blok.jumlah : undefined}
+                              {...(editable ? drag : {})}
+                              {...(bisaTambah
+                                ? {
+                                    onClick: () => onAdd?.(k.id, br.hari, br.periodeId),
+                                    role: 'button' as const,
+                                    tabIndex: 0,
+                                    title: `Tambah pelajaran · ${k.nama} · ${b.nama} · ${br.jam}`,
+                                  }
+                                : {})}
+                            >
+                              {(s?.les ?? []).map((a) => renderBlok(a, blok ? blok.jumlah : 1))}
+                            </td>
+                          );
+                        })
+                      )}
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            ))}
         </tbody>
       </table>
     </div>
