@@ -107,6 +107,11 @@ Tanpa konfigurasi ini aplikasi tetap jalan dalam **Mode Lokal** (tanpa login, da
    VITE_SUPABASE_ANON_KEY=eyJhbGci...
    ```
 
+   > ⚠️ `VITE_SUPABASE_URL` harus **URL proyek saja** (`https://xxxx.supabase.co`)
+   > tanpa path seperti `/auth/v1` atau `/rest/v1`. Bila salah, tautan publikasi
+   > dan sinkronisasi akan gagal dengan pesan *Invalid path specified in request URL*.
+   > Cek: `VITE_SUPABASE_ANON_KEY` harus diisi **Anon key** (public), bukan *Service role* key.
+
 3. Jalankan ulang `npm run dev`. Halaman **Daftar/Masuk** kini memakai Supabase Auth;
    setiap akun hanya melihat datanya sendiri.
 4. (Opsional) **Konfirmasi email** — Supabase secara bawaan mengirim email verifikasi
