@@ -64,6 +64,12 @@ export function slotLabel(p: Project, hari: number, periodeId: string): string {
 interface Task {
   req: Requirement;
   ukuran: number;
+  /**
+   * Id grup blok: semua potongan yang berasal dari SATU kebutuhan + pola yang
+   * sama. Dipakai agar potongan pola (mis. 2 JP + 1 JP) cenderung ditempatkan
+   * pada hari yang BERBEDA, bukan menumpuk di hari yang sama.
+   */
+  grup: string;
 }
 
 interface Cand {
@@ -147,6 +153,10 @@ export async function generate(
     const teacherDay = new Map<string, number>(); // `${guruId}|${hari}`
     const classSubjDay = new Map<string, number>(); // `${kelasId}|${mapelId}|${hari}`
     const classDay = new Map<string, number>(); // `${kelasId}|${hari}`
+    // Hari yang sudah dipakai tiap grup blok (`grup|hari` → jumlah JP).
+    // Dipakai supaya potongan pola (mis. 2 JP + 1 JP) cenderung tersebar ke hari
+    // berbeda, bukan menumpuk di hari yang sama.
+    const grupHari = new Map<string, number>();
     const placed: Assignment[] = [];
 
     const markOcc = (j: Assignment) => {
@@ -172,6 +182,7 @@ export async function generate(
 
     // Perluas kebutuhan jam menjadi task (sisa jam setelah jadwal tetap).
     // Setiap task mengikuti pola distribusi JP milik kebutuhan/guru.
+    // Satu kebutuhan dengan pola [2, 1] → DUA task terpisah: blok 2 JP dan 1 JP.
     const items: Task[] = [];
     for (const req of p.kebutuhan) {
       const sudahTetap = tetap.filter(
@@ -182,8 +193,9 @@ export async function generate(
       if (!sisa) continue;
       const guru = guruM.get(req.guruId);
       const pola = polaEfektif(req, guru?.polaJP);
+      const grup = `g_${req.id}`;
       for (const ukuran of pecahMenjadiBlok(sisa, pola)) {
-        items.push({ req, ukuran });
+        items.push({ req, ukuran, grup });
       }
     }
 
@@ -267,6 +279,9 @@ export async function generate(
           const subjDay = classSubjDay.get(`${kelas.id}|${mapel.id}|${hari}`) ?? 0;
           if (subjDay > 0) pen += (opsi.rataHari ? 26 : 9) * subjDay;
           pen += (3 * dayLoad + 2 * (classDay.get(`${kelas.id}|${hari}`) ?? 0)) * task.ukuran;
+          // Sebar potongan pola yang sama ke hari berbeda: hari yang sudah
+          // dipakai grup ini diberi penalti besar (tetap boleh bila terpaksa).
+          if (grupHari.has(`${task.grup}|${hari}`)) pen += 60;
           for (const per of run) if (diinginkanGuru.has(slotKey(hari, per.id))) pen -= 18;
           // Dorong blok menempel pada jam guru yang sudah terisi di hari itu.
           if (dayLoad > 0) {
@@ -412,6 +427,11 @@ export async function generate(
         markOcc(j);
         bumpLoad(j);
         placed.push(j);
+      }
+      if (task.ukuran > 1) {
+        // Blok multi-JP menandai harinya; potongan lain dari grup yang sama
+        // akan diberi penalti bila memilih hari yang sama.
+        grupHari.set(`${task.grup}|${chosen.hari}`, (grupHari.get(`${task.grup}|${chosen.hari}`) ?? 0) + 1);
       }
       penaltiTotal += chosen.penalti;
     }

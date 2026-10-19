@@ -318,6 +318,25 @@ export function HalKebutuhan() {
                 value={form.polaJP}
                 onChange={(v) => setForm({ ...form, polaJP: v as number[] })}
               />
+              {(() => {
+                // Validasi: total pola harus masuk akal terhadap jumlah jam.
+                // Pola boleh diulang (mis. [2,1] untuk 6 JP = 2+1+2+1), jadi
+                // pola dianggap cocok bila jumlah jam habis dibagi total pola,
+                // atau total pola sama persis dengan jumlah jam.
+                const total = (form.polaJP ?? []).reduce((a, b) => a + b, 0);
+                const jam = Math.max(1, Number(form.jumlahJam) || 0);
+                if (!total) return null;
+                const pas = total === jam || jam % total === 0;
+                if (pas) return null;
+                return (
+                  <Banner tone="peringatan" icon="info">
+                    Total pola <b>{form.polaJP.join(' + ')}</b> = {total} JP, tidak sama dengan
+                    Jumlah Jam ({jam} JP). Generator akan mengulang pola sampai jam habis, tetapi
+                    hasilnya bisa tidak sesuai blok yang diinginkan. Samakan total pola dengan
+                    jumlah jam (mis. 3 JP → pola “2, 1”).
+                  </Banner>
+                );
+              })()}
             </div>
           </div>
         ) : null}

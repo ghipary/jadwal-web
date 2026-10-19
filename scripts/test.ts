@@ -138,8 +138,72 @@ async function main() {
     hariAktifOk = false;
   }
 
-  console.log('\nHASIL:', ok && matriksOk && hariAktifOk ? 'LULUS ✅' : 'GAGAL ❌');
-  process.exit(ok && matriksOk && hariAktifOk ? 0 : 1);
+  // ------------------------------------------------------------------
+  // Uji pola distribusi JP (block scheduling): parser harus menerima "2, 1"
+  // dan solver harus menempatkan SELURUH jam (3 JP = 2 berurutan + 1), tidak
+  // menghilangkan satu JP.
+  // ------------------------------------------------------------------
+  console.log('\n=== UJI polaJP (block scheduling) ===');
+  let polaOk = true;
+  try {
+    const { parsePolaJP } = await import('../src/ui');
+    const urai = (s: string) => JSON.stringify(parsePolaJP(s));
+    const kasus: Array<[string, string]> = [
+      ['2, 1', '[2,1]'],
+      ['2,1', '[2,1]'],
+      ['2 1', '[2,1]'],
+      ['2;1', '[2,1]'],
+      ['[2, 1]', '[2,1]'],
+      ['3', '[3]'],
+      ['2, 1, 1', '[2,1,1]'],
+      ['', '[]'],
+    ];
+    let uraiOk = true;
+    for (const [inp, harap] of kasus) {
+      const got = urai(inp);
+      if (got !== harap) {
+        uraiOk = false;
+        console.log(`  ✗ parse ${JSON.stringify(inp)} → ${got} (harap ${harap})`);
+      }
+    }
+    console.log('parser "2, 1" & sejenis   :', uraiOk ? '✓' : '✗');
+
+    // Kebutuhan 3 JP dengan pola [2, 1] harus menghasilkan 3 JP terjadwal.
+    const p3 = demoProject();
+    const req = p3.kebutuhan[0];
+    req.jumlahJam = 3;
+    req.polaJP = [2, 1];
+    // Bersihkan jadwal tetap agar semuanya digenerate ulang.
+    p3.jadwal = [];
+    const hasil3 = await generate(p3);
+    p3.jadwal = hasil3.jadwal;
+    const milik = p3.jadwal.filter(
+      (j) =>
+        j.kelasId === req.kelasId && j.mapelId === req.mapelId && j.guruId === req.guruId,
+    );
+    // Hitung blok: kumpulan JP dengan blokId sama di hari sama.
+    const blok = new Map<string, number>();
+    for (const j of milik) {
+      const k = j.blokId ?? `tunggal_${j.hari}_${j.periodeId}`;
+      blok.set(k, (blok.get(k) ?? 0) + 1);
+    }
+    const ukuran = [...blok.values()].sort((a, b) => b - a);
+    const totalOk = milik.length === 3;
+    const adaBlok2 = ukuran.includes(2);
+    const adaTunggal = ukuran.includes(1);
+    const konflik3 = checkConflicts(p3).filter((k) => k.tingkat === 'error');
+    console.log('3 JP + pola "2, 1" terjadwal:', milik.length, '/ 3', totalOk ? '✓' : '✗');
+    console.log('blok terbentuk (2 JP + 1 JP):', ukuran.join(' + ') || '-', adaBlok2 && adaTunggal ? '✓' : '✗');
+    console.log('konflik error              :', konflik3.length, konflik3.length === 0 ? '✓' : '✗');
+    polaOk = uraiOk && totalOk && adaBlok2 && adaTunggal && konflik3.length === 0;
+    console.log('status polaJP              :', polaOk ? 'LULUS ✅' : 'GAGAL ❌');
+  } catch (e) {
+    console.log('GAGAL uji polaJP:', e instanceof Error ? e.message : e);
+    polaOk = false;
+  }
+
+  console.log('\nHASIL:', ok && matriksOk && hariAktifOk && polaOk ? 'LULUS ✅' : 'GAGAL ❌');
+  process.exit(ok && matriksOk && hariAktifOk && polaOk ? 0 : 1);
 }
 
 main();

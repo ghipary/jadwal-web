@@ -1,6 +1,6 @@
 // Komponen UI bersama: ikon, tombol, modal, tabs, empty state, dan renderer form.
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { labelTipeWaktu, SlotKey, slotKey } from './types';
 import { useProject } from './store';
 
@@ -590,31 +590,13 @@ export function FormField<T>({
       control = <SlotPicker value={Array.isArray(value) ? (value as SlotKey[]) : []} onChange={(v) => onChange(v)} />;
       break;
     case 'pola': {
-      const arr = Array.isArray(value) ? (value as number[]) : [];
       control = (
-        <div className="pola-row">
-          <input
-            id={id}
-            className="input"
-            placeholder={def.placeholder ?? 'Contoh: 2, 1'}
-            value={arr.join(', ')}
-            onChange={(e) => onChange(parsePolaJP(e.target.value))}
-          />
-          {arr.length ? (
-            <div className="multi">
-              {arr.map((n, i) => (
-                <span key={`${i}-${n}`} className="chip chip-on">
-                  {n} JP
-                </span>
-              ))}
-              <span className="hint">= {arr.reduce((a, b) => a + b, 0)} JP</span>
-            </div>
-          ) : (
-            <span className="hint">
-              Kosong = tiap JP ditempatkan satu-satu (bukan blok berurutan).
-            </span>
-          )}
-        </div>
+        <PolaJPInput
+          id={id}
+          value={Array.isArray(value) ? (value as number[]) : []}
+          placeholder={def.placeholder ?? 'Contoh: 2, 1'}
+          onChange={(v) => onChange(v)}
+        />
       );
       break;
     }
@@ -715,13 +697,91 @@ export function FormField<T>({
 
 /**
  * Urai teks pola distribusi JP menjadi array angka.
- * Menerima "2, 1", "2;1", "2 1", atau angka tunggal. Nilai < 1 dibuang.
+ *
+ * Menerima:
+ *  - "2, 1" / "2,1" / "2 1" / "2;1"  → [2, 1]
+ *  - "[2, 1]" / "[2,1]" (format array) → [2, 1]
+ *  - "3" (angka tunggal) → [3]
+ * Nilai < 1 atau tidak sah dibuang. Kosong → [] (tanpa pola).
  */
 export function parsePolaJP(teks: string): number[] {
-  return teks
+  const bersih = teks.trim().replace(/^\[|\]$/g, '');
+  if (!bersih) return [];
+  return bersih
     .split(/[;,\s]+/)
     .map((x) => Math.floor(Number(x)))
     .filter((n) => Number.isFinite(n) && n >= 1);
+}
+
+/**
+ * Input pola distribusi JP (block scheduling).
+ *
+ * Nilai disimpan sebagai array angka, tetapi kotak teks mempertahankan apa
+ * yang SEDANG diketik (termasuk koma/spasi) agar pengguna bisa mengetik
+ * "2, 1" tanpa koma-nya langsung terhapus. Teks dinormalkan saat blur.
+ */
+function PolaJPInput({
+  id,
+  value,
+  placeholder,
+  onChange,
+}: {
+  id: string;
+  value: number[];
+  placeholder?: string;
+  onChange: (v: number[]) => void;
+}) {
+  const keTeks = (arr: number[]) => arr.join(', ');
+  const [teks, setTeks] = useState(() => keTeks(value));
+  const [fokus, setFokus] = useState(false);
+
+  // Sinkron dari luar (mis. ganti baris yang diubah) selama tak sedang fokus.
+  useEffect(() => {
+    if (!fokus) setTeks(keTeks(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value.join(','), fokus]);
+
+  const total = value.reduce((a, b) => a + b, 0);
+
+  return (
+    <div className="pola-row">
+      <input
+        id={id}
+        className="input"
+        inputMode="numeric"
+        placeholder={placeholder}
+        value={teks}
+        onFocus={() => setFokus(true)}
+        onChange={(e) => {
+          // Simpan teks mentah apa adanya, sekaligus kabarkan hasil urai.
+          const t = e.target.value;
+          setTeks(t);
+          onChange(parsePolaJP(t));
+        }}
+        onBlur={() => {
+          setFokus(false);
+          // Normalkan tampilan setelah selesai mengedit (mis. "2 , 1" → "2, 1").
+          const arr = parsePolaJP(teks);
+          setTeks(keTeks(arr));
+          onChange(arr);
+        }}
+      />
+      {value.length ? (
+        <div className="multi">
+          {value.map((n, i) => (
+            <span key={`${i}-${n}`} className="chip chip-on">
+              {n} JP
+            </span>
+          ))}
+          <span className="hint">= {total} JP total</span>
+        </div>
+      ) : (
+        <span className="hint">
+          Kosong = tiap JP ditempatkan satu-satu (bukan blok berurutan).
+        </span>
+      )}
+    </div>
+  );
 }
 
 /** Pemilih slot hari × jam (untuk preferensi/blokir). */

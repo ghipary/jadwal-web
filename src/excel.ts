@@ -443,9 +443,14 @@ function numPositif(v: unknown, bawaan: number): number {
   return Number.isFinite(n) && n > 0 ? n : bawaan;
 }
 
-/** Daftar pola JP: terima "2;1", "2, 1", "2 1", atau angka tunggal. */
+/**
+ * Daftar pola JP: terima "2;1", "2, 1", "2 1", "[2,1]", atau angka tunggal.
+ * Sel kosong / tak sah → [] (tanpa pola).
+ */
 function parsePola(v: unknown): number[] {
-  return str(v)
+  const teks = str(v).trim().replace(/^\[|\]$/g, '');
+  if (!teks) return [];
+  return teks
     .split(/[;,\s]+/)
     .map((x) => Math.floor(Number(x)))
     .filter((n) => Number.isFinite(n) && n >= 1);
