@@ -121,7 +121,11 @@ export function HalPublikasi() {
     setProses(true);
     setGalat('');
     try {
-      const payload = await encodePayload(project);
+      // Tautan publik bersifat baca-saja dan bisa dibuka siapa pun yang memilikinya,
+      // maka data pribadi yang tidak diperlukan untuk menampilkan jadwal
+      // (daftar siswa & blokir guru) TIDAK ikut ditanam di dalamnya.
+      const publik = { ...project, siswa: [], blokir: [] };
+      const payload = await encodePayload(publik);
       const url = `${window.location.origin}${window.location.pathname}#/publikasi?d=${payload}`;
       setTautan(url);
       try {

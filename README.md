@@ -109,8 +109,11 @@ Tanpa konfigurasi ini aplikasi tetap jalan dalam **Mode Lokal** (tanpa login, da
 
 3. Jalankan ulang `npm run dev`. Halaman **Daftar/Masuk** kini memakai Supabase Auth;
    setiap akun hanya melihat datanya sendiri.
-4. (Opsional) nonaktifkan konfirmasi email di **Authentication → Providers → Email**
-   bila ingin langsung masuk setelah daftar.
+4. (Opsional) **Konfirmasi email** — Supabase secara bawaan mengirim email verifikasi
+   saat pendaftaran, dan ini **lebih aman direkomendasikan tetap aktif** agar tidak
+   ada akun sembarangan memakai layanan Anda. Bila ingin pengguna langsung masuk
+   setelah daftar, nonaktifkan di **Authentication → Providers → Email**
+   (*Confirm email*).
 
 ## 📦 Deploy
 
