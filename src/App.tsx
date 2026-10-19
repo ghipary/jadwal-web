@@ -14,6 +14,7 @@ import { HalJadwal } from './pages/Jadwal';
 import { HalMatriks } from './pages/Matriks';
 import { HalKonflik } from './pages/Konflik';
 import { HalBerkas } from './pages/Berkas';
+import { HalPetunjuk } from './pages/Petunjuk';
 import { HalPublikasi, PublikasiReadonly } from './pages/Publikasi';
 import { Landing } from './pages/Landing';
 import { Login, Register } from './pages/auth';
@@ -57,6 +58,10 @@ const NAV: { grup: string; items: NavItem[] }[] = [
       { to: '/berkas', label: 'Berkas & Data', ikon: 'berkas' },
       { to: '/publikasi', label: 'Publikasi', ikon: 'bagikan' },
     ],
+  },
+  {
+    grup: 'Bantuan',
+    items: [{ to: '/petunjuk', label: 'Petunjuk', ikon: 'info' }],
   },
 ];
 
@@ -182,6 +187,7 @@ export default function App() {
         <Route path="/jadwal-matriks" element={<HalMatriks />} />
         <Route path="/konflik" element={<HalKonflik />} />
         <Route path="/berkas" element={<HalBerkas />} />
+        <Route path="/petunjuk" element={<HalPetunjuk />} />
         <Route path="/publikasi" element={<HalPublikasi />} />
       </Route>
 

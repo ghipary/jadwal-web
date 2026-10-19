@@ -29,6 +29,7 @@ const rutePrivat = [
   '/jadwal-matriks',
   '/konflik',
   '/berkas',
+  '/petunjuk',
   '/publikasi',
 ];
 
