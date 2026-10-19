@@ -864,6 +864,11 @@ export const HEADER_JADWAL = [
 /**
  * Ekspor seluruh jadwal ke lembar Excel berbentuk tabel rapi (bukan JSON),
  * diurutkan per hari → jam → kelas.
+ *
+ * Di baris paling atas disisipkan KOP SEKOLAH (nama sekolah + tahun ajaran),
+ * lalu satu baris kosong, baru header tabel jadwal. Baris kop di-merge dari
+ * kolom A sampai G agar tampil rapi di tengah. Logo tidak disertakan di Excel
+ * (cukup teks identitas) supaya berkas tetap ringan.
  */
 export function jadwalKeXlsx(project: Project): Uint8Array {
   const namaMapel = new Map(project.mapel.map((m) => [m.id, m.nama]));
@@ -880,7 +885,19 @@ export function jadwalKeXlsx(project: Project): Uint8Array {
       (namaKelas.get(a.kelasId) ?? '').localeCompare(namaKelas.get(b.kelasId) ?? ''),
   );
 
+  const kolom = HEADER_JADWAL.length; // 7 (A..G)
+  const kolomAkhir = String.fromCharCode('A'.charCodeAt(0) + kolom - 1); // 'G'
+
+  // Baris 1: nama sekolah · baris 2: alamat (opsional) · baris 3: tahun ajaran
+  const namaSekolah = project.info.nama || 'NAMA SEKOLAH';
+  const tahunAjaran = project.info.tahunAjaran || '—';
+  const alamat = project.info.alamat?.trim();
+
   const aoa: Sel[] = [
+    [namaSekolah],
+    ...(alamat ? [[alamat]] : []),
+    [`Tahun Ajaran: ${tahunAjaran}`],
+    [], // baris kosong
     [...HEADER_JADWAL],
     ...sorted.map((j) => {
       const per = perM.get(j.periodeId);
@@ -896,9 +913,19 @@ export function jadwalKeXlsx(project: Project): Uint8Array {
     }),
   ];
 
+  // Nomor baris 1-based tempat header tabel berada (mengikuti kop yang disisipkan).
+  const barisKop = alamat ? 3 : 2;
+  const barisHeader = barisKop + 2; // kop + 1 baris kosong + 1 = header
+
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(aoa);
-  ws['!cols'] = lebarKolom(aoa[0] ?? [], aoa.slice(1));
+  ws['!cols'] = lebarKolom(aoa[barisHeader - 1] ?? [], aoa.slice(barisHeader));
+  // Merge baris kop dari kolom A sampai G (rata tengah di pratinjau Excel).
+  const merges: XLSX.Range[] = [];
+  for (let r = 1; r <= barisKop; r++) {
+    merges.push({ s: { r: r - 1, c: 0 }, e: { r: r - 1, c: kolom - 1 } });
+  }
+  ws['!merges'] = merges;
   XLSX.utils.book_append_sheet(wb, ws, 'Jadwal');
   const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }) as ArrayBuffer;
   return new Uint8Array(out);

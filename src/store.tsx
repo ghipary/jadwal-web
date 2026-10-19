@@ -32,6 +32,7 @@ import {
   TipeWaktu,
 } from './types';
 import type { HariKonfig } from './types';
+import type { SchoolInfo } from './types';
 import { uid } from './utils';
 import { useAuth } from './lib/auth';
 import { muatCloud, simpanCloud } from './lib/cloud';
@@ -275,6 +276,8 @@ function demoProject(): Project {
       nama: 'SMA Nusantara',
       tahunAjaran: '2026/2027',
       kepalaSekolah: 'Drs. H. Bambang Suryono, M.Pd.',
+      alamat: 'Jl. Pendidikan No. 1, Nusantara, Jawa Tengah 50123',
+      logo: '',
     },
     hari: [...HARI_BAWAAN],
     hariKonfig: HARI_BAWAAN.map(() => ({ ...HARI_KONFIG_BAWAAN })),
@@ -451,6 +454,25 @@ function rapikanReferensiHari(p: Project): Project {
   };
 }
 
+/**
+ * Migrasi data lama: field `alamat` & `logo` pada identitas sekolah belum ada.
+ * `alamat` diisi string kosong, `logo` diisi '' (pakai logo bawaan aplikasi).
+ * Logo hanya boleh berupa data URL gambar (data:image/...;base64,…); nilai
+ * lain diabaikan agar tidak menyuntikkan skema berbahaya ke atribut src.
+ */
+function migrasiInfo(raw: unknown): SchoolInfo {
+  const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const teks = (v: unknown) => (typeof v === 'string' ? v : '');
+  const logo = teks(r.logo);
+  return {
+    nama: teks(r.nama),
+    tahunAjaran: teks(r.tahunAjaran),
+    kepalaSekolah: teks(r.kepalaSekolah),
+    alamat: teks(r.alamat),
+    logo: /^data:image\/[a-z0-9.+-]+;base64,/i.test(logo) ? logo : '',
+  };
+}
+
 function sanitize(raw: unknown): Project | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
@@ -462,6 +484,7 @@ function sanitize(raw: unknown): Project | null {
   const proj = {
     ...(base as unknown as Record<string, unknown>),
     ...r,
+    info: migrasiInfo(r.info),
     hari: migrasiHari(r.hari),
     hariKonfig: migrasiHariKonfig(r.hariKonfig, migrasiHari(r.hari).length),
     periode: migrasiPeriode(r.periode),

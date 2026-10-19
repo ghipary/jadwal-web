@@ -64,9 +64,16 @@ async function main() {
     const punyaPK = magic === 'PK';
     const punyaSheet = isi.includes('<sheetData>') && isi.includes('JADWAL PELAJARAN');
     const punyaStyle = isi.includes('<styleSheet');
+    // Kop surat: nama sekolah, alamat, & tahun ajaran harus tertulis di sheet.
+    const punyaKop =
+      isi.includes(p.info.nama) &&
+      isi.includes(p.info.tahunAjaran) &&
+      (p.info.alamat ? isi.includes(p.info.alamat) : true);
+    const punyaMerge = isi.includes('<mergeCells') && isi.includes('<mergeCell ref="A1:');
     console.log('xlsx byte      :', bytes.length, 'magic:', magic, punyaPK ? '✓' : '✗');
     console.log('isi worksheet  :', punyaSheet ? '✓' : '✗', '| gaya:', punyaStyle ? '✓' : '✗');
-    matriksOk = matriksOk && punyaPK && punyaSheet && punyaStyle;
+    console.log('kop surat      :', punyaKop ? '✓' : '✗', '| merge kop:', punyaMerge ? '✓' : '✗');
+    matriksOk = matriksOk && punyaPK && punyaSheet && punyaStyle && punyaKop && punyaMerge;
 
     // Tulis contoh berkas untuk pemeriksaan manual.
     try {

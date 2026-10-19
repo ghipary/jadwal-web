@@ -3179,3 +3179,89 @@ table.mx-legend {
     display: flex !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Kop surat (letterhead) — cetak & pratinjau
+   -------------------------------------------------------------------------- */
+
+.kop-surat {
+  display: none;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 3px double var(--ink);
+  width: 100%;
+}
+
+/* Di layar, hanya tampil bila diminta sebagai pratinjau (mis. halaman Sekolah). */
+.kop-surat-tampil {
+  display: flex;
+}
+
+.kop-surat .kop-logo {
+  flex: none;
+}
+
+.kop-surat .kop-logo img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+}
+
+.kop-surat .kop-teks {
+  flex: 1;
+  min-width: 0;
+}
+
+.kop-surat .kop-nama {
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+
+.kop-surat .kop-alamat {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+
+.kop-surat .kop-ta {
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.kop-surat .kop-judul {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+}
+
+.logo-aksi {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+@media print {
+  /* Kop tampil saat mencetak halaman matriks & grid jadwal. */
+  .kop-surat {
+    display: flex !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .kop-surat .kop-logo img {
+    width: 68px;
+    height: 68px;
+  }
+
+  .kop-surat .kop-nama {
+    font-size: 18px;
+  }
+}

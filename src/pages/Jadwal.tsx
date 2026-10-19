@@ -7,7 +7,7 @@ import { Assignment, slotHariAktif } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
 import { Legend, Scope, TimetableGrid } from '../timetable';
-import { Banner, Btn, EmptyState, FormField, Icon, Modal, PageHead, Tabs } from '../ui';
+import { Banner, Btn, EmptyState, FormField, Icon, KopSurat, Modal, PageHead, Tabs } from '../ui';
 import { downloadCSV, uid } from '../utils';
 
 interface Draft {
@@ -269,6 +269,11 @@ export function HalJadwal() {
         (urutPeriode.get(a.periodeId) ?? 99) - (urutPeriode.get(b.periodeId) ?? 99),
     );
     const rows: (string | number)[][] = [
+      // Kop sekolah di baris paling atas (tanpa merge — CSV tidak mendukung).
+      [project.info.nama || 'NAMA SEKOLAH'],
+      ...(project.info.alamat ? [[project.info.alamat]] : []),
+      [`Tahun Ajaran: ${project.info.tahunAjaran || '—'}`],
+      [],
       ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Tetap'],
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);
@@ -418,11 +423,12 @@ export function HalJadwal() {
         }
       />
 
+      <KopSurat info={project.info} judul="JADWAL PELAJARAN" />
+
       <div className="tt-toolbar">
         <Tabs
           items={[
-            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
-            { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
+            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },            { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
             { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
             { id: 'siswa', label: 'Per Siswa', icon: 'siswa' },

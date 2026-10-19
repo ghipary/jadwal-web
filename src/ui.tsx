@@ -367,6 +367,52 @@ export function Banner({
   );
 }
 
+// ---------------------------------------------------------------------------
+// Kop surat (letterhead) — logo kiri + identitas sekolah, garis tebal di bawah
+// ---------------------------------------------------------------------------
+
+/**
+ * Kop surat resmi sekolah: logo di kiri, lalu nama sekolah (tebal/besar),
+ * alamat, dan tahun ajaran di kanan; ditutup garis horizontal tebal.
+ *
+ * `proyeksi` = pratinjau di layar (selalu tampak). Tanpa `proyeksi`,
+ * komponen hanya tampil saat mencetak (lihat `.kop-surat` di styles.css)
+ * sehingga dapat dipasang di halaman biasanya tanpa mengganggu tampilan.
+ */
+export function KopSurat({
+  info,
+  proyeksi = false,
+  judul,
+  className = '',
+}: {
+  info: { nama: string; tahunAjaran: string; alamat: string; logo: string };
+  proyeksi?: boolean;
+  /** Judul dokumen opsional, mis. "JADWAL PELAJARAN". */
+  judul?: string;
+  className?: string;
+}) {
+  const logo = info.logo || '/logo-sekolah.png';
+  return (
+    <div
+      className={`kop-surat ${proyeksi ? 'kop-surat-tampil' : ''} ${className}`}
+      role="img"
+      aria-label={`Kop surat ${info.nama || 'sekolah'}`}
+    >
+      <div className="kop-logo">
+        <img src={logo} alt="Logo sekolah" />
+      </div>
+      <div className="kop-teks">
+        <div className="kop-nama">{info.nama || 'NAMA SEKOLAH'}</div>
+        {info.alamat ? <div className="kop-alamat">{info.alamat}</div> : null}
+        {info.tahunAjaran ? (
+          <div className="kop-ta">TAHUN AJARAN {info.tahunAjaran}</div>
+        ) : null}
+        {judul ? <div className="kop-judul">{judul}</div> : null}
+      </div>
+    </div>
+  );
+}
+
 export function Modal({
   open,
   title,

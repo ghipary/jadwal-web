@@ -7,7 +7,7 @@ import { useProject } from '../store';
 import { buatMatriks, kunciSel, matriksKeXlsx } from '../matrix';
 import { downloadXlsx } from '../xlsx';
 import { hexA } from '../utils';
-import { Banner, Btn, EmptyState, PageHead } from '../ui';
+import { Banner, Btn, EmptyState, KopSurat, PageHead } from '../ui';
 
 export function HalMatriks() {
   const { project } = useProject();
@@ -33,7 +33,6 @@ export function HalMatriks() {
   }
 
   const namaSekolah = project.info.nama || 'SEKOLAH';
-  const ta = project.info.tahunAjaran || '—';
 
   const ekspor = () => {
     try {
@@ -75,9 +74,8 @@ export function HalMatriks() {
       </Banner>
 
       <div className="mx-doc">
+        <KopSurat info={project.info} />
         <div className="mx-title">JADWAL PELAJARAN</div>
-        <div className="mx-school">{namaSekolah}</div>
-        <div className="mx-ta">TAHUN AJARAN {ta}</div>
 
         <div className="mx-wrap">
           <table className="mx">

@@ -150,7 +150,24 @@ export interface SchoolInfo {
   nama: string;
   tahunAjaran: string;
   kepalaSekolah: string;
+  /** Alamat / lokasi sekolah — tampil pada kop surat cetak & ekspor. */
+  alamat: string;
+  /**
+   * Logo sekolah sebagai data URL (base64) milik pengguna yang sedang masuk.
+   * Karena tersimpan di dalam `Project` (yang terikat `ownerId`/`user_id`),
+   * logo otomatis terisolasi per akun. Kosong = pakai logo bawaan aplikasi.
+   */
+  logo: string;
 }
+
+/** Identitas sekolah baku (dipakai data lama / proyek baru). */
+export const INFO_SEKOLAH_BAWAAN: SchoolInfo = {
+  nama: '',
+  tahunAjaran: '',
+  kepalaSekolah: '',
+  alamat: '',
+  logo: '',
+};
 
 export interface GenOptions {
   percobaan: number;

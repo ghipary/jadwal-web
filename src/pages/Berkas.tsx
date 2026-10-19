@@ -113,6 +113,11 @@ export function HalBerkas() {
         a.kelasId.localeCompare(b.kelasId),
     );
     downloadCSV('jadwal-lengkap.csv', [
+      // Kop sekolah di baris paling atas (tanpa merge — CSV tidak mendukung).
+      [project.info.nama || 'NAMA SEKOLAH'],
+      ...(project.info.alamat ? [[project.info.alamat]] : []),
+      [`Tahun Ajaran: ${project.info.tahunAjaran || '—'}`],
+      [],
       ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Tetap'],
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);

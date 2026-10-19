@@ -1,12 +1,17 @@
-// Halaman Identitas Sekolah: ubah nama sekolah, tahun ajaran, dan kepala
-// sekolah. Nama dipakai di sidebar/topbar, kop matriks cetak, ekspor Excel,
-// dan halaman Publikasi.
+// Halaman Identitas Sekolah: ubah nama sekolah, tahun ajaran, kepala sekolah,
+// alamat, dan logo. Seluruh data ini tersimpan di dalam Project milik pengguna
+// yang sedang masuk (terikat ownerId/user_id), sehingga logo & identitas satu
+// akun tidak pernah terlihat oleh akun lain.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { SchoolInfo } from '../types';
 import { useProject } from '../store';
-import { Banner, Btn, FormField, PageHead } from '../ui';
+import { useAuth } from '../lib/auth';
+import { Banner, Btn, FormField, KopSurat, PageHead } from '../ui';
 import type { FieldDef } from '../ui';
+
+/** Batas ukuran berkas logo (byte) agar penyimpanan tetap ringan. */
+const BATAS_LOGO = 512 * 1024;
 
 /** Warna yang diambil langsung dari logo sekolah. */
 const WARNA_LOGO: { hex: string; nama: string }[] = [
@@ -19,10 +24,12 @@ const WARNA_LOGO: { hex: string; nama: string }[] = [
 
 export function HalSekolah() {
   const { project, set } = useProject();
+  const { user } = useAuth();
   const [form, setForm] = useState<SchoolInfo>(project.info);
-  const [pesan, setPesan] = useState<'sukses' | 'kosong' | null>(null);
+  const [pesan, setPesan] = useState<'sukses' | 'kosong' | 'logo' | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  // Sinkron saat data dimuat ulang / proyek diganti.
+  // Sinkron saat data dimuat ulang / proyek diganti (termasuk saat ganti akun).
   useEffect(() => {
     setForm(project.info);
   }, [project.info]);
@@ -42,9 +49,34 @@ export function HalSekolah() {
         nama: form.nama.trim(),
         tahunAjaran: form.tahunAjaran.trim(),
         kepalaSekolah: form.kepalaSekolah.trim(),
+        alamat: form.alamat.trim(),
+        logo: form.logo,
       },
     });
     setPesan('sukses');
+  };
+
+  const pilihLogo = (f: File | undefined) => {
+    if (!f) return;
+    if (!f.type.startsWith('image/')) {
+      setPesan('logo');
+      return;
+    }
+    if (f.size > BATAS_LOGO) {
+      window.alert('Ukuran logo maksimal 512 KB. Silakan perkecil gambar terlebih dahulu.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm((s) => ({ ...s, logo: String(reader.result ?? '') }));
+      setPesan(null);
+    };
+    reader.readAsDataURL(f);
+  };
+
+  const hapusLogo = () => {
+    setForm((s) => ({ ...s, logo: '' }));
+    setPesan(null);
   };
 
   const fields: FieldDef<SchoolInfo>[] = [
@@ -69,13 +101,20 @@ export function HalSekolah() {
       placeholder: 'Contoh: Drs. H. Bambang Suryono, M.Pd.',
       hint: 'Dipakai pada kop lembar jadwal resmi.',
     },
+    {
+      key: 'alamat',
+      label: 'Alamat / Lokasi',
+      type: 'text',
+      placeholder: 'Contoh: Jl. Pendidikan No. 1, Nusantara',
+      hint: 'Tampil di bawah nama sekolah pada kop surat cetak & ekspor.',
+    },
   ];
 
   return (
     <>
       <PageHead
         title="Identitas Sekolah"
-        desc="Data identitas ini menjadi kop pada cetak matriks, berkas Excel, dan halaman publikasi jadwal."
+        desc="Data identitas ini menjadi kop pada cetak matriks, ekspor Excel, dan halaman publikasi jadwal. Tersimpan khusus untuk akun Anda."
         actions={
           <Btn variant="primary" icon="cek" onClick={simpan}>
             Simpan Perubahan
@@ -85,7 +124,8 @@ export function HalSekolah() {
 
       {pesan === 'sukses' ? (
         <Banner tone="sukses" icon="cek">
-          Identitas sekolah berhasil disimpan.
+          Identitas sekolah berhasil disimpan untuk akun{' '}
+          <b>{user?.nama || user?.email || 'Anda'}</b>.
         </Banner>
       ) : null}
       {pesan === 'kosong' ? (
@@ -93,11 +133,23 @@ export function HalSekolah() {
           Nama sekolah wajib diisi sebelum disimpan.
         </Banner>
       ) : null}
+      {pesan === 'logo' ? (
+        <Banner tone="bahaya" icon="konflik">
+          Berkas logo harus berupa gambar (PNG, JPG, SVG, atau WebP).
+        </Banner>
+      ) : null}
+
+      <Banner tone="info" icon="info">
+        Identitas &amp; logo tersimpan khusus untuk akun yang sedang masuk
+        {user ? ` (${user.nama || user.email})` : ''} — akun lain tidak akan melihat logo sekolah Anda.
+      </Banner>
 
       <div className="grid-2">
         <div className="card">
           <div className="card-title">Data Sekolah</div>
-          <div className="card-sub">Tersimpan otomatis di perangkat ini setelah disimpan.</div>
+          <div className="card-sub">
+            Tersimpan otomatis khusus akun ini setelah ditekan Simpan.
+          </div>
           <div className="form-grid">
             {fields.map((def) => (
               <div key={def.key} className="span2">
@@ -114,18 +166,35 @@ export function HalSekolah() {
         <div className="card">
           <div className="card-title">Logo &amp; Tema</div>
           <div className="card-sub">
-            Tema aplikasi mengikuti warna logo sekolah: hijau utama, aksen emas, dan merah untuk
-            peringatan.
+            Unggah logo sekolah Anda (maks. 512 KB). Logo ini muncul di kop cetak, pratinjau, dan
+            sidebar.
           </div>
 
           <div className="sekolah-logo">
-            <img src="/logo-sekolah.png" alt="Logo sekolah" />
+            <img src={form.logo || '/logo-sekolah.png'} alt="Logo sekolah" />
             <div>
               <b>{form.nama || 'Nama Sekolah'}</b>
               <div className="hint">Tahun Ajaran {form.tahunAjaran || '—'}</div>
-              <a href="/logo.png" download>
-                Unduh logo asli (PNG)
-              </a>
+              <div className="logo-aksi">
+                <Btn size="sm" variant="soft" icon="unggah" onClick={() => fileRef.current?.click()}>
+                  Unggah Logo
+                </Btn>
+                {form.logo ? (
+                  <Btn size="sm" variant="ghost" icon="hapus" onClick={hapusLogo}>
+                    Hapus Logo
+                  </Btn>
+                ) : null}
+              </div>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden-input"
+                onChange={(e) => {
+                  pilihLogo(e.target.files?.[0]);
+                  e.target.value = '';
+                }}
+              />
             </div>
           </div>
 
@@ -139,14 +208,11 @@ export function HalSekolah() {
           </div>
 
           <div className="kop-preview">
-            <div className="mx-title">JADWAL PELAJARAN</div>
-            <div className="mx-school">{form.nama || 'NAMA SEKOLAH'}</div>
-            <div className="mx-ta" style={{ marginBottom: 0 }}>
-              TAHUN AJARAN {form.tahunAjaran || '—'}
-            </div>
+            <KopSurat info={form} proyeksi judul="JADWAL PELAJARAN" />
           </div>
           <div className="hint kop-caption">
-            Kop di atas tampil sama pada cetak matriks, ekspor Excel, dan Publikasi.
+            Kop surat di atas tampil sama pada cetak matriks, grid jadwal, ekspor Excel, dan
+            Publikasi.
           </div>
         </div>
       </div>

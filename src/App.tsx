@@ -94,7 +94,7 @@ function Layout() {
       <aside className={`sidebar ${menu ? 'buka' : ''}`}>
         <div className="brand">
           <div className="brand-logo">
-            <img src="/logo-sekolah.png" alt="Logo sekolah" />
+            <img src={project.info.logo || '/logo-sekolah.png'} alt="Logo sekolah" />
           </div>
           <div>
             <div className="brand-name">Jadwal Sekolah</div>

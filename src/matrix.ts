@@ -182,15 +182,17 @@ export function buatMatriks(project: Project): Matriks {
   };
 }
 
-/** Susun lembar .xlsx matriks (judul, tabel kode, legenda) dari sebuah matriks. */
+/** Susun lembar .xlsx matriks (kop, judul, tabel kode, legenda) dari sebuah matriks. */
 export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
   const namaSekolah = project.info.nama || 'SEKOLAH';
   const tahunAjaran = project.info.tahunAjaran || '—';
+  const alamat = project.info.alamat?.trim() || '';
 
   const gaya = new StyleBook();
   const sJudul = gaya.add({ bold: true, ukuran: 16, tengah: true });
   const sSekolah = gaya.add({ bold: true, ukuran: 12, tengah: true });
   const sTA = gaya.add({ tengah: true });
+  const sAlamat = gaya.add({ tengah: true, italic: true, ukuran: 10 });
   const sHeader = gaya.add({ bold: true, tengah: true, border: true, isi: 'E2E8F0', wrap: true });
   const sHari = gaya.add({ bold: true, tengah: true, border: true, isi: 'E0E7FF' });
   const sJam = gaya.add({ tengah: true, border: true });
@@ -210,10 +212,19 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
   const barisKe = (i: number) => i + 1;
   const colLeg = 2 + nKelas + 2; // indeks kolom (1-based) KODE legenda
 
-  const baris: XlsRow[] = [
+  // KOP SEKOLAH di baris paling atas: judul → nama sekolah → alamat → tahun
+  // ajaran; lalu header tabel. Jumlah baris kop dihitung agar indeks tetap rapi.
+  const barisKop: XlsRow[] = [
     { sel: [{ teks: 'JADWAL PELAJARAN', gaya: sJudul }] },
     { sel: [{ teks: namaSekolah, gaya: sSekolah }] },
-    { sel: [{ teks: `TAHUN AJARAN ${tahunAjaran}`, gaya: sTA }] },
+  ];
+  if (alamat) barisKop.push({ sel: [{ teks: alamat, gaya: sAlamat }] });
+  barisKop.push({ sel: [{ teks: `TAHUN AJARAN ${tahunAjaran}`, gaya: sTA }] });
+
+  const idxHeader = barisKop.length; // indeks baris (0-based) header tabel
+
+  const baris: XlsRow[] = [
+    ...barisKop,
     {
       tinggi: 28,
       sel: [
@@ -223,10 +234,10 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
       ],
     },
   ];
-  const merge: string[] = [`A1:${akhir}1`, `A2:${akhir}2`, `A3:${akhir}3`];
+  const merge: string[] = barisKop.map((_, i) => `A${i + 1}:${akhir}${i + 1}`);
 
   // Header legenda pada baris header tabel.
-  const legHeader = baris[3].sel;
+  const legHeader = baris[idxHeader].sel;
   legHeader[colLeg - 1] = { teks: 'KODE', gaya: sHeader };
   legHeader[colLeg] = { teks: 'NAMA', gaya: sHeader };
   legHeader[colLeg + 1] = { teks: 'MATA PELAJARAN', gaya: sHeader };
@@ -276,7 +287,7 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
 
   // Entri legenda di bawah header.
   m.legenda.forEach((e, i) => {
-    const r = 4 + i; // indeks 0-based; baris 5 dst.
+    const r = idxHeader + 1 + i; // indeks 0-based; tepat di bawah baris header
     if (!baris[r]) baris[r] = { sel: [] };
     while (baris[r].sel.length < colLeg - 1) baris[r].sel.push(null);
     baris[r].sel[colLeg - 1] = { teks: e.kode, gaya: sLegKode };
@@ -297,7 +308,7 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
     ],
     baris,
     merge,
-    freeze: [3, 5],
+    freeze: [3, idxHeader + 2],
   };
 
   return buildXlsx([sheet], gaya);
