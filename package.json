@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "esbuild scripts/test.ts --bundle --platform=node --format=esm --jsx=automatic --outfile=temp/test.mjs --log-level=warning && node temp/test.mjs",
     "test:render": "esbuild scripts/test-render.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=temp/test-render.cjs --log-level=warning && node temp/test-render.cjs",
-    "test:form": "esbuild scripts/test-form-hari.tsx --bundle --platform=node --format=esm --jsx=automatic --outfile=temp/form.mjs --log-level=warning && node temp/form.mjs"
+    "test:form": "esbuild scripts/test-form-hari.tsx --bundle --platform=node --format=esm --jsx=automatic --outfile=temp/form.mjs --log-level=warning && node temp/form.mjs",
+    "test:grid": "esbuild scripts/test-grid.tsx --bundle --platform=node --format=cjs --jsx=automatic --outfile=temp/test-grid.cjs --log-level=warning && node temp/test-grid.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

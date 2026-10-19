@@ -86,5 +86,23 @@ try {
   console.log('GAGAL proteksi /guru:', e instanceof Error ? e.message : e);
 }
 
+// 4) Struktur Grid Jadwal (halaman /jadwal): tabel kaku, tanpa tombol "+".
+try {
+  const html = render('/jadwal', penggunaUji);
+  const cek = (nama: string, syarat: boolean) => {
+    if (!syarat) throw new Error(`tidak terpenuhi: ${nama}`);
+    console.log(`OK   grid         ${nama}`);
+  };
+  cek('memakai <table class="tt">', html.includes('<table class="tt">'));
+  cek('memakai <th class="jam-cell">', html.includes('class="jam-cell"'));
+  cek('sel pakai class "cell"', /class="cell[ "]/i.test(html));
+  cek('tanpa tombol les-tambah', !html.includes('les-tambah'));
+  cek('tanpa placeholder libur-tanda', !html.includes('libur-tanda'));
+  cek('kartu les bukan <button>', !/<button[^>]*class="[^"]*\bles\b/i.test(html));
+} catch (e) {
+  gagal++;
+  console.log('GAGAL grid struktur:', e instanceof Error ? e.message : e);
+}
+
 console.log(gagal === 0 ? '\nRENDER LULUS ✅' : `\nRENDER GAGAL ❌ (${gagal})`);
 process.exit(gagal === 0 ? 0 : 1);

@@ -1264,10 +1264,11 @@ select.input {
 .tt-stack {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .tt {
+  --tt-row: 44px;
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
@@ -1278,18 +1279,21 @@ select.input {
 .tt th,
 .tt td {
   border: 1px solid #d7dee7;
-  height: 34px;
+  height: var(--tt-row, 44px);
   padding: 0;
+  line-height: 1.15;
 }
 
 .tt thead th {
+  height: 32px;
   background: #eef2f7;
-  padding: 7px 10px;
+  padding: 5px 10px;
   font-size: 11.5px;
   font-weight: 700;
   color: var(--ink-2);
   text-align: center;
   letter-spacing: 0.01em;
+  vertical-align: middle;
 }
 
 .tt thead th .sub {
@@ -1303,11 +1307,12 @@ select.input {
   width: 116px;
   text-align: left;
   background: #eef2f7;
-  padding: 6px 10px;
+  padding: 4px 10px;
   font-size: 11.5px;
   font-weight: 700;
   color: var(--ink-2);
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .tt th.jam-cell .waktu {
@@ -1318,19 +1323,48 @@ select.input {
 }
 
 .tt td {
-  vertical-align: top;
+  position: relative;
+  vertical-align: middle;
   background: #fff;
+  padding: 0;
+}
+
+/* Bila satu sel memuat lebih dari satu kartu (tumpang tindih/konflik),
+   bagi tinggi sel secara merata tanpa mengubah tinggi baris. */
+.tt td > .les {
+  position: absolute;
+  inset: 0;
+}
+
+.tt td.multi > .les {
+  position: relative;
+  inset: auto;
+  height: auto;
+  flex: 1 1 0;
+}
+
+.tt td.multi {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Baris jam non-pelajaran (istirahat/apel/kustom): satu baris gabungan. */
+.tt tr.baris-waktu th,
 .tt tr.baris-waktu td {
   height: 24px;
   text-align: center;
   color: var(--ink-3);
   font-size: 11px;
   font-weight: 600;
-  padding: 3px 6px;
+  padding: 2px 6px;
   vertical-align: middle;
+}
+
+.tt tr.baris-waktu th.jam-cell {
+  text-align: left;
+  padding-left: 10px;
+  font-weight: 600;
+  background: #eef2f7;
 }
 
 .tt tr.baris-istirahat td {
@@ -1347,41 +1381,56 @@ select.input {
   color: #6d28d9;
 }
 
-/* Sel kosong yang aktif: bisa diklik untuk menambah. */
+/* Sel kosong yang aktif: bisa diklik untuk menambah. Efek hover memakai
+   pseudo-element absolute agar TIDAK mengubah tinggi baris. */
 .tt td[role='button'] {
   cursor: pointer;
 }
 
-.tt td[role='button']:hover {
+.tt td[role='button']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.12s;
+}
+
+.tt td[role='button']:hover::before {
   background: var(--brand-soft);
   box-shadow: inset 0 0 0 2px var(--brand);
 }
 
-.tt td.drag-over {
+.tt td.drag-over::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background: var(--brand-soft);
   box-shadow: inset 0 0 0 2px var(--brand);
 }
 
-/* Kartu pelajaran: rapat, ala sel Excel. */
+/* Kartu pelajaran: mengisi 100% sel (absolute inset 0) sehingga tinggi baris
+   selalu seragam, tak peduli ada isi atau kosong. */
 .les {
-  display: block;
-  width: 100%;
-  min-height: 32px;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: left;
   border: none;
   border-left: 3px solid var(--brand);
   background: #fff;
   border-radius: 0;
-  padding: 3px 6px;
+  padding: 0 6px;
   cursor: grab;
   box-shadow: none;
   font-family: inherit;
   overflow: hidden;
-  height: 100%;
 }
 
 .les:hover {
-  filter: brightness(0.95);
+  filter: brightness(0.94);
 }
 
 .les:active {
@@ -1392,7 +1441,7 @@ select.input {
   display: block;
   font-size: 11.5px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -1402,7 +1451,7 @@ select.input {
 .les .meta {
   display: block;
   font-size: 10px;
-  line-height: 1.2;
+  line-height: 1.15;
   color: var(--ink-2);
   white-space: nowrap;
   overflow: hidden;
@@ -1434,6 +1483,11 @@ select.input {
 
 .tt td.cell-blok {
   padding: 0;
+}
+
+/* Beberapa kartu dalam satu sel (bentrok/tumpang tindih) → bagi tinggi sel. */
+.tt td:not(.cell-blok) > .les + .les {
+  border-top: 1px solid #d7dee7;
 }
 
 /* Sel di luar JP aktif hari itu (batas maks. / dimatikan manual) */
@@ -2750,17 +2804,17 @@ table.mx-legend {
   .tt {
     min-width: 0;
     font-size: 10px;
+    --tt-row: 34px;
   }
 
   .tt td {
-    height: auto;
+    height: var(--tt-row);
   }
 
   .les {
     box-shadow: none;
     border: 1px solid #bbb;
     border-left-width: 3px;
-    min-height: 0;
   }
 
   /* Matriks: A4 landscape, tanpa bingkai kartu. */

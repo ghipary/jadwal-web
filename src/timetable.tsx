@@ -253,6 +253,7 @@ export function TimetableGrid({
                     dropTarget === key ? 'drag-over' : '',
                     !aktif ? 'cell-mati' : '',
                     rowSpan ? 'cell-blok' : '',
+                    list.length > 1 ? 'multi' : '',
                   ]
                     .filter(Boolean)
                     .join(' ');
