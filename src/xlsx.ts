@@ -128,12 +128,16 @@ function zipStore(files: [string, string][], kapan = new Date()): Uint8Array {
 export interface XlsStyle {
   bold?: boolean;
   italic?: boolean;
+  /** Nama font (mis. "Arial", "Arial Narrow"). Default Calibri. */
+  nama?: string;
   /** Warna isi (hex rgb, tanpa '#'). */
   isi?: string;
   /** Warna teks (hex rgb). */
   teks?: string;
-  /** Tampilkan bingkai sel tipis. */
+  /** Tampilkan bingkai sel tipis (abu). */
   border?: boolean;
+  /** Bingkai sel medium hitam — ala lembar cetak sekolah. */
+  borderTebal?: boolean;
   tengah?: boolean;
   wrap?: boolean;
   /** Ukuran font (pt). */
@@ -173,7 +177,8 @@ export class StyleBook {
     const i = s.italic ?? XLS_FONT_DEFAUL.italic;
     const uk = s.ukuran ?? XLS_FONT_DEFAUL.ukuran;
     const teks = s.teks ? `<color rgb="FF${s.teks.toUpperCase()}"/>` : '<color theme="1"/>';
-    return `<font>${b ? '<b/>' : ''}${i ? '<i/>' : ''}<sz val="${uk}"/>${teks}<name val="Calibri"/></font>`;
+    const nama = s.nama ? `<name val="${s.nama}"/>` : '<name val="Calibri"/>';
+    return `<font>${b ? '<b/>' : ''}${i ? '<i/>' : ''}<sz val="${uk}"/>${teks}${nama}</font>`;
   }
 
   private fillXml(hex?: string): string {
@@ -181,10 +186,12 @@ export class StyleBook {
     return `<fill><patternFill patternType="solid"><fgColor rgb="FF${hex.toUpperCase()}"/><bgColor indexed="64"/></patternFill></fill>`;
   }
 
-  private borderXml(ada?: boolean): string {
+  private borderXml(ada?: boolean, tebal?: boolean): string {
     if (!ada) return '<border><left/><right/><top/><bottom/><diagonal/></border>';
+    const gaya = tebal ? 'medium' : 'thin';
+    const warna = tebal ? '<color auto="1"/>' : '<color rgb="FF94A3B8"/>';
     const sisi = ['left', 'right', 'top', 'bottom']
-      .map((s) => `<${s} style="thin"><color rgb="FF94A3B8"/></${s}>`)
+      .map((s) => `<${s} style="${gaya}">${warna}</${s}>`)
       .join('');
     return `<border>${sisi}<diagonal/></border>`;
   }
@@ -200,15 +207,15 @@ export class StyleBook {
     this.fonts.push(this.fontXml(s));
     const fillId = s.isi ? this.fills.length : 0;
     if (s.isi) this.fills.push(this.fillXml(s.isi));
-    const borderId = s.border ? this.borders.length : 0;
-    if (s.border) this.borders.push(this.borderXml(true));
+    const borderId = s.border || s.borderTebal ? this.borders.length : 0;
+    if (s.border || s.borderTebal) this.borders.push(this.borderXml(true, s.borderTebal));
 
     const align: string[] = [];
     if (s.tengah) align.push('horizontal="center"', 'vertical="center"');
     if (s.wrap) align.push('wrapText="1"');
     const alignXml = align.length ? `<alignment ${align.join(' ')}/>` : '';
     const apply = [
-      s.bold || s.italic || s.ukuran || s.teks ? 'applyFont="1"' : '',
+      s.bold || s.italic || s.ukuran || s.teks || s.nama ? 'applyFont="1"' : '',
       s.isi ? 'applyFill="1"' : '',
       s.border ? 'applyBorder="1"' : '',
       alignXml ? 'applyAlignment="1"' : '',

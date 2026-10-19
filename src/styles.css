@@ -1594,6 +1594,7 @@ select.input {
 
 table.mx {
   border-collapse: collapse;
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 12px;
   flex: 1 1 auto;
   min-width: 0;
@@ -1601,71 +1602,95 @@ table.mx {
 
 .mx th,
 .mx td {
-  border: 1px solid #64748b;
-  padding: 4px 6px;
+  border: 1.5px solid #111;
+  padding: 2px 6px;
+  height: 22px;
 }
 
 .mx thead th {
-  background: #e6ece3;
-  font-weight: 700;
+  background: #fff;
+  font-weight: 400;
   text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  height: 30px;
+}
+
+.mx thead th.c-hari,
+.mx thead th.c-jam {
+  background: #fbe5d6;
 }
 
 .mx td.c-hari,
 .mx thead th.c-hari {
-  background: #e3f2e9;
-  font-weight: 700;
+  font-size: 14px;
   text-align: center;
   vertical-align: middle;
-  min-width: 58px;
+  min-width: 52px;
+  width: 52px;
 }
 
 .mx td.c-jam,
 .mx thead th.c-jam {
   text-align: center;
   white-space: nowrap;
-  color: #334155;
-  background: #f8fafc;
-  min-width: 108px;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 12px;
+  min-width: 96px;
+  width: 96px;
 }
 
 .mx td.c-kode {
   text-align: center;
-  font-weight: 600;
-  min-width: 62px;
+  font-size: 12.5px;
+  min-width: 56px;
 }
 
 .mx td.c-ist {
   text-align: center;
-  font-style: italic;
-  background: #f1f5f9;
-  color: #64748b;
-  letter-spacing: 0.08em;
-}
-
-table.mx-legend {
-  border-collapse: collapse;
-  font-size: 12px;
-  flex: 0 0 auto;
-}
-
-.mx-legend th,
-.mx-legend td {
-  border: 1px solid #64748b;
-  padding: 4px 8px;
-}
-
-.mx-legend thead th {
-  background: #e6ece3;
-  text-align: center;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  background: #fff;
+}
+
+.mx .lg-head {
+  background: #ffc000;
+  font-weight: 700;
+  text-align: center;
   white-space: nowrap;
 }
 
-.mx-legend td.c-kode {
+.mx .lg-head.l-mapel {
+  white-space: normal;
+  min-width: 110px;
+  line-height: 1.15;
+}
+
+.mx td.lg-kode {
   text-align: center;
-  font-weight: 700;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 13.5px;
+  min-width: 46px;
+  width: 46px;
+}
+
+.mx td.lg-nama {
+  text-align: left;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 11.5px;
   white-space: nowrap;
+}
+
+.mx td.lg-mapel {
+  text-align: center;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 13px;
+  white-space: nowrap;
+  background: #fff;
+}
+
+.mx td.lg-mapel.isi {
+  background: #92d050;
 }
 
 /* --------------------------------------------------------------------------
@@ -1825,13 +1850,29 @@ table.mx-legend {
 
   .mx,
   .mx-legend {
-    font-size: 9.5pt;
+    font-size: 8.5pt;
   }
 
   .mx th,
   .mx td,
   .mx-legend th,
   .mx-legend td {
-    padding: 2px 4px;
+    padding: 1px 3px;
+    height: auto;
+  }
+
+  .mx thead th {
+    height: 22px;
+  }
+
+  .mx td.c-hari,
+  .mx td.lg-kode,
+  .mx td.lg-mapel {
+    font-size: 9.5pt;
+  }
+
+  .mx td.c-jam,
+  .mx td.lg-nama {
+    font-size: 8pt;
   }
 }
