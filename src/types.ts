@@ -28,6 +28,8 @@ export interface Period extends HasId {
 export interface Teacher extends HasId {
   nama: string;
   kode: string;
+  /** Warna kartu guru — dipakai latar grid jadwal & sel matriks cetak. */
+  warna: string;
   mapelIds: string[];
   maxJam: number;
   maxPerHari: number;
@@ -52,10 +54,15 @@ export interface Student extends HasId {
 export interface Subject extends HasId {
   nama: string;
   kode: string;
-  warna: string;
   tipeRuang: string;
   pilihan: boolean;
 }
+
+/** Palet warna baku untuk kartu guru (guru baru & migrasi data lama). */
+export const PALET_GURU = [
+  '#4f46e5', '#0ea5e9', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981',
+  '#ef4444', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
+];
 
 export interface Room extends HasId {
   nama: string;
@@ -105,6 +112,8 @@ export interface GenOptions {
 }
 
 export interface Project {
+  // Multi-tenant: terikat ke user_id (owner). Kosong/null jika mode lokal/offline.
+  ownerId?: string | null;
   info: SchoolInfo;
   periode: Period[];
   guru: Teacher[];

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { useProject } from './store';
 import { checkConflicts } from './scheduler';
-import { Icon } from './ui';
+import { Icon, Btn } from './ui';
 import { Dashboard } from './pages/Dashboard';
 import { HalBlokir, HalGuru, HalJam, HalKelas, HalMapel, HalRuang, HalSiswa } from './pages/entities';
 import { HalSekolah } from './pages/Sekolah';
@@ -15,6 +15,11 @@ import { HalMatriks } from './pages/Matriks';
 import { HalKonflik } from './pages/Konflik';
 import { HalBerkas } from './pages/Berkas';
 import { HalPublikasi, PublikasiReadonly } from './pages/Publikasi';
+import { Landing } from './pages/Landing';
+import { Login, Register } from './pages/auth';
+import { AuthProvider, useAuth } from './lib/auth';
+import { PublicOnly, RequireAuth } from './lib/RequireAuth';
+import { TenantGuard } from './lib/useTenantGuard';
 
 interface NavItem {
   to: string;
@@ -58,6 +63,7 @@ const NAV: { grup: string; items: NavItem[] }[] = [
 
 function Layout() {
   const { project } = useProject();
+  const { user, signOut } = useAuth();
   const location = useLocation();
   const [menu, setMenu] = useState(false);
 
@@ -117,7 +123,7 @@ function Layout() {
         <div className="sidebar-foot">
           Tahun Ajaran {project.info.tahunAjaran || '—'}
           <br />
-          Tersimpan otomatis di perangkat ini
+          {user ? `Masuk sebagai ${user.email}` : 'Tersimpan otomatis di perangkat ini'}
         </div>
       </aside>
 
@@ -135,6 +141,11 @@ function Layout() {
             <span className={`badge ${jumlahError ? 'badge-merah' : 'badge-hijau'}`}>
               {jumlahError ? `${jumlahError} konflik` : 'Tanpa konflik'}
             </span>
+            {user ? (
+              <Btn size="sm" variant="ghost" icon="keluar" onClick={() => signOut()}>
+                Logout
+              </Btn>
+            ) : null}
           </div>
         </header>
         <main className="content">
@@ -147,26 +158,35 @@ function Layout() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/sekolah" element={<HalSekolah />} />
-        <Route path="/guru" element={<HalGuru />} />
-        <Route path="/kelas" element={<HalKelas />} />
-        <Route path="/siswa" element={<HalSiswa />} />
-        <Route path="/mapel" element={<HalMapel />} />
-        <Route path="/ruang" element={<HalRuang />} />
-        <Route path="/jam" element={<HalJam />} />
-        <Route path="/kebutuhan" element={<HalKebutuhan />} />
-        <Route path="/batasan" element={<HalBlokir />} />
-        <Route path="/generate" element={<HalGenerate />} />
-        <Route path="/jadwal" element={<HalJadwal />} />
-        <Route path="/jadwal-matriks" element={<HalMatriks />} />
-        <Route path="/konflik" element={<HalKonflik />} />
-        <Route path="/berkas" element={<HalBerkas />} />
-        <Route path="/publikasi" element={<HalPublikasi />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <TenantGuard />
+      <Routes>
+        <Route element={<PublicOnly><Outlet /></PublicOnly>}>
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+        <Route element={<RequireAuth><Layout /></RequireAuth>}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/sekolah" element={<HalSekolah />} />
+          <Route path="/guru" element={<HalGuru />} />
+          <Route path="/kelas" element={<HalKelas />} />
+          <Route path="/siswa" element={<HalSiswa />} />
+          <Route path="/mapel" element={<HalMapel />} />
+          <Route path="/ruang" element={<HalRuang />} />
+          <Route path="/jam" element={<HalJam />} />
+          <Route path="/kebutuhan" element={<HalKebutuhan />} />
+          <Route path="/batasan" element={<HalBlokir />} />
+          <Route path="/generate" element={<HalGenerate />} />
+          <Route path="/jadwal" element={<HalJadwal />} />
+          <Route path="/jadwal-matriks" element={<HalMatriks />} />
+          <Route path="/konflik" element={<HalKonflik />} />
+          <Route path="/berkas" element={<HalBerkas />} />
+          <Route path="/publikasi" element={<HalPublikasi />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/landing" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

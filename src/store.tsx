@@ -14,6 +14,7 @@ import {
   Block,
   CollectionKey,
   HasId,
+  PALET_GURU,
   Period,
   Project,
   Requirement,
@@ -62,14 +63,15 @@ function demoProject(): Project {
     ['m_sen', 'Seni Budaya', 'SEN', '#eab308', 'reguler', true],
     ['m_jaw', 'Bahasa Jawa', 'JAW', '#64748b', 'reguler', true],
   ];
-  const mapel: Subject[] = subjDefs.map(([id, nama, kode, warna, tipeRuang, pilihan]) => ({
+  const mapel: Subject[] = subjDefs.map(([id, nama, kode, , tipeRuang, pilihan]) => ({
     id,
     nama,
     kode,
-    warna,
     tipeRuang,
     pilihan,
   }));
+  // Warna kartu kini menempel pada guru (bukan mapel).
+  const warnaMapelLama = new Map(subjDefs.map(([id, , , warna]) => [id, warna]));
 
   const pengajar: Record<string, string[]> = {
     m_mtk: ['g_rina', 'g_ahmad'],
@@ -107,10 +109,13 @@ function demoProject(): Project {
     ['g_nia', 'Nia Puspita, S.Sn.', 'SEN', ['m_sen']],
     ['g_ratna', 'Ratna Dewi, S.Pd.', 'JAW', ['m_jaw']],
   ];
-  const guru: Teacher[] = guruDefs.map(([id, nama, kode, mapelIds]) => ({
+  const guru: Teacher[] = guruDefs.map(([id, nama, kode, mapelIds], i) => ({
     id,
     nama,
     kode,
+    warna:
+      (mapelIds[0] !== undefined ? warnaMapelLama.get(mapelIds[0]) : undefined) ??
+      PALET_GURU[i % PALET_GURU.length],
     mapelIds,
     maxJam: 24,
     maxPerHari: 6,
@@ -210,6 +215,7 @@ function demoProject(): Project {
   const blokir: Block[] = [];
 
   return {
+    ownerId: null,
     info: {
       nama: 'SMA Nusantara',
       tahunAjaran: '2026/2027',
@@ -255,6 +261,42 @@ const ARRAYS: CollectionKey[] = [
   'periode', 'guru', 'kelas', 'siswa', 'mapel', 'ruang', 'kebutuhan', 'jadwal', 'blokir',
 ];
 
+function hexValid(w: unknown): w is string {
+  return typeof w === 'string' && /^#[0-9a-fA-F]{6}$/.test(w);
+}
+
+/**
+ * Migrasi data lama: properti `warna` berpindah dari mata pelajaran ke guru.
+ * Guru yang belum punya warna mewarisi warna mapel lamanya (atau dari palet),
+ * lalu `warna` dibuang dari setiap mapel agar model data konsisten.
+ */
+function migrasiWarna(p: Project, raw: Record<string, unknown>): Project {
+  const warnaMapelLama = new Map<string, string>();
+  const mapelLama = Array.isArray(raw.mapel) ? (raw.mapel as Record<string, unknown>[]) : [];
+  for (const m of mapelLama) {
+    if (typeof m.id === 'string' && hexValid(m.warna)) warnaMapelLama.set(m.id, m.warna as string);
+  }
+
+  let urut = 0;
+  const guru = p.guru.map((g) => {
+    if (hexValid(g.warna)) return g;
+    const daftar = Array.isArray(g.mapelIds) ? g.mapelIds : [];
+    const warisan = daftar
+      .map((id) => warnaMapelLama.get(id))
+      .find((w) => w !== undefined);
+    const warna = warisan ?? PALET_GURU[urut++ % PALET_GURU.length];
+    return { ...g, warna };
+  });
+
+  const mapel = p.mapel.map((m) => {
+    const sisa = { ...(m as unknown as Record<string, unknown>) };
+    delete sisa.warna;
+    return sisa as unknown as Subject;
+  });
+
+  return { ...p, guru, mapel };
+}
+
 function sanitize(raw: unknown): Project | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
@@ -263,11 +305,12 @@ function sanitize(raw: unknown): Project | null {
     if (!Array.isArray(r[k])) return null;
   }
   if (!r.info || typeof r.info !== 'object') return null;
-  return {
+  const proj = {
     ...(base as unknown as Record<string, unknown>),
     ...r,
     opsi: { ...base.opsi, ...(r.opsi as object) },
   } as unknown as Project;
+  return migrasiWarna(proj, r);
 }
 
 interface Ctx {
@@ -277,6 +320,7 @@ interface Ctx {
   remove: (key: CollectionKey, id: string) => void;
   loadProject: (p: Project) => void;
   resetDemo: () => void;
+  setOwnerId: (ownerId: string | null) => void;
 }
 
 const ProjectCtx = createContext<Ctx | null>(null);
@@ -329,10 +373,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     () => dispatch({ type: 'load', project: demoProject() }),
     [],
   );
+  const setOwnerId = useCallback(
+    (ownerId: string | null) => set({ ownerId }),
+    [set],
+  );
 
   const value = useMemo(
-    () => ({ project, set, upsert, remove, loadProject, resetDemo }),
-    [project, set, upsert, remove, loadProject, resetDemo],
+    () => ({ project, set, upsert, remove, loadProject, resetDemo, setOwnerId }),
+    [project, set, upsert, remove, loadProject, resetDemo, setOwnerId],
   );
 
   return <ProjectCtx.Provider value={value}>{children}</ProjectCtx.Provider>;

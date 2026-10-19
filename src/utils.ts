@@ -79,6 +79,14 @@ export async function decodePayload<T>(payload: string): Promise<T> {
   return JSON.parse(new TextDecoder().decode(bytes)) as T;
 }
 
+/** Gabungkan warna hex dengan alpha 0–1 (untuk latar kartu jadwal & sel cetak). */
+export function hexA(hex: string, a: number): string {
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+    return hex + Math.round(a * 255).toString(16).padStart(2, '0');
+  }
+  return '#ffffff';
+}
+
 export function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }

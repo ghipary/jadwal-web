@@ -452,7 +452,10 @@ export function HalJadwal() {
                 <b>
                   <i
                     className="warna-dot"
-                    style={{ background: mapelCari(bukaLes.mapelId)?.warna ?? '#94a3b8' }}
+                    style={{
+                      background:
+                        project.guru.find((g) => g.id === bukaLes.guruId)?.warna ?? '#94a3b8',
+                    }}
                   />
                   {mapelCari(bukaLes.mapelId)?.nama ?? '(terhapus)'}
                 </b>

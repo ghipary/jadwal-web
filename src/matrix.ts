@@ -102,14 +102,14 @@ export function buatMatriks(project: Project): Matriks {
       existing.les.push(les);
       existing.kode = [...new Set([...existing.kode.split(' '), kode])].join(' ');
     } else {
-      sel.set(key, { kode, les: [les], warna: m?.warna ?? '#94a3b8' });
+      sel.set(key, { kode, les: [les], warna: g?.warna ?? '#94a3b8' });
     }
     if (!legendaMap.has(kode)) {
       legendaMap.set(kode, {
         kode,
         guru: g?.nama ?? '(terhapus)',
         mapel: m?.nama ?? '(terhapus)',
-        warna: m?.warna ?? '#94a3b8',
+        warna: g?.warna ?? '#94a3b8',
       });
     }
   }

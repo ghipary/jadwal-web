@@ -1,6 +1,6 @@
 // Halaman-halaman data: Guru, Kelas, Siswa, Mapel, Ruang, Jam, Batasan.
 
-import { DAYS, LABEL_TIPE_RUANG, TIPE_RUANG_KEBUTUHAN, TIPE_RUANG_OPTIONS } from '../types';
+import { DAYS, LABEL_TIPE_RUANG, PALET_GURU, TIPE_RUANG_KEBUTUHAN, TIPE_RUANG_OPTIONS } from '../types';
 import type {
   Block,
   Period,
@@ -35,6 +35,7 @@ export function HalGuru() {
       id: uid('g'),
       nama: '',
       kode: '',
+      warna: PALET_GURU[project.guru.length % PALET_GURU.length],
       mapelIds: [],
       maxJam: 24,
       maxPerHari: 6,
@@ -48,7 +49,10 @@ export function HalGuru() {
         label: 'Nama Guru',
         render: (r) => (
           <div>
-            <b>{r.nama}</b>
+            <b>
+              <i className="warna-dot" style={{ background: r.warna }} />
+              {r.nama}
+            </b>
             {r.catatan ? <div className="hint">{r.catatan}</div> : null}
           </div>
         ),
@@ -58,15 +62,11 @@ export function HalGuru() {
         render: (r) => (
           <div className="multi">
             {r.mapelIds.length === 0 ? <span className="hint">—</span> : null}
-            {r.mapelIds.map((id) => {
-              const m = project.mapel.find((x) => x.id === id);
-              return (
-                <span key={id} className="chip">
-                  <i className="warna-dot" style={{ background: m?.warna ?? '#94a3b8' }} />
-                  {namaMapel(id)}
-                </span>
-              );
-            })}
+            {r.mapelIds.map((id) => (
+              <span key={id} className="chip">
+                {namaMapel(id)}
+              </span>
+            ))}
           </div>
         ),
       },
@@ -87,6 +87,12 @@ export function HalGuru() {
     fields: [
       { key: 'nama', label: 'Nama Lengkap', type: 'text', placeholder: 'Contoh: Rina Susanti, S.Pd.' },
       { key: 'kode', label: 'Kode', type: 'text', placeholder: 'Contoh: MTH' },
+      {
+        key: 'warna',
+        label: 'Warna Guru',
+        type: 'color',
+        hint: 'Warna latar kartu jadwal & sel matriks cetak saat guru ini mengajar.',
+      },
       {
         key: 'mapelIds',
         label: 'Mata Pelajaran yang Diampu',
@@ -273,7 +279,7 @@ export function HalMapel() {
   const cfg: EntityConfig<Subject> = {
     collection: 'mapel',
     judul: 'Mata Pelajaran',
-    desc: 'Mapel beserta warna kartu, tipe ruang yang disyaratkan (reguler/lab/lapangan), dan tanda mapel pilihan.',
+    desc: 'Mapel beserta tipe ruang yang disyaratkan (reguler/lab/lapangan), dan tanda mapel pilihan.',
     ikon: 'mapel',
     placeholderCari: 'Cari nama / kode mapel…',
     labelHapus: (r) => r.nama,
@@ -282,7 +288,6 @@ export function HalMapel() {
       id: uid('m'),
       nama: '',
       kode: '',
-      warna: '#138046',
       tipeRuang: 'reguler',
       pilihan: false,
     }),
@@ -290,12 +295,7 @@ export function HalMapel() {
       { label: 'Kode', render: (r) => <span className="badge badge-abu">{r.kode || '—'}</span> },
       {
         label: 'Nama Mapel',
-        render: (r) => (
-          <b>
-            <i className="warna-dot" style={{ background: r.warna }} />
-            {r.nama}
-          </b>
-        ),
+        render: (r) => <b>{r.nama}</b>,
       },
       {
         label: 'Tipe Ruang',
@@ -320,7 +320,6 @@ export function HalMapel() {
     fields: [
       { key: 'nama', label: 'Nama Mapel', type: 'text', placeholder: 'Contoh: Matematika' },
       { key: 'kode', label: 'Kode', type: 'text', placeholder: 'Contoh: MTK' },
-      { key: 'warna', label: 'Warna Kartu', type: 'color' },
       {
         key: 'tipeRuang',
         label: 'Tipe Ruang yang Disyaratkan',

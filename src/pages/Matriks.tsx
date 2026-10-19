@@ -6,6 +6,7 @@ import { Fragment, useMemo, useState } from 'react';
 import { useProject } from '../store';
 import { buatMatriks, matriksKeXlsx } from '../matrix';
 import { downloadXlsx } from '../xlsx';
+import { hexA } from '../utils';
 import { Banner, Btn, EmptyState, PageHead } from '../ui';
 
 export function HalMatriks() {
@@ -108,7 +109,11 @@ export function HalMatriks() {
                         m.kelas.map((k) => {
                           const s = m.sel.get(`${br.hari}|${br.periodeId}|${k.id}`);
                           return (
-                            <td key={k.id} className={s ? 'c-kode' : ''}>
+                            <td
+                              key={k.id}
+                              className={s ? 'c-kode' : ''}
+                              style={s ? { background: hexA(s.warna, 0.35) } : undefined}
+                            >
                               {s?.kode ?? ''}
                             </td>
                           );
@@ -132,7 +137,9 @@ export function HalMatriks() {
             <tbody>
               {m.legenda.map((e) => (
                 <tr key={e.kode}>
-                  <td className="c-kode">{e.kode}</td>
+                  <td className="c-kode" style={{ background: hexA(e.warna, 0.35) }}>
+                    {e.kode}
+                  </td>
                   <td>{e.guru}</td>
                   <td>{e.mapel}</td>
                 </tr>

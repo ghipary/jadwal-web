@@ -164,7 +164,7 @@ export function HalKebutuhan() {
                       </td>
                       <td>
                         <b>
-                          <i className="warna-dot" style={{ background: mapel?.warna ?? '#94a3b8' }} />
+                          <i className="warna-dot" style={{ background: guru?.warna ?? '#94a3b8' }} />
                           {mapel?.nama ?? '(terhapus)'}
                         </b>
                       </td>

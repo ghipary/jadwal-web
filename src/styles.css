@@ -361,6 +361,43 @@ a {
   font-size: 12.5px;
 }
 
+/* Kartu statistik interaktif (halaman Pemeriksa Konflik). */
+.stat-aktif {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+}
+
+.stat-aktif:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -12px rgba(22, 46, 32, 0.45);
+  border-color: var(--brand-2);
+}
+
+.stat-aktif:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.stat-aktif:focus-visible {
+  outline: 2px solid var(--brand-2);
+  outline-offset: 2px;
+}
+
+.stat-arrow {
+  margin-left: auto;
+  align-self: center;
+  color: var(--ink-3);
+  flex: none;
+  transition: transform 0.14s ease, color 0.14s ease;
+}
+
+.stat-aktif:hover .stat-arrow {
+  transform: translateX(3px);
+  color: var(--brand);
+}
+
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -962,6 +999,46 @@ select.input {
   border-radius: 4px;
   margin-right: 7px;
   vertical-align: baseline;
+}
+
+/* Zona unggah Excel (drag & drop) di halaman Berkas & Data. */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 26px 16px;
+  border: 2px dashed var(--line-2);
+  border-radius: var(--radius);
+  background: #fbfcfa;
+  color: var(--ink-2);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease, transform 0.14s ease;
+}
+
+.dropzone .ic {
+  color: var(--ink-3);
+}
+
+.dropzone b {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.dropzone:hover {
+  border-color: var(--brand-2);
+  background: var(--brand-soft);
+}
+
+.dropzone.over {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  transform: scale(1.01);
+}
+
+.dropzone.over .ic {
+  color: var(--brand);
 }
 
 /* --------------------------------------------------------------------------
@@ -1750,6 +1827,14 @@ table.mx-legend {
    -------------------------------------------------------------------------- */
 
 @media print {
+  /* Paksa warna latar (kartu jadwal & sel matriks) ikut tercetak ke PDF/printer. */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   .sidebar,
   .topbar,
   .page-actions,

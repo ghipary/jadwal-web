@@ -2,13 +2,9 @@
 
 import { DragEvent, useState } from 'react';
 import { Assignment, DAYS, Project, slotKey } from './types';
+import { hexA } from './utils';
 
 export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
-
-function hexA(hex: string, a: number): string {
-  if (/^#[0-9a-fA-F]{6}$/.test(hex)) return hex + Math.round(a * 255).toString(16).padStart(2, '0');
-  return '#ffffff';
-}
 
 export function TimetableGrid({
   project,
@@ -150,7 +146,8 @@ export function TimetableGrid({
                     >
                       {list.map((a) => {
                         const m = mapelM.get(a.mapelId);
-                        const warna = m?.warna ?? '#94a3b8';
+                        // Warna kartu mengikuti guru yang mengajar.
+                        const warna = guruM.get(a.guruId)?.warna ?? '#94a3b8';
                         const kelas = [
                           'les',
                           a.tetap ? 'les-tetap' : '',
