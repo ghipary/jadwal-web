@@ -4,3 +4,6 @@ dist
 temp
 *.local
 .DS_Store
+
+.vercel
+.env*

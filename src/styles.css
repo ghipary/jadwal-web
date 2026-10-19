@@ -970,6 +970,32 @@ select.input {
   box-shadow: var(--shadow);
 }
 
+.tt-titel {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #fafaff;
+}
+
+.tt-titel-judul {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.tt-titel-sub {
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.tt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .tt {
   border-collapse: separate;
   border-spacing: 0;
@@ -1547,6 +1573,14 @@ select.input {
 
   .tt-scroll {
     overflow: visible;
+  }
+
+  .tt-stack .tt-scroll {
+    break-after: page;
+  }
+
+  .tt-stack .tt-scroll:last-child {
+    break-after: auto;
   }
 
   .tt {

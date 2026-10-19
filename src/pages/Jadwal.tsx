@@ -11,6 +11,7 @@ import { Banner, Btn, EmptyState, FormField, Icon, Modal, PageHead, Tabs } from 
 import { downloadCSV, uid } from '../utils';
 
 interface Draft {
+  kelasId: string;
   hari: number;
   periodeId: string;
   mapelId: string;
@@ -42,6 +43,7 @@ export function HalJadwal() {
   }, [focusLes?.id]);
 
   const daftar = useMemo(() => {
+    if (scope === 'sekolah') return [];
     if (scope === 'kelas') return project.kelas.map((x) => ({ id: x.id, label: x.nama }));
     if (scope === 'guru') return project.guru.map((x) => ({ id: x.id, label: x.nama }));
     if (scope === 'ruang') return project.ruang.map((x) => ({ id: x.id, label: x.nama }));
@@ -58,6 +60,7 @@ export function HalJadwal() {
   const siswa = scope === 'siswa' ? project.siswa.find((s) => s.id === refId) : undefined;
 
   const items = project.jadwal.filter((j) => {
+    if (scope === 'sekolah') return true;
     if (scope === 'kelas') return j.kelasId === refId;
     if (scope === 'guru') return j.guruId === refId;
     if (scope === 'ruang') return j.ruangId === refId;
@@ -94,7 +97,7 @@ export function HalJadwal() {
 
   const autoRoom = (d: Draft): string => {
     const mapel = mapelCari(d.mapelId);
-    const kelas = project.kelas.find((c) => c.id === refId);
+    const kelas = project.kelas.find((c) => c.id === d.kelasId);
     if (!mapel) return '';
     const busy = new Set(
       project.jadwal
@@ -125,27 +128,28 @@ export function HalJadwal() {
     upsert('jadwal', cand);
   };
 
-  const mulaiTambah = (hari: number, periodeId: string) => {
+  const mulaiTambah = (kelasId: string, hari: number, periodeId: string) => {
     const mapelPertama = project.mapel[0];
     const guruPertama =
       project.guru.find((g) => g.mapelIds.includes(mapelPertama?.id ?? '')) ?? project.guru[0];
     setTambah({
+      kelasId,
       hari,
       periodeId,
       mapelId: mapelPertama?.id ?? '',
-      guruId: guruPertama?.id ?? '',
       ruangId: '',
+      guruId: guruPertama?.id ?? '',
       catatan: '',
     });
   };
 
   const simpanTambah = () => {
-    if (!tambah || !refId) return;
+    if (!tambah || !tambah.kelasId) return;
     const ruangId = tambah.ruangId || autoRoom(tambah);
     const cand: Assignment = {
       id: uid('j'),
       reqId: '',
-      kelasId: refId,
+      kelasId: tambah.kelasId,
       mapelId: tambah.mapelId,
       guruId: tambah.guruId,
       ruangId,
@@ -203,7 +207,10 @@ export function HalJadwal() {
         ];
       }),
     ];
-    const namaRef = daftar.find((x) => x.id === refId)?.label ?? 'jadwal';
+    const namaRef =
+      scope === 'sekolah'
+        ? 'seluruh-sekolah'
+        : (daftar.find((x) => x.id === refId)?.label ?? 'jadwal');
     downloadCSV(
       `jadwal-${scope}-${namaRef.replace(/[^\w-]+/g, '_').toLowerCase()}.csv`,
       rows,
@@ -227,7 +234,9 @@ export function HalJadwal() {
 
   const jumlah = items.length;
   const batas =
-    scope === 'guru'
+    scope === 'sekolah'
+      ? ` · ${project.kelas.length} kelas · ${project.guru.length} guru`
+      : scope === 'guru'
       ? (() => {
           const g = project.guru.find((x) => x.id === refId);
           return g ? ` · ${jumlah}/${g.maxJam} jam per minggu` : '';
@@ -280,7 +289,7 @@ export function HalJadwal() {
     ];
   })();
 
-  if (daftar.length === 0) {
+  if (scope === 'sekolah' ? project.kelas.length === 0 : daftar.length === 0) {
     return (
       <>
         <PageHead title="Jadwal Pelajaran" desc="Grid jadwal mingguan untuk seluruh kelas, guru, dan ruang." />
@@ -321,6 +330,7 @@ export function HalJadwal() {
       <div className="tt-toolbar">
         <Tabs
           items={[
+            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
             { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
             { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
@@ -332,20 +342,23 @@ export function HalJadwal() {
             setRefId('');
           }}
         />
-        <select
-          className="input"
-          style={{ maxWidth: 320 }}
-          value={refId}
-          onChange={(e) => setRefId(e.target.value)}
-        >
-          {daftar.map((x) => (
-            <option key={x.id} value={x.id}>
-              {x.label}
-            </option>
-          ))}
-        </select>
+        {scope === 'sekolah' ? null : (
+          <select
+            className="input"
+            style={{ maxWidth: 320 }}
+            value={refId}
+            onChange={(e) => setRefId(e.target.value)}
+          >
+            {daftar.map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.label}
+              </option>
+            ))}
+          </select>
+        )}
         <span className="hint" style={{ marginLeft: 'auto' }}>
-          {jumlah} jam/minggu{batas}
+          {scope === 'sekolah' ? `${jumlah} jam pelajaran` : `${jumlah} jam/minggu`}
+          {batas}
         </span>
       </div>
 
@@ -356,18 +369,47 @@ export function HalJadwal() {
         </Banner>
       ) : null}
 
-      <TimetableGrid
-        project={project}
-        items={items}
-        scope={scope}
-        editable
-        konflik={konflikSet}
-        dimMapel={dimMapel}
-        focusId={focusLes?.id ?? null}
-        onOpen={(a) => setBukaLes({ ...a })}
-        onAdd={(hari, periodeId) => mulaiTambah(hari, periodeId)}
-        onMove={pindah}
-      />
+      {scope === 'sekolah' ? (
+        <div className="tt-stack">
+          {project.kelas.map((k) => {
+            const les = project.jadwal.filter((j) => j.kelasId === k.id);
+            const butuh = project.kebutuhan
+              .filter((kk) => kk.kelasId === k.id)
+              .reduce((a, kk) => a + kk.jumlahJam, 0);
+            return (
+              <TimetableGrid
+                key={k.id}
+                project={project}
+                items={les}
+                scope="kelas"
+                editable
+                konflik={konflikSet}
+                judul={k.nama}
+                subjudul={
+                  butuh ? `${les.length}/${butuh} jam dari kebutuhan` : `${les.length} jam/minggu`
+                }
+                focusId={focusLes?.id ?? null}
+                onOpen={(a) => setBukaLes({ ...a })}
+                onAdd={(hari, periodeId) => mulaiTambah(k.id, hari, periodeId)}
+                onMove={pindah}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <TimetableGrid
+          project={project}
+          items={items}
+          scope={scope}
+          editable
+          konflik={konflikSet}
+          dimMapel={dimMapel}
+          focusId={focusLes?.id ?? null}
+          onOpen={(a) => setBukaLes({ ...a })}
+          onAdd={(hari, periodeId) => mulaiTambah(refId, hari, periodeId)}
+          onMove={pindah}
+        />
+      )}
       <Legend />
 
       {/* --- Modal ubah pelajaran --- */}
@@ -469,7 +511,7 @@ export function HalJadwal() {
         title="Tambah Pelajaran"
         desc={
           tambah
-            ? `${kelasNama(refId)} · ${DAYS[tambah.hari]} · ${project.periode.find((p) => p.id === tambah.periodeId)?.nama ?? ''}`
+            ? `${kelasNama(tambah.kelasId)} · ${DAYS[tambah.hari]} · ${project.periode.find((p) => p.id === tambah.periodeId)?.nama ?? ''}`
             : undefined
         }
         onClose={() => setTambah(null)}

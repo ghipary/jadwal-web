@@ -76,6 +76,14 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M7.5 13.5h4M13.5 13.5h3M7.5 17.5h4M13.5 17.5h3" />
     </>
   ),
+  sekolah: (
+    <>
+      <path d="M12 3.5 3.5 8h17z" />
+      <path d="M5.5 8v12h13V8" />
+      <path d="M9.5 20v-5.5h5V20" />
+      <path d="M8.5 11.5h2M13.5 11.5h2" />
+    </>
+  ),
   konflik: (
     <>
       <path d="M12 3.5 2.8 20h18.4z" />

@@ -13,17 +13,21 @@ function IsiPublikasi({ data }: { data: Project }) {
   const [refId, setRefId] = useState('');
 
   const daftar =
-    scope === 'kelas'
-      ? data.kelas.map((x) => ({ id: x.id, label: x.nama }))
-      : scope === 'guru'
-        ? data.guru.map((x) => ({ id: x.id, label: x.nama }))
-        : data.ruang.map((x) => ({ id: x.id, label: x.nama }));
+    scope === 'sekolah'
+      ? []
+      : scope === 'kelas'
+        ? data.kelas.map((x) => ({ id: x.id, label: x.nama }))
+        : scope === 'guru'
+          ? data.guru.map((x) => ({ id: x.id, label: x.nama }))
+          : data.ruang.map((x) => ({ id: x.id, label: x.nama }));
 
   useEffect(() => {
+    if (scope === 'sekolah') return;
     if (daftar.length && !daftar.some((x) => x.id === refId)) setRefId(daftar[0].id);
-  }, [daftar, refId]);
+  }, [daftar, refId, scope]);
 
   const items = data.jadwal.filter((j) => {
+    if (scope === 'sekolah') return true;
     if (scope === 'kelas') return j.kelasId === refId;
     if (scope === 'guru') return j.guruId === refId;
     return j.ruangId === refId;
@@ -46,6 +50,7 @@ function IsiPublikasi({ data }: { data: Project }) {
       <div className="tt-toolbar">
         <Tabs
           items={[
+            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
             { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
             { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
@@ -56,23 +61,46 @@ function IsiPublikasi({ data }: { data: Project }) {
             setRefId('');
           }}
         />
-        <select
-          className="input"
-          style={{ maxWidth: 320 }}
-          value={refId}
-          onChange={(e) => setRefId(e.target.value)}
-        >
-          {daftar.map((x) => (
-            <option key={x.id} value={x.id}>
-              {x.label}
-            </option>
-          ))}
-        </select>
+        {scope === 'sekolah' ? null : (
+          <select
+            className="input"
+            style={{ maxWidth: 320 }}
+            value={refId}
+            onChange={(e) => setRefId(e.target.value)}
+          >
+            {daftar.map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.label}
+              </option>
+            ))}
+          </select>
+        )}
         <span className="hint" style={{ marginLeft: 'auto' }}>
-          {items.length} jam/minggu · tampilan baca-saja
+          {scope === 'sekolah'
+            ? `${data.kelas.length} kelas · ${items.length} jam pelajaran`
+            : `${items.length} jam/minggu`}{' '}
+          · tampilan baca-saja
         </span>
       </div>
-      <TimetableGrid project={data} items={items} scope={scope} />
+      {scope === 'sekolah' ? (
+        <div className="tt-stack">
+          {data.kelas.map((k) => {
+            const les = data.jadwal.filter((j) => j.kelasId === k.id);
+            return (
+              <TimetableGrid
+                key={k.id}
+                project={data}
+                items={les}
+                scope="kelas"
+                judul={k.nama}
+                subjudul={`${les.length} jam/minggu`}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <TimetableGrid project={data} items={items} scope={scope} />
+      )}
       <div className="tt-legend">
         <span>Tersedia {DAYS_LABEL}</span>
       </div>

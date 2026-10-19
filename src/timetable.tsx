@@ -3,7 +3,7 @@
 import { DragEvent, useState } from 'react';
 import { Assignment, DAYS, Project, slotKey } from './types';
 
-export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa';
+export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
 
 function hexA(hex: string, a: number): string {
   if (/^#[0-9a-fA-F]{6}$/.test(hex)) return hex + Math.round(a * 255).toString(16).padStart(2, '0');
@@ -18,6 +18,8 @@ export function TimetableGrid({
   konflik,
   dimMapel,
   focusId,
+  judul,
+  subjudul,
   onOpen,
   onAdd,
   onMove,
@@ -29,6 +31,9 @@ export function TimetableGrid({
   konflik?: Set<string>;
   dimMapel?: (mapelId: string) => boolean;
   focusId?: string | null;
+  /** Judul di atas grid (mis. nama kelas pada tampilan sekolah). */
+  judul?: string;
+  subjudul?: string;
   onOpen?: (a: Assignment) => void;
   onAdd?: (hari: number, periodeId: string) => void;
   onMove?: (a: Assignment, hari: number, periodeId: string) => void;
@@ -73,7 +78,13 @@ export function TimetableGrid({
   const cellKey = (hari: number, periodeId: string) => `${hari}|${periodeId}`;
 
   return (
-    <div className="tt-scroll">
+    <div className={judul ? 'tt-scroll bertitel' : 'tt-scroll'}>
+      {judul ? (
+        <div className="tt-titel">
+          <span className="tt-titel-judul">{judul}</span>
+          {subjudul ? <span className="tt-titel-sub">{subjudul}</span> : null}
+        </div>
+      ) : null}
       <table className="tt">
         <thead>
           <tr>
