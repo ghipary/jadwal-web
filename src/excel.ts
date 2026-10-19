@@ -168,15 +168,17 @@ export function buatTemplateXlsx(
     'petunjuk',
     denganContoh
       ? [
-          ['1. Hari', 'Satu nama hari per baris. Kolom maksJP = batas JP hari itu (0 = tanpa batas).', 'Senin = 7 JP, Jumat = 5 JP'],          ['2. Guru', 'mapelIds diisi nama/kode mapel dipisah titik koma. polaJP = pola blok JP.', 'polaJP: 2;1 berarti 3 JP dipecah 2+1'],
+          ['1. Hari', 'Satu nama hari per baris. Kolom maksJP = batas JP hari itu (0 = tanpa batas).', 'Senin = 7 JP, Jumat = 5 JP'],
+          ['2. Guru', 'mapelIds diisi nama/kode mapel dipisah titik koma. polaJP = pola blok JP (bersifat KETAT).', 'polaJP: 2;1 berarti 3 JP dipecah 2+1'],
           ['3. Kelas', 'waliKelasId diisi nama/kode guru (opsional).', 'X-1, XI-2, XII-3'],
           ['4. Siswa', 'kelasId harus sudah ada di sheet Kelas.', 'pilihan diisi dipisah titik koma.'],
           ['5. Mata Pelajaran', 'tipeRuang: Ruang Reguler / Lab Komputer / Lab Sains / Lapangan / Semua.', 'pilihan: Ya / Tidak'],
           ['6. Ruang', 'Tipe mengikuti daftar tipe ruang. kapasitas diisi angka.', 'Kapasitas 40.'],
           ['7. Jam Pelajaran', 'tipe: Pelajaran / Istirahat / Apel / Kustom. hariAktif: nama hari dipisah koma/titik-koma (kosong = semua hari).', 'hariAktif contoh: "Senin; Selasa; Rabu; Kamis; Sabtu"'],
-          ['8. Kebutuhan Jam', 'kelasId/mapelId/guruId harus sudah terdaftar.', 'ruangId "Otomatis" bila tidak ditentukan.'],
+          ['8. Kebutuhan Jam', 'kelasId/mapelId/guruId harus sudah terdaftar. polaJP KETAT: jumlah jam harus pas dibagi pola.', 'ruangId "Otomatis" bila tidak ditentukan. Contoh: 3 JP → "3" atau "2;1"'],
           ['9. Batasan', 'jenis: Kelas / Guru / Ruang. hari & periodeId harus valid.', 'Isi alasan bila perlu.'],
           ['Catatan', `Baris pertama pada template kosong adalah contoh (ditandai "${PENANDA_CONTOH}") dan diabaikan otomatis.`, 'Jangan mengganti nama sheet atau judul kolom.'],
+          ['Pola JP (blok)', 'Blok hanya dibuat seukuran pola dan ditempatkan utuh berurutan. Bila jumlah jam tidak pas dibagi pola (mis. 4 JP dengan pola "3"), sisa jam dilaporkan GAGAL — tidak diisi setengah-setengah.', '6 JP → "3" atau "3;3" atau "2;2;2"'],
         ]
       : [],
     false,

@@ -164,7 +164,7 @@ const BAB: Bab[] = [
         },
         bukti:
           'Guru muncul di tabel dan kartunya di dashboard beban jam; angka jam terjadwal bertambah saat generator berjalan.',
-        tips: 'Kode guru dipakai saat mengimpor dari Excel — buat kode unik & konsisten (mis. "BDI" untuk Budi).',
+        tips: 'Pola JP di guru berlaku untuk semua mapel yang diampu (dapat ditimpa per-kebutuhan). Pola bersifat ketat: blok ditempatkan utuh berurutan, dan sisa jam yang tak sesuai pola dilaporkan gagal.',
       },
       {
         id: 'ruang',
@@ -214,7 +214,7 @@ const BAB: Bab[] = [
         aksi: [
           'Buka Data Sekolah → Kebutuhan Jam.',
           'Untuk tiap kelas, tambahkan baris: Kelas, Mata Pelajaran, Guru, jumlah Jam/Minggu, dan Ruang (kosongkan untuk otomatis).',
-          'Isi kolom Pola JP bila mapel ini diajarkan sebagai blok berurutan.',
+          'Isi kolom Pola JP bila mapel ini diajarkan sebagai blok berurutan (mis. "2, 1" atau "2, 2").',
         ],
         contoh: {
           judul: 'Contoh kebutuhan nyata',
@@ -223,7 +223,7 @@ const BAB: Bab[] = [
         },
         bukti:
           'Dashboard menampilkan "Jam/Minggu Dibutuhkan" bertambah sesuai isian, dan Generator siap dijalankan.',
-        tips: 'Gunakan tombol salin jadwal/isi masal bila banyak kelas mengambil mapel yang sama.',
+        tips: 'Pola bersifat KETAT: potongan hanya dibuat seukuran pola dan blok selalu ditempatkan utuh berurutan. Pastikan jumlah jam pas dibagi pola (mis. 6 JP dengan "3" atau 4 JP dengan "2, 2"). Bila tidak pas, sisa jam dilaporkan gagal — bukan diisi setengah-setengah.',
       },
       {
         id: 'batasan',
@@ -271,7 +271,7 @@ const BAB: Bab[] = [
         bukti:
           'Laporan Hijau muncul dengan jumlah jam ditempatkan sama dengan total kebutuhan; Grid Jadwal kini terisi.',
         tips:
-          'Bila ada jam yang gagal ditempatkan (biasanya karena slot kurang atau blokir terlalu ketat), tambah hari/jam atau longgarkan batasan lalu Generate Ulang.',
+          'Blok JP (pola) selalu ditempatkan utuh berurutan: bila tidak ada slot berurutan yang cukup, solver membatalkan blok itu dan mencoba menata ulang (backtrack) — bukan mengisi setengah-setengah. Bila tetap gagal (biasanya slot kurang atau blokir terlalu ketat), tambah hari/jam atau longgarkan batasan lalu Generate Ulang.',
       },
       {
         id: 'konflik',
@@ -304,8 +304,8 @@ const BAB: Bab[] = [
         aksi: [
           'Buka menu Utama → Grid Jadwal.',
           'Pilih tampilan per Kelas, Guru, atau Ruang.',
-          'Seret / klik sel untuk memindahkan pelajaran, atau kunci pelajaran dengan menandainya "tetap".',
-          'Gunakan tombol salin jadwal untuk meniru pola antar kelas bila perlu.',
+          'Klik kartu pelajaran untuk mengubah ruang/menandai tetap/menghapus, seret kartu ke sel lain untuk memindah.',
+          'Klik sel kosong untuk menambah pelajaran baru, atau gunakan tombol Salin untuk meniru jadwal antar hari.',
         ],
         contoh: {
           judul: 'Contoh penguncian nyata',
@@ -313,8 +313,8 @@ const BAB: Bab[] = [
             'Kepala sekolah meminta "Upacara" tiap Senin jam 1 (sudah berupa baris Apel) dan Matematika di X-1 pagi hari. Operator menggeser Matematika ke jam 1 Senin lalu menguncinya sebagai tetap sebelum menyusun kelas lain.',
         },
         bukti:
-          'Sel berubah posisi sesuai seret, blok JP berurutan tampil menyatu, dan jam terkunci bertanda khusus serta tidak diubah saat Generate Ulang.',
-        tips: 'Blok JP dari pola tampil menyatu (merge) agar mudah dibaca; jangan pindahkan satu-satu agar blok tetap utuh.',
+          'Grid berbentuk tabel padat ala Excel: tinggi baris seragam, kolom = hari, baris = jam pelajaran. Sel kosong polos berwarna putih dan sel di luar JP aktif hari itu berwarna abu-abu tipis (tanpa tombol). Blok JP berurutan tampil menyatu, dan jam terkunci bertanda khusus serta tidak diubah saat Generate Ulang.',
+        tips: 'Karena tampilannya padat, jangan pindahkan blok JP satu-satu agar blok tetap utuh; seret kartu teratas blok untuk memindahkan seluruh blok.',
       },
     ],
   },
@@ -333,7 +333,7 @@ const BAB: Bab[] = [
         aksi: [
           'Buka menu Hasil → Matriks & Cetak.',
           'Pilih kelas lalu tekan Cetak (Ctrl+P) atau unduh Excel.',
-          'Sesuaikan pengurutan sebelum cetak; baris di luar JP aktif ditandai.',
+          'Sesuaikan pengurutan sebelum cetak; hanya jam yang aktif pada tiap hari yang tercetak, jadi tabel tetap rapi tanpa baris kosong.',
         ],
         contoh: {
           judul: 'Contoh penggunaan nyata',
