@@ -15,6 +15,7 @@ import {
   Block,
   CollectionKey,
   HARI_BAWAAN,
+  HARI_KONFIG_BAWAAN,
   HasId,
   PALET_GURU,
   parseSlotKey,
@@ -30,6 +31,7 @@ import {
   TIPE_WAKTU,
   TipeWaktu,
 } from './types';
+import type { HariKonfig } from './types';
 import { uid } from './utils';
 import { useAuth } from './lib/auth';
 import { muatCloud, simpanCloud } from './lib/cloud';
@@ -172,6 +174,7 @@ function demoProject(): Project {
     maxPerHari: 6,
     slotDiinginkan: [],
     slotDilarang: id === 'g_yoga' ? [slotKey(0, 'p8')] : [],
+    polaJP: [],
     catatan: '',
   }));
 
@@ -233,6 +236,7 @@ function demoProject(): Project {
         guruId,
         jumlahJam: jam,
         ruangId: '',
+        polaJP: [],
       });
     }
   });
@@ -273,6 +277,7 @@ function demoProject(): Project {
       kepalaSekolah: 'Drs. H. Bambang Suryono, M.Pd.',
     },
     hari: [...HARI_BAWAAN],
+    hariKonfig: HARI_BAWAAN.map(() => ({ ...HARI_KONFIG_BAWAAN })),
     periode,
     guru,
     kelas,
@@ -377,11 +382,53 @@ function migrasiHari(raw: unknown): string[] {
   return out.length ? out : [...HARI_BAWAAN];
 }
 
+/**
+ * Migrasi konfigurasi JP per hari (`hariKonfig`) — selalu sejajar `hari`
+ * (panjang sama). Nilai tidak sah jatuh ke bawaan: tanpa batas, semua aktif.
+ */
+function migrasiHariKonfig(raw: unknown, jumlahHari: number): HariKonfig[] {
+  const arr = Array.isArray(raw) ? (raw as Record<string, unknown>[]) : [];
+  const out: HariKonfig[] = [];
+  for (let i = 0; i < jumlahHari; i++) {
+    const k = arr[i];
+    if (!k || typeof k !== 'object') {
+      out.push({ ...HARI_KONFIG_BAWAAN });
+      continue;
+    }
+    const maks = Number(k.maksJP);
+    const non = Array.isArray(k.slotNonAktif)
+      ? k.slotNonAktif.map((x) => String(x ?? '').trim()).filter(Boolean)
+      : [];
+    out.push({
+      maksJP: Number.isFinite(maks) && maks > 0 ? Math.floor(maks) : 0,
+      slotNonAktif: [...new Set(non)],
+    });
+  }
+  return out;
+}
+
+/**
+ * Migrasi data lama: field `polaJP` (pemecahan JP / block scheduling) belum
+ * ada pada data lama — diisi array kosong (tanpa pola).
+ */
+function migrasiPola(p: Project): Project {
+  const pola = (v: unknown): number[] =>
+    Array.isArray(v)
+      ? [...new Set(v.map(Number).filter((n) => Number.isFinite(n) && n >= 1))]
+      : [];
+  return {
+    ...p,
+    guru: p.guru.map((g) => ({ ...g, polaJP: pola(g.polaJP) })),
+    kebutuhan: p.kebutuhan.map((k) => ({ ...k, polaJP: pola(k.polaJP) })),
+  };
+}
+
 /** Buang referensi hari yang berada di luar jumlah hari aktif. */
 function rapikanReferensiHari(p: Project): Project {
   const n = p.hari.length;
   const valid = (h: number) => Number.isInteger(h) && h >= 0 && h < n;
   const slotValid = (k: SlotKey) => valid(parseSlotKey(k).hari);
+  const periodeAda = new Set(p.periode.map((x) => x.id));
   return {
     ...p,
     jadwal: p.jadwal.filter((j) => valid(j.hari)),
@@ -391,6 +438,16 @@ function rapikanReferensiHari(p: Project): Project {
       slotDiinginkan: g.slotDiinginkan.filter(slotValid),
       slotDilarang: g.slotDilarang.filter(slotValid),
     })),
+    // Konfigurasi hari tetap sejajar `hari`; slotNonAktif yang merujuk
+    // periode terhapus ikut dibuang.
+    hariKonfig: p.hari.map((_, i) => {
+      const k = p.hariKonfig?.[i];
+      if (!k) return { ...HARI_KONFIG_BAWAAN };
+      return {
+        maksJP: Number.isFinite(k.maksJP) && k.maksJP > 0 ? Math.floor(k.maksJP) : 0,
+        slotNonAktif: (k.slotNonAktif ?? []).filter((id) => periodeAda.has(id)),
+      };
+    }),
   };
 }
 
@@ -406,10 +463,11 @@ function sanitize(raw: unknown): Project | null {
     ...(base as unknown as Record<string, unknown>),
     ...r,
     hari: migrasiHari(r.hari),
+    hariKonfig: migrasiHariKonfig(r.hariKonfig, migrasiHari(r.hari).length),
     periode: migrasiPeriode(r.periode),
     opsi: { ...base.opsi, ...(r.opsi as object) },
   } as unknown as Project;
-  return rapikanReferensiHari(migrasiWarna(proj, r));
+  return rapikanReferensiHari(migrasiWarna(migrasiPola(proj), r));
 }
 
 /**

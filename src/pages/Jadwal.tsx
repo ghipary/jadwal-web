@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Assignment } from '../types';
+import { Assignment, slotHariAktif } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
 import { Legend, Scope, TimetableGrid } from '../timetable';
@@ -232,11 +232,19 @@ export function HalJadwal() {
     const sisa = project.jadwal.filter(
       (j) => !(tujuan.has(j.hari) && cocokScope(j)),
     );
-    // `periodeId` disalin apa adanya — tipe waktu (Pelajaran/Istirahat/Apel/
-    // Kustom) tetap terjaga dan tetap mengikuti pengaturan Jam Pelajaran.
-    const salinan = [...tujuan].flatMap((hari) =>
-      sumberSalin.map((j) => ({ ...j, id: uid('j'), hari })),
-    );
+    // Hanya menyalin ke slot yang AKTIF pada hari tujuan — JP di luar batas
+    // maks./yang dimatikan khusus hari itu tidak menerima salinan.
+    let dilewati = 0;
+    const salinan: Assignment[] = [];
+    for (const hari of tujuan) {
+      for (const j of sumberSalin) {
+        if (!slotHariAktif(project, hari, j.periodeId)) {
+          dilewati++;
+          continue;
+        }
+        salinan.push({ ...j, id: uid('j'), hari });
+      }
+    }
     set({ jadwal: [...sisa, ...salinan] });
     const namaTujuan = salinTujuan
       .map((h) => project.hari[h])
@@ -245,7 +253,11 @@ export function HalJadwal() {
     setHariAktif(salinTujuan[0] ?? salinDari);
     tutupSalin();
     window.alert(
-      `${sumberSalin.length} jadwal disalin ke ${namaTujuan}.\n\nTipe waktu tiap baris tetap sama karena mengikuti data Jam Pelajaran.`,
+      `${salinan.length} jadwal disalin ke ${namaTujuan}.` +
+        (dilewati
+          ? `\n\n${dilewati} jam dilewati karena JP-nya non-aktif pada hari tujuan (batas maks./JP dimatikan).`
+          : '') +
+        '\n\nTipe waktu tiap baris tetap sama karena mengikuti data Jam Pelajaran.',
     );
   };
 

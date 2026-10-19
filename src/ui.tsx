@@ -425,7 +425,16 @@ export interface Option {
 export interface FieldDef<T> {
   key: keyof T & string;
   label: string;
-  type: 'text' | 'number' | 'textarea' | 'select' | 'multi' | 'color' | 'check' | 'slots';
+  type:
+    | 'text'
+    | 'number'
+    | 'textarea'
+    | 'select'
+    | 'multi'
+    | 'color'
+    | 'check'
+    | 'slots'
+    | 'pola';
   options?: Option[];
   placeholder?: string;
   hint?: string;
@@ -531,6 +540,35 @@ export function FormField<T>({
     case 'slots':
       control = <SlotPicker value={Array.isArray(value) ? (value as SlotKey[]) : []} onChange={(v) => onChange(v)} />;
       break;
+    case 'pola': {
+      const arr = Array.isArray(value) ? (value as number[]) : [];
+      control = (
+        <div className="pola-row">
+          <input
+            id={id}
+            className="input"
+            placeholder={def.placeholder ?? 'Contoh: 2, 1'}
+            value={arr.join(', ')}
+            onChange={(e) => onChange(parsePolaJP(e.target.value))}
+          />
+          {arr.length ? (
+            <div className="multi">
+              {arr.map((n, i) => (
+                <span key={`${i}-${n}`} className="chip chip-on">
+                  {n} JP
+                </span>
+              ))}
+              <span className="hint">= {arr.reduce((a, b) => a + b, 0)} JP</span>
+            </div>
+          ) : (
+            <span className="hint">
+              Kosong = tiap JP ditempatkan satu-satu (bukan blok berurutan).
+            </span>
+          )}
+        </div>
+      );
+      break;
+    }
     case 'number':
       control = (
         <input
@@ -572,6 +610,17 @@ export function FormField<T>({
       {def.hint ? <span className="hint">{def.hint}</span> : null}
     </div>
   );
+}
+
+/**
+ * Urai teks pola distribusi JP menjadi array angka.
+ * Menerima "2, 1", "2;1", "2 1", atau angka tunggal. Nilai < 1 dibuang.
+ */
+export function parsePolaJP(teks: string): number[] {
+  return teks
+    .split(/[;,\s]+/)
+    .map((x) => Math.floor(Number(x)))
+    .filter((n) => Number.isFinite(n) && n >= 1);
 }
 
 /** Pemilih slot hari × jam (untuk preferensi/blokir). */

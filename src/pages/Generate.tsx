@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '../store';
 import { Laporan, generate } from '../scheduler';
+import { periodeAktifHari } from '../types';
 import { Banner, Btn, Card, Icon, PageHead } from '../ui';
 
 export function HalGenerate() {
@@ -18,6 +19,11 @@ export function HalGenerate() {
 
   const jumlahTetap = project.jadwal.filter((j) => j.tetap).length;
   const totalKebutuhan = project.kebutuhan.reduce((a, r) => a + r.jumlahJam, 0);
+  // Slot yang benar-benar tersedia memperhitungkan JP berbeda tiap hari.
+  const slotAktifTotal = project.hari.reduce(
+    (a, _, h) => a + periodeAktifHari(project, h).length,
+    0,
+  );
 
   const jalankan = async () => {
     setJalan(true);
@@ -148,10 +154,11 @@ export function HalGenerate() {
           <div className="kv">
             <span className="k">Slot tersedia per kelas</span>
             <span className="v">
-              {project.periode.filter((p) => p.tipe === 'pelajaran').length} jam ×{' '}
-              {project.hari.length} hari ={' '}
-              {project.periode.filter((p) => p.tipe === 'pelajaran').length * project.hari.length}{' '}
-              slot
+              {slotAktifTotal} slot aktif
+              <br />
+              <span className="hint">
+                menjumlahkan JP aktif tiap hari (batas maks. JP &amp; slot non-aktif diikuti)
+              </span>
             </span>
           </div>
           <div className="kv">

@@ -2,13 +2,15 @@
 // baris = hari × jam pelajaran, kolom = kelas, isi sel = kode (nomor guru +
 // kode mapel), dengan legenda kode → guru → mata pelajaran di sisi kanan.
 
-import { Assignment, labelTipeWaktu, Project, TipeWaktu } from './types';
+import { Assignment, labelTipeWaktu, periodeAktifHari, Project, TipeWaktu } from './types';
 import { buildXlsx, colName, StyleBook, XlsRow, XlsSheet } from './xlsx';
 
 export interface SelMatriks {
   kode: string;
   les: Assignment[];
   warna: string;
+  /** Blok JP (block scheduling) yang termuat di sel ini, bila ada. */
+  blokId?: string;
 }
 
 export interface BarisMatriks {
@@ -18,12 +20,24 @@ export interface BarisMatriks {
   label: string;
   /** Tipe waktu baris — hanya "pelajaran" yang terisi kode; selain itu baris gabungan. */
   tipe: TipeWaktu;
+  /** Apakah baris ini JP aktif pada harinya (mengikuti batas maks./slot non-aktif). */
+  aktif: boolean;
 }
 
 export interface BlokHari {
   hari: number;
   nama: string;
   mulai: number;
+  jumlah: number;
+}
+
+/** Blok sel menyatu (block scheduling) pada matriks. */
+export interface BlokSel {
+  kelasId: string;
+  hari: number;
+  /** Indeks baris awal pada `baris`. */
+  mulai: number;
+  /** Banyak baris yang digabung (≥ 2). */
   jumlah: number;
 }
 
@@ -38,6 +52,8 @@ export interface Matriks {
   kelas: { id: string; nama: string }[];
   baris: BarisMatriks[];
   blok: BlokHari[];
+  /** Blok berurutan (pola JP) yang tampil menyatu di sel matriks. */
+  blokSel: BlokSel[];
   sel: Map<string, SelMatriks>;
   legenda: LegendaEntry[];
   adaIsi: boolean;
@@ -72,9 +88,12 @@ export function buatMatriks(project: Project): Matriks {
 
   const baris: BarisMatriks[] = [];
   const blok: BlokHari[] = [];
+  const perAktifHari = project.hari.map((_, h) => new Set(periodeAktifHari(project, h).map((p) => p.id)));
   for (let hari = 0; hari < project.hari.length; hari++) {
     const mulai = baris.length;
     for (const per of project.periode) {
+      const aktif =
+        per.tipe === 'pelajaran' ? (perAktifHari[hari]?.has(per.id) ?? true) : true;
       baris.push({
         hari,
         periodeId: per.id,
@@ -84,6 +103,7 @@ export function buatMatriks(project: Project): Matriks {
             ? per.nama
             : `${labelTipeWaktu(per)}${per.nama && per.nama !== labelTipeWaktu(per) ? ` (${per.nama})` : ''}`.toUpperCase(),
         tipe: per.tipe,
+        aktif,
       });
     }
     blok.push({ hari, nama: project.hari[hari], mulai, jumlah: baris.length - mulai });
@@ -105,8 +125,9 @@ export function buatMatriks(project: Project): Matriks {
       // Bentrok tergambar sebagai kode bertumpuk dalam satu sel.
       existing.les.push(les);
       existing.kode = [...new Set([...existing.kode.split(' '), kode])].join(' ');
+      if (existing.blokId !== les.blokId) existing.blokId = undefined;
     } else {
-      sel.set(key, { kode, les: [les], warna: g?.warna ?? '#94a3b8' });
+      sel.set(key, { kode, les: [les], warna: g?.warna ?? '#94a3b8', blokId: les.blokId });
     }
     if (!legendaMap.has(kode)) {
       legendaMap.set(kode, {
@@ -115,6 +136,32 @@ export function buatMatriks(project: Project): Matriks {
         mapel: m?.nama ?? '(terhapus)',
         warna: g?.warna ?? '#94a3b8',
       });
+    }
+  }
+
+  // --- Blok sel menyatu: bagian pola JP yang berurutan & satu kelas ---------
+  const indeksBaris = new Map<string, number>();
+  baris.forEach((br, i) => indeksBaris.set(`${br.hari}|${br.periodeId}`, i));
+  const blokSel: BlokSel[] = [];
+  {
+    const perBlok = new Map<string, Assignment[]>();
+    for (const les of project.jadwal) {
+      if (!les.blokId) continue;
+      const arr = perBlok.get(`${les.blokId}|${les.kelasId}`);
+      if (arr) arr.push(les);
+      else perBlok.set(`${les.blokId}|${les.kelasId}`, [les]);
+    }
+    for (const [gabungan, list] of perBlok) {
+      const kelasId = gabungan.slice(gabungan.indexOf('|') + 1);
+      const urut = [...list].sort((a, b) => a.hari - b.hari);
+      const pos = urut.map((a) => indeksBaris.get(`${a.hari}|${a.periodeId}`) ?? -1);
+      // Hanya blok yang benar-benar berurutan & tidak bentrok yang boleh digabung.
+      if (pos.some((p) => p < 0)) continue;
+      if (pos.some((p, i) => i > 0 && p !== pos[i - 1] + 1)) continue;
+      const unik = new Set(pos);
+      if (unik.size !== pos.length) continue;
+      if (pos.length < 2) continue;
+      blokSel.push({ kelasId, hari: urut[0].hari, mulai: pos[0], jumlah: pos.length });
     }
   }
 
@@ -128,6 +175,7 @@ export function buatMatriks(project: Project): Matriks {
     kelas: project.kelas.map((c) => ({ id: c.id, nama: c.nama || (kelasM.get(c.id)?.nama ?? '') })),
     baris,
     blok,
+    blokSel,
     sel,
     legenda,
     adaIsi,
@@ -195,10 +243,17 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
         sel.push({ teks: br.label, gaya: gayaWaktu(br.tipe) });
         for (let x = 1; x < nKelas; x++) sel.push(null);
       } else {
-        for (const k of m.kelas) {
+        m.kelas.forEach((k) => {
           const s = m.sel.get(kunciSel(br.hari, br.periodeId, k.id));
-          sel.push({ teks: s?.kode ?? '', gaya: sKode });
-        }
+          // Sel bagian blok berurutan → hanya nilai baris teratas yang ditulis,
+          // sisanya dikosongkan lalu digabung (merge) di bawah.
+          const barisIni = b.mulai + i;
+          const blok = m.blokSel.find(
+            (bl) => bl.kelasId === k.id && bl.mulai <= barisIni && barisIni < bl.mulai + bl.jumlah,
+          );
+          const lanjutan = blok && blok.mulai !== barisIni;
+          sel.push(lanjutan ? null : { teks: s?.kode ?? '', gaya: sKode });
+        });
       }
       baris.push({ tinggi: 20, sel });
     });
@@ -207,6 +262,16 @@ export function matriksKeXlsx(project: Project, m: Matriks): Uint8Array {
     slice.forEach((br, i) => {
       if (br.tipe !== 'pelajaran') merge.push(`C${rAwal + i}:${colName(2 + nKelas)}${rAwal + i}`);
     });
+  }
+
+  // Gabungkan sel blok berurutan (block scheduling) per kelas.
+  for (const bl of m.blokSel) {
+    const col = 3 + m.kelas.findIndex((k) => k.id === bl.kelasId);
+    if (col < 3) continue;
+    const c = colName(col);
+    const rAwal = barisKe(bl.mulai);
+    const rAkhir = barisKe(bl.mulai + bl.jumlah - 1);
+    merge.push(`${c}${rAwal}:${c}${rAkhir}`);
   }
 
   // Entri legenda di bawah header.

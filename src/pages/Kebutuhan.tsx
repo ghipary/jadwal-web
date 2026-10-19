@@ -38,11 +38,16 @@ export function HalKebutuhan() {
     guruId: project.guru[0]?.id ?? '',
     jumlahJam: 2,
     ruangId: '',
+    polaJP: [],
   });
 
   const simpan = () => {
     if (!form) return;
-    const out = { ...form, jumlahJam: Math.max(1, Number(form.jumlahJam) || 1) };
+    const out = {
+      ...form,
+      jumlahJam: Math.max(1, Number(form.jumlahJam) || 1),
+      polaJP: Array.isArray(form.polaJP) ? form.polaJP.filter((n) => n >= 1) : [],
+    };
     upsert('kebutuhan', out);
     setForm(null);
   };
@@ -145,6 +150,7 @@ export function HalKebutuhan() {
                   <th>Guru</th>
                   <th>Ruang</th>
                   <th>Jam/Minggu</th>
+                  <th>Pola JP</th>
                   <th>Terjadwal</th>
                   <th>Status</th>
                   <th style={{ textAlign: 'right' }}>Aksi</th>
@@ -171,6 +177,13 @@ export function HalKebutuhan() {
                       <td>{guru?.nama ?? '(terhapus)'}</td>
                       <td>{ruang?.nama ?? <span className="hint">Otomatis</span>}</td>
                       <td>{r.jumlahJam}</td>
+                      <td>
+                        {r.polaJP.length ? (
+                          <span className="badge badge-biru">{r.polaJP.join(' + ')}</span>
+                        ) : (
+                          <span className="hint">—</span>
+                        )}
+                      </td>
                       <td>{c}</td>
                       <td>
                         {c >= r.jumlahJam ? (
@@ -207,7 +220,7 @@ export function HalKebutuhan() {
                 })}
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={8}>
+                    <td colSpan={9}>
                       <div className="empty" style={{ padding: '26px' }}>
                         <p>Tidak ada baris yang cocok.</p>
                       </div>
@@ -293,6 +306,19 @@ export function HalKebutuhan() {
               value={form.jumlahJam}
               onChange={(v) => setForm({ ...form, jumlahJam: Number(v) })}
             />
+            <div className="span2">
+              <FormField
+                def={{
+                  key: 'polaJP',
+                  label: 'Pola Distribusi JP (Block Scheduling)',
+                  type: 'pola',
+                  placeholder: 'Contoh: 2, 1',
+                  hint: 'Pecah jumlah jam menjadi blok berurutan, mis. jumlah 3 JP dengan pola 2, 1 = blok 2 JP menyambung + 1 JP. Kosong = mengikuti pola guru / bebas.',
+                }}
+                value={form.polaJP}
+                onChange={(v) => setForm({ ...form, polaJP: v as number[] })}
+              />
+            </div>
           </div>
         ) : null}
       </Modal>

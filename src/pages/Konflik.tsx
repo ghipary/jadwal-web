@@ -5,8 +5,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConflictTipe } from '../types';
 import { useProject } from '../store';
-import { checkConflicts, isClean } from '../scheduler';
-import { Banner, Btn, EmptyState, Icon, Modal, PageHead } from '../ui';
+import { HasilAutoFix, autoFixConflicts, checkConflicts, isClean } from '../scheduler';import { Banner, Btn, EmptyState, Icon, Modal, PageHead } from '../ui';
 
 const LABEL_TIPE: Record<ConflictTipe, string> = {
   'kelas-bentrok': 'Kelas Bentrok',
@@ -18,6 +17,7 @@ const LABEL_TIPE: Record<ConflictTipe, string> = {
   kapasitas: 'Kapasitas Ruang',
   blokir: 'Slot Terblokir Dilanggar',
   istirahat: 'Di Luar Jam Pelajaran',
+  nonaktif: 'JP Non-Aktif pada Hari Itu',
   data: 'Masalah Data',
 };
 
@@ -31,15 +31,18 @@ const IKON_TIPE: Record<ConflictTipe, string> = {
   kapasitas: 'ruang',
   blokir: 'blokir',
   istirahat: 'jam',
+  nonaktif: 'jam',
   data: 'info',
 };
 
 type JenisModal = 'konflik' | 'peringatan' | 'jam' | null;
 
 export function HalKonflik() {
-  const { project } = useProject();
+  const { project, set } = useProject();
   const navigate = useNavigate();
   const [modal, setModal] = useState<JenisModal>(null);
+  const [jalan, setJalan] = useState(false);
+  const [hasil, setHasil] = useState<HasilAutoFix | null>(null);
 
   const konflik = useMemo(() => checkConflicts(project), [project]);
   const bersih = isClean(konflik);
@@ -83,6 +86,20 @@ export function HalKonflik() {
   const lihatDiJadwal = (lesId: string) => {
     setModal(null);
     navigate('/jadwal', { state: { lesId, scope: 'kelas' } });
+  };
+
+  /**
+   * TASK 5 — tombol besar "Selesaikan Semua Konflik": trial-and-error
+   * memindahkan/menukar posisi jadwal sampai konflik keras hilang.
+   */
+  const selesaikanSemua = async () => {
+    setJalan(true);
+    setHasil(null);
+    await new Promise((r) => setTimeout(r, 40));
+    const r = autoFixConflicts(project);
+    set({ jadwal: r.jadwal });
+    setHasil(r);
+    setJalan(false);
   };
 
   return (
@@ -157,6 +174,49 @@ export function HalKonflik() {
           </span>
         </button>
       </div>
+
+      <div className="perbaiki-panel no-print">
+        <div className="perbaiki-ic">
+          <Icon name="generate" size={22} />
+        </div>
+        <div className="perbaiki-teks">
+          <h3>{jalan ? 'Mencoba menyelesaikan konflik…' : 'Perbaikan Otomatis'}</h3>
+          <p>
+            Coba pindahkan &amp; tukar posisi pelajaran secara trial-and-error supaya seluruh konflik
+            keras hilang. Jadwal yang ditandai “tetap” tidak diubah.
+          </p>
+          {hasil ? (
+            <p className="perbaiki-hasil">
+              {hasil.tersisa === 0 ? (
+                <>
+                  <b>Berhasil menyelesaikan {hasil.berhasil} konflik, 0 tersisa.</b> Jadwal kini
+                  bersih dari konflik keras ({hasil.gerakan} langkah pemindahan).
+                </>
+              ) : (
+                <>
+                  Berhasil menyelesaikan <b>{hasil.berhasil}</b> konflik, <b>{hasil.tersisa}</b>{' '}
+                  tersisa. Sisa konflik umumnya butuh penambahan slot/ruang atau penyesuaian manual.
+                </>
+              )}
+            </p>
+          ) : null}
+        </div>
+        <Btn
+          variant="primary"
+          icon={jalan ? 'putar' : 'konflik'}
+          size="md"
+          disabled={jalan || isClean(konflik) || jumlahError === 0}
+          onClick={() => void selesaikanSemua()}
+        >
+          {jalan ? 'Memproses…' : 'Selesaikan Semua Konflik'}
+        </Btn>
+      </div>
+
+      {hasil ? (
+        <Banner tone={hasil.tersisa === 0 ? 'sukses' : 'peringatan'} icon={hasil.tersisa === 0 ? 'cek' : 'konflik'}>
+          Berhasil menyelesaikan <b>{hasil.berhasil}</b> konflik, <b>{hasil.tersisa}</b> tersisa.
+        </Banner>
+      ) : null}
 
       {bersih ? (
         <div className="card">

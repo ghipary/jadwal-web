@@ -1429,6 +1429,116 @@ select.input {
   filter: saturate(0.4);
 }
 
+/* Bagian blok JP (block scheduling) — tampak menyatu & tak bisa diseret terpisah */
+.les-blok {
+  border-radius: 0;
+  box-shadow: 0 0 0 1.5px rgba(19, 128, 70, 0.35);
+  margin-bottom: 0;
+}
+
+.tt td.cell-blok {
+  padding: 5px 5px 0;
+}
+
+/* Sel di luar JP aktif hari itu (batas maks. / dimatikan manual) */
+.tt td.cell-libur {
+  background: repeating-linear-gradient(
+    -45deg,
+    #f1f5f9,
+    #f1f5f9 6px,
+    #e9eef5 6px,
+    #e9eef5 12px
+  );
+  cursor: not-allowed;
+}
+
+.tt td.cell-libur .libur-tanda {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 60px;
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+/* Baris JP non-aktif pada matriks cetak */
+.mx td.c-nonaktif {
+  text-align: center;
+  font-style: italic;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  background: repeating-linear-gradient(
+    -45deg,
+    #f8fafc,
+    #f8fafc 6px,
+    #eef2f7 6px,
+    #eef2f7 12px
+  );
+}
+
+/* Sel blok menyatu pada matriks */
+.mx td.c-blok {
+  vertical-align: middle;
+  box-shadow: inset 0 0 0 2px rgba(19, 128, 70, 0.35);
+}
+
+/* Panel "Selesaikan Semua Konflik" */
+.perbaiki-panel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, #f0fdf4, #eef6ff);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.perbaiki-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, #138046, #1aa057);
+  flex: 0 0 auto;
+}
+
+.perbaiki-teks {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.perbaiki-teks h3 {
+  margin: 0;
+  font-size: 15.5px;
+}
+
+.perbaiki-teks p {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.perbaiki-hasil {
+  color: var(--ink) !important;
+}
+
+/* Baris daftar pola JP pada form */
+.pola-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pola-row .multi {
+  gap: 6px;
+}
+
 .les-tambah {
   display: grid;
   place-items: center;

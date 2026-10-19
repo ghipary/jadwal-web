@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { parseProyek, useProject } from '../store';
-import { bacaBerkasExcel, bacaWorkbook, buatTemplateXlsx } from '../excel';
+import { bacaBerkasExcel, bacaWorkbook, buatTemplateXlsx, jadwalKeXlsx } from '../excel';
 import { downloadXlsx } from '../xlsx';
 import { Banner, Btn, Card, Icon, Modal } from '../ui';
 import { download, downloadCSV } from '../utils';
@@ -156,6 +156,16 @@ export function HalBerkas() {
     });
   };
 
+  const eksporJadwalExcel = () => {
+    const slug = project.info.nama.replace(/[^\w-]+/g, '_').toLowerCase() || 'sekolah';
+    const tgl = new Date().toISOString().slice(0, 10);
+    downloadXlsx(`jadwal-tabel-${slug}-${tgl}.xlsx`, jadwalKeXlsx(project));
+    setPesan({
+      tone: 'sukses',
+      teks: 'Jadwal diekspor sebagai tabel rapi di lembar “Jadwal” dengan urutan kolom: Hari, Jam Mulai, Jam Selesai, Kelas, Mapel, Guru, Ruang.',
+    });
+  };
+
   const imporExcel = async (f: File | undefined) => {
     if (!f) return;
     try {
@@ -165,6 +175,20 @@ export function HalBerkas() {
         setPesan({
           tone: 'bahaya',
           teks: 'Tidak ditemukan sheet yang dikenali. Gunakan “Download Template Excel” sebagai acuan format.',
+        });
+        return;
+      }
+      // Validasi data wajib: bila ada kolom wajib kosong / referensi hilang,
+      // impor DIBATALKAN dan seluruh masalahnya dilaporkan.
+      if (hasil.galat.length) {
+        const contoh = hasil.galat.slice(0, 8).map((g) => `• ${g}`).join('\n');
+        const sisa = hasil.galat.length > 8 ? `\n…dan ${hasil.galat.length - 8} masalah lain.` : '';
+        window.alert(
+          `Impor dibatalkan — ada data wajib yang kosong atau tidak valid (${hasil.galat.length} masalah):\n\n${contoh}${sisa}\n\nPerbaiki berkas Excel lalu unggah ulang.`,
+        );
+        setPesan({
+          tone: 'bahaya',
+          teks: `Impor Excel dibatalkan: ${hasil.galat.length} baris bermasalah (data wajib kosong / referensi tidak ditemukan). Data saat ini tidak diubah.`,
         });
         return;
       }
@@ -221,6 +245,7 @@ export function HalBerkas() {
   const tombolEksporJadwal = [
     { label: 'Kebutuhan Jam', icon: 'daftar', fn: eksporKebutuhan },
     { label: 'Jadwal Lengkap', icon: 'jadwal', fn: eksporJadwal },
+    { label: 'Jadwal (Excel)', icon: 'unduh', fn: eksporJadwalExcel },
   ];
 
   return (

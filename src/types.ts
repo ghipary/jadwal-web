@@ -67,6 +67,11 @@ export interface Teacher extends HasId {
   maxPerHari: number;
   slotDiinginkan: SlotKey[];
   slotDilarang: SlotKey[];
+  /**
+   * Pola distribusi JP (block scheduling), mis. [2, 1] = 3 JP dipecah 2+1.
+   * Kosong = tanpa pola (setiap jam ditempatkan satu-satu).
+   */
+  polaJP: number[];
   catatan: string;
 }
 
@@ -108,6 +113,11 @@ export interface Requirement extends HasId {
   guruId: string;
   jumlahJam: number;
   ruangId: string;
+  /**
+   * Pola distribusi JP untuk kebutuhan ini (mis. [2, 1] = 3 JP → blok 2 JP
+   * berurutan + 1 JP). Kosong/[] = mengikuti pola guru, bila kosong juga → bebas.
+   */
+  polaJP: number[];
 }
 
 export interface Assignment extends HasId {
@@ -120,6 +130,12 @@ export interface Assignment extends HasId {
   periodeId: string;
   tetap: boolean;
   catatan: string;
+  /**
+   * Id blok pemecahan JP (block scheduling) — diisi bila slot ini merupakan
+   * bagian dari pola distribusi berurutan. Anggota blok pada hari yang sama
+   * dirender menyatu (rowspan) di grid & matriks cetak.
+   */
+  blokId?: string;
 }
 
 export interface Block extends HasId {
@@ -153,6 +169,12 @@ export interface Project {
    * mengurutkan ulang hari. Semua referensi hari memakai indeks array ini.
    */
   hari: string[];
+  /**
+   * Pengaturan JP khusus per hari (batas maksimal JP & slot non-aktif),
+   * sejajar dengan `hari` (indeks yang sama = hari yang sama). Bila kosong
+   * atau lebih pendek, hari tanpa konfigurasi memakai seluruh JP.
+   */
+  hariKonfig?: HariKonfig[];
   periode: Period[];
   guru: Teacher[];
   kelas: SchoolClass[];
@@ -163,6 +185,76 @@ export interface Project {
   jadwal: Assignment[];
   blokir: Block[];
   opsi: GenOptions;
+}
+
+/**
+ * Pengaturan JP khusus sebuah hari — memungkinkan jumlah JP berbeda tiap hari
+ * (mis. Senin 7 JP, Jumat 5 JP) tanpa mengubah daftar jam pelajaran global.
+ */
+export interface HariKonfig {
+  /**
+   * Batas maksimal JP (urutan baris tipe "pelajaran") pada hari ini.
+   * 0 = tanpa batas (ikuti seluruh jam pelajaran).
+   */
+  maksJP: number;
+  /** Id periode JP yang dimatikan khusus hari ini (selain batas maksimal). */
+  slotNonAktif: string[];
+}
+
+/** Konfigurasi baku hari: tanpa batas, seluruh JP aktif. */
+export const HARI_KONFIG_BAWAAN: HariKonfig = { maksJP: 0, slotNonAktif: [] };
+
+/** Ambil konfigurasi hari indeks `hari` (bila belum ada, memakai bawaan). */
+export function konfigHari(p: Pick<Project, 'hari' | 'hariKonfig'>, hari: number): HariKonfig {
+  const k = p.hariKonfig?.[hari];
+  if (!k) return HARI_KONFIG_BAWAAN;
+  return {
+    maksJP: Number.isFinite(k.maksJP) && k.maksJP > 0 ? Math.floor(k.maksJP) : 0,
+    slotNonAktif: Array.isArray(k.slotNonAktif) ? k.slotNonAktif : [],
+  };
+}
+
+/**
+ * Daftar baris JP yang AKTIF pada hari tertentu — baris tipe "pelajaran"
+ * yang tidak dimatikan dan masih berada di batas maksimal JP hari itu.
+ * Dipakai grid, matriks cetak, dan generator agar konsisten.
+ */
+export function periodeAktifHari(
+  p: Pick<Project, 'periode' | 'hari' | 'hariKonfig'>,
+  hari: number,
+): Period[] {
+  const k = konfigHari(p, hari);
+  const non = new Set(k.slotNonAktif);
+  const out: Period[] = [];
+  let urut = 0; // urutan JP pada hari ini (berlaku walau ada yang dimatikan)
+  for (const per of p.periode) {
+    if (per.tipe !== 'pelajaran') continue;
+    urut++;
+    if (non.has(per.id)) continue;
+    if (k.maksJP > 0 && urut > k.maksJP) continue;
+    out.push(per);
+  }
+  return out;
+}
+
+/** Set id periode yang aktif pada hari tertentu (untuk cek cepat). */
+export function slotAktifHari(
+  p: Pick<Project, 'periode' | 'hari' | 'hariKonfig'>,
+  hari: number,
+): Set<string> {
+  return new Set(periodeAktifHari(p, hari).map((x) => x.id));
+}
+
+/** Apakah slot (hari × periode) termasuk JP aktif pada hari itu? */
+export function slotHariAktif(
+  p: Pick<Project, 'periode' | 'hari' | 'hariKonfig'>,
+  hari: number,
+  periodeId: string,
+): boolean {
+  const per = p.periode.find((x) => x.id === periodeId);
+  if (!per) return false;
+  if (per.tipe !== 'pelajaran') return false;
+  return slotAktifHari(p, hari).has(periodeId);
 }
 
 export type CollectionKey =
@@ -209,6 +301,7 @@ export type ConflictTipe =
   | 'kapasitas'
   | 'blokir'
   | 'istirahat'
+  | 'nonaktif'
   | 'data';
 
 export interface Conflict {

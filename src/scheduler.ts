@@ -3,16 +3,23 @@
 // Pendekatan: pencarian lokal dengan heuristik MRV (Minimum Remaining Values),
 // skor penalti untuk batasan lunak (sebaran hari, beban guru, preferensi,
 // ruang, jam ujung hari), dan beberapa kali percobaan acak untuk hasil terbaik.
+//
+// Sejak dukungan JP berbeda per hari & block scheduling:
+// - Slot yang dipakai selalu diambil dari `periodeAktifHari` (bukan seluruh JP).
+// - Kebutuhan jam dipecah mengikuti pola distribusi JP (mis. [2, 1]) dan
+//   ditempatkan sebagai blok jam berurutan pada hari yang sama.
 
 import {
   Assignment,
   Conflict,
   labelTipeWaktu,
+  periodeAktifHari,
   Period,
   Project,
   Requirement,
   SchoolClass,
   SlotKey,
+  slotHariAktif,
   Subject,
   slotKey,
 } from './types';
@@ -40,8 +47,7 @@ export interface HasilGenerate {
 }
 
 export function periodeAktif(p: Project): Period[] {
-  // Hanya baris bertipe "pelajaran" yang boleh dipakai menampung pelajaran;
-  // istirahat/apel/kustom tetap ditampilkan di grid tetapi kosong dari jadwal.
+  // Hanya baris bertipe "pelajaran" yang boleh dipakai menampung pelajaran.
   return p.periode.filter((x) => x.tipe === 'pelajaran');
 }
 
@@ -54,13 +60,15 @@ export function slotLabel(p: Project, hari: number, periodeId: string): string {
 // Generator
 // ---------------------------------------------------------------------------
 
-interface Item {
+/** Satu unit penempatan: satu JP tunggal atau satu blok berurutan. */
+interface Task {
   req: Requirement;
+  ukuran: number;
 }
 
 interface Cand {
   hari: number;
-  periodeId: string;
+  slots: string[];
   ruangId: string;
   penalti: number;
 }
@@ -78,6 +86,31 @@ function occGet(m: Okupansi, k: string): Set<SlotKey> {
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
 
+/** Pola distribusi efektif: kebutuhan diprioritaskan, lalu pola guru. */
+function polaEfektif(req: Requirement, polaGuru: number[] | undefined): number[] {
+  const bersih = (arr: number[] | undefined) =>
+    (arr ?? []).map((n) => Math.floor(Number(n))).filter((n) => Number.isFinite(n) && n >= 1);
+  const dariKebutuhan = bersih(req.polaJP);
+  return dariKebutuhan.length ? dariKebutuhan : bersih(polaGuru);
+}
+
+/** Pecah sejumlah JP menjadi potongan sesuai pola (pola diulang bila perlu). */
+function pecahMenjadiBlok(sisa: number, pola: number[]): number[] {
+  if (sisa <= 0) return [];
+  if (!pola.length) return Array.from({ length: sisa }, () => 1);
+  const out: number[] = [];
+  let s = sisa;
+  let i = 0;
+  while (s > 0) {
+    const dasar = Math.max(1, Math.floor(pola[i % pola.length]));
+    const n = Math.min(dasar, s);
+    out.push(n);
+    s -= n;
+    i++;
+  }
+  return out;
+}
+
 export async function generate(
   p: Project,
   onProgress?: (i: number, total: number) => void,
@@ -88,10 +121,10 @@ export async function generate(
   const kelasM = new Map(p.kelas.map((c) => [c.id, c]));
   const mapelM = new Map(p.mapel.map((m) => [m.id, m]));
   const ruangM = new Map(p.ruang.map((r) => [r.id, r]));
-  const assignable = periodeAktif(p);
-  const perIndex = new Map(assignable.map((x, i) => [x.id, i]));
-  const firstId = assignable[0]?.id;
-  const lastId = assignable[assignable.length - 1]?.id;
+
+  // Slot aktif berbeda per hari (batas maks. JP & JP yang dimatikan).
+  const aktifHari = p.hari.map((_, h) => periodeAktifHari(p, h));
+  const idxAll = new Map(p.periode.map((per, i) => [per.id, i]));
 
   const blokir = new Set<string>();
   for (const b of p.blokir) blokir.add(`${b.jenis}|${b.refId}|${slotKey(b.hari, b.periodeId)}`);
@@ -137,28 +170,42 @@ export async function generate(
       bumpLoad(j);
     }
 
-    // Perluas kebutuhan jam menjadi item (sisa jam setelah jadwal tetap).
-    const items: Item[] = [];
+    // Perluas kebutuhan jam menjadi task (sisa jam setelah jadwal tetap).
+    // Setiap task mengikuti pola distribusi JP milik kebutuhan/guru.
+    const items: Task[] = [];
     for (const req of p.kebutuhan) {
       const sudahTetap = tetap.filter(
         (j) =>
           j.kelasId === req.kelasId && j.mapelId === req.mapelId && j.guruId === req.guruId,
       ).length;
       const sisa = Math.max(0, req.jumlahJam - sudahTetap);
-      for (let i = 0; i < sisa; i++) items.push({ req });
+      if (!sisa) continue;
+      const guru = guruM.get(req.guruId);
+      const pola = polaEfektif(req, guru?.polaJP);
+      for (const ukuran of pecahMenjadiBlok(sisa, pola)) {
+        items.push({ req, ukuran });
+      }
     }
 
-    const pickRoom = (req: Requirement, mapel: Subject, kelas: SchoolClass, sk: SlotKey) => {
+    const pickRoom = (
+      req: Requirement,
+      mapel: Subject,
+      kelas: SchoolClass,
+      hari: number,
+      slots: string[],
+    ) => {
+      const bebasDi = (ruangId: string) =>
+        slots.every((pid) => !occGet(occ, `r|${ruangId}`).has(slotKey(hari, pid)));
       if (req.ruangId) {
         const r = ruangM.get(req.ruangId);
-        if (!r) return undefined;
-        return occGet(occ, `r|${r.id}`).has(sk) ? undefined : r;
+        if (!r || !bebasDi(r.id)) return undefined;
+        return r;
       }
       const tipe = mapel.tipeRuang;
       const cand = p.ruang.filter(
         (r) =>
           (tipe === 'semua' || r.tipe === tipe) &&
-          !occGet(occ, `r|${r.id}`).has(sk) &&
+          bebasDi(r.id) &&
           (!opsi.wajibRuang || r.kapasitas >= kelas.jumlahSiswa),
       );
       if (!cand.length) return undefined;
@@ -166,77 +213,114 @@ export async function generate(
       return Math.random() < 0.7 ? cand[0] : cand[Math.floor(Math.random() * cand.length)];
     };
 
-    const evalItem = (item: Item): Cand[] => {
-      const req = item.req;
+    const evalTask = (task: Task): Cand[] => {
+      const req = task.req;
       const g = guruM.get(req.guruId);
       const kelas = kelasM.get(req.kelasId);
       const mapel = mapelM.get(req.mapelId);
       if (!g || !kelas || !mapel) return [];
-      if ((teacherWeek.get(g.id) ?? 0) >= g.maxJam) return [];
+      if ((teacherWeek.get(g.id) ?? 0) + task.ukuran > g.maxJam) return [];
       const res: Cand[] = [];
       const dilarangGuru = new Set(g.slotDilarang);
       const diinginkanGuru = new Set(g.slotDiinginkan);
+
       for (let hari = 0; hari < p.hari.length; hari++) {
         const dayLoad = teacherDay.get(`${g.id}|${hari}`) ?? 0;
-        if (dayLoad >= g.maxPerHari) continue;
-        for (const per of assignable) {
-          const sk = slotKey(hari, per.id);
-          if (occGet(occ, `k|${kelas.id}`).has(sk)) continue;
-          if (occGet(occ, `g|${g.id}`).has(sk)) continue;
-          if (isBlocked('kelas', kelas.id, sk) || isBlocked('guru', g.id, sk)) continue;
-          if (dilarangGuru.has(sk)) continue;
-          const room = pickRoom(req, mapel, kelas, sk);
+        if (dayLoad + task.ukuran > g.maxPerHari) continue;
+        const aktif = aktifHari[hari];
+        if (aktif.length < task.ukuran) continue;
+
+        for (let i = 0; i + task.ukuran <= aktif.length; i++) {
+          const run = aktif.slice(i, i + task.ukuran);
+          // Blok harus benar-benar berurutan di daftar jam global (bukan
+          // melompati baris istirahat atau JP yang dimatikan).
+          let nyambung = true;
+          for (let k = 1; k < run.length; k++) {
+            if ((idxAll.get(run[k].id) ?? -1) !== (idxAll.get(run[k - 1].id) ?? -2) + 1) {
+              nyambung = false;
+              break;
+            }
+          }
+          if (!nyambung) continue;
+
+          let ok = true;
+          for (const per of run) {
+            const sk = slotKey(hari, per.id);
+            if (occGet(occ, `k|${kelas.id}`).has(sk)) ok = false;
+            else if (occGet(occ, `g|${g.id}`).has(sk)) ok = false;
+            else if (isBlocked('kelas', kelas.id, sk) || isBlocked('guru', g.id, sk)) ok = false;
+            else if (dilarangGuru.has(sk)) ok = false;
+            if (!ok) break;
+          }
+          if (!ok) continue;
+
+          const room = pickRoom(
+            req,
+            mapel,
+            kelas,
+            hari,
+            run.map((x) => x.id),
+          );
           if (!room) continue;
 
           let pen = 0;
           const subjDay = classSubjDay.get(`${kelas.id}|${mapel.id}|${hari}`) ?? 0;
           if (subjDay > 0) pen += (opsi.rataHari ? 26 : 9) * subjDay;
-          pen += 3 * dayLoad;
-          pen += 2 * (classDay.get(`${kelas.id}|${hari}`) ?? 0);
-          if (diinginkanGuru.has(sk)) pen -= 18;
-          // Dorong pelajaran guru menjadi blok berurutan (kurangi jeda).
+          pen += (3 * dayLoad + 2 * (classDay.get(`${kelas.id}|${hari}`) ?? 0)) * task.ukuran;
+          for (const per of run) if (diinginkanGuru.has(slotKey(hari, per.id))) pen -= 18;
+          // Dorong blok menempel pada jam guru yang sudah terisi di hari itu.
           if (dayLoad > 0) {
-            const idx = perIndex.get(per.id) ?? -1;
-            const prev = idx > 0 ? assignable[idx - 1] : undefined;
-            const next =
-              idx >= 0 && idx < assignable.length - 1 ? assignable[idx + 1] : undefined;
-            const adjacent =
-              (prev && !occGet(occ, `g|${g.id}`).has(slotKey(hari, prev.id))) ||
-              (next && !occGet(occ, `g|${g.id}`).has(slotKey(hari, next.id)));
-            if (!adjacent) pen += 6;
+            const sebelum = i > 0 ? aktif[i - 1] : undefined;
+            const sesudah = i + task.ukuran < aktif.length ? aktif[i + task.ukuran] : undefined;
+            const nempel =
+              (sebelum && occGet(occ, `g|${g.id}`).has(slotKey(hari, sebelum.id))) ||
+              (sesudah && occGet(occ, `g|${g.id}`).has(slotKey(hari, sesudah.id)));
+            if (!nempel) pen += 6;
           }
-          if (opsi.hindariUjung && (per.id === firstId || per.id === lastId)) pen += 7;
-          res.push({ hari, periodeId: per.id, ruangId: room.id, penalti: pen });
+          if (opsi.hindariUjung) {
+            const perAwal = slotKey(hari, run[0].id);
+            const perAkhir = slotKey(hari, run[run.length - 1].id);
+            if (perAwal === slotKey(hari, aktif[0].id)) pen += 7;
+            if (perAkhir === slotKey(hari, aktif[aktif.length - 1].id)) pen += 7;
+          }
+          res.push({
+            hari,
+            slots: run.map((x) => x.id),
+            ruangId: room.id,
+            penalti: pen,
+          });
         }
       }
       return res;
     };
 
-    const diag = (item: Item): string => {
-      const req = item.req;
+    const diag = (task: Task): string => {
+      const req = task.req;
       const g = guruM.get(req.guruId);
       const kelas = kelasM.get(req.kelasId);
       const mapel = mapelM.get(req.mapelId);
       if (!g || !kelas || !mapel) return 'data kebutuhan tidak lengkap (guru/mapel/kelas terhapus)';
-      if ((teacherWeek.get(g.id) ?? 0) >= g.maxJam)
+      if ((teacherWeek.get(g.id) ?? 0) + task.ukuran > g.maxJam)
         return `guru melebihi maksimum ${g.maxJam} jam/minggu`;
       const counts: Record<string, number> = {};
       const bump = (s: string) => (counts[s] = (counts[s] ?? 0) + 1);
       for (let hari = 0; hari < p.hari.length; hari++) {
         const dayLoad = teacherDay.get(`${g.id}|${hari}`) ?? 0;
-        if (dayLoad >= g.maxPerHari) {
+        if (dayLoad + task.ukuran > g.maxPerHari) {
           bump('guru melebihi batas jam per hari');
           continue;
         }
-        for (const per of assignable) {
+        for (const per of aktifHari[hari]) {
           const sk = slotKey(hari, per.id);
           if (occGet(occ, `k|${kelas.id}`).has(sk)) bump('kelas sudah terisi');
           else if (occGet(occ, `g|${g.id}`).has(sk)) bump('guru bentrok');
           else if (isBlocked('kelas', kelas.id, sk) || isBlocked('guru', g.id, sk))
             bump('diblokir lewat halaman Batasan');
           else if (g.slotDilarang.includes(sk)) bump('di luar preferensi guru');
-          else if (!pickRoom(req, mapel, kelas, sk)) bump('ruang tidak tersedia');
+          else if (req.ruangId && !ruangM.has(req.ruangId)) bump('ruang tetap tidak ditemukan');
+          else if (!p.ruang.length) bump('belum ada data ruang');
         }
+        if (!aktifHari[hari].length) bump('tidak ada JP aktif pada hari ini');
       }
       const top = Object.entries(counts)
         .sort((a, b) => b[1] - a[1])
@@ -248,13 +332,14 @@ export async function generate(
     const gagal: GagalItem[] = [];
     let penaltiTotal = 0;
 
-    // Urutkan item: yang paling sulit dulu — guru dengan sisa jam paling sempit,
-    // mapel dengan ruang paling terbatas, kelas dengan tuntutan terbanyak.
-    // Rantai pengacak antar percobaan membuat tiap percobaan berbeda.
+    // Urutkan task: yang paling sulit dulu — guru dengan sisa jam paling sempit,
+    // blok terbesar lebih dulu, mapel dengan ruang paling terbatas.
     const butuhGuru = new Map<string, number>();
-    for (const it of items) butuhGuru.set(it.req.guruId, (butuhGuru.get(it.req.guruId) ?? 0) + 1);
+    for (const it of items)
+      butuhGuru.set(it.req.guruId, (butuhGuru.get(it.req.guruId) ?? 0) + it.ukuran);
     const butuhKelas = new Map<string, number>();
-    for (const it of items) butuhKelas.set(it.req.kelasId, (butuhKelas.get(it.req.kelasId) ?? 0) + 1);
+    for (const it of items)
+      butuhKelas.set(it.req.kelasId, (butuhKelas.get(it.req.kelasId) ?? 0) + it.ukuran);
     const jumlahRuangTipe = new Map<string, number>();
     for (const r of p.ruang) jumlahRuangTipe.set(r.tipe, (jumlahRuangTipe.get(r.tipe) ?? 0) + 1);
 
@@ -264,6 +349,7 @@ export async function generate(
       const slackA = (ga?.maxJam ?? 24) - (butuhGuru.get(a.req.guruId) ?? 0);
       const slackB = (gb?.maxJam ?? 24) - (butuhGuru.get(b.req.guruId) ?? 0);
       if (slackA !== slackB) return slackA - slackB;
+      if (a.ukuran !== b.ukuran) return b.ukuran - a.ukuran;
       const ma = mapelM.get(a.req.mapelId);
       const mb = mapelM.get(b.req.mapelId);
       const ruangA = jumlahRuangTipe.get(ma?.tipeRuang ?? 'reguler') ?? 99;
@@ -275,16 +361,18 @@ export async function generate(
       return Math.random() - 0.5;
     });
 
-    for (const item of urut) {
-      const cands = evalItem(item);
+    for (const task of urut) {
+      const cands = evalTask(task);
       if (!cands.length) {
-        gagal.push({ req: item.req, alasan: diag(item) });
+        gagal.push({ req: task.req, alasan: diag(task) });
         continue;
       }
       cands.sort((a, b) => a.penalti - b.penalti);
       const top = cands.slice(0, Math.min(4, cands.length));
       const minPen = top[0].penalti;
-      const bobot = top.map((c) => Math.exp(-(c.penalti - minPen) / 10) * (0.6 + Math.random() * 0.8));
+      const bobot = top.map(
+        (c) => Math.exp(-(c.penalti - minPen) / 10) * (0.6 + Math.random() * 0.8),
+      );
       const sum = bobot.reduce((a, b) => a + b, 0);
       let r = Math.random() * sum;
       let chosen = top[0];
@@ -296,21 +384,25 @@ export async function generate(
         }
       }
 
-      const j: Assignment = {
-        id: uid('j'),
-        reqId: item.req.id,
-        kelasId: item.req.kelasId,
-        mapelId: item.req.mapelId,
-        guruId: item.req.guruId,
-        ruangId: chosen.ruangId,
-        hari: chosen.hari,
-        periodeId: chosen.periodeId,
-        tetap: false,
-        catatan: '',
-      };
-      markOcc(j);
-      bumpLoad(j);
-      placed.push(j);
+      const blokId = task.ukuran > 1 ? uid('bl') : undefined;
+      for (const periodeId of chosen.slots) {
+        const j: Assignment = {
+          id: uid('j'),
+          reqId: task.req.id,
+          kelasId: task.req.kelasId,
+          mapelId: task.req.mapelId,
+          guruId: task.req.guruId,
+          ruangId: chosen.ruangId,
+          hari: chosen.hari,
+          periodeId,
+          tetap: false,
+          catatan: '',
+          blokId,
+        };
+        markOcc(j);
+        bumpLoad(j);
+        placed.push(j);
+      }
       penaltiTotal += chosen.penalti;
     }
 
@@ -345,7 +437,9 @@ export async function generate(
     l.pesan.push(
       `${l.ditempatkan} dari ${l.totalKebutuhan} jam pelajaran berhasil dijadwalkan, ${l.totalGagal} gagal.`,
     );
-    l.pesan.push('Coba tambah jumlah percobaan, kurangi jam, atau periksa batasan pada halaman Batasan.');
+    l.pesan.push(
+      'Coba tambah jumlah percobaan, kurangi jam, atau periksa batasan pada halaman Batasan.',
+    );
   }
   l.pesan.push(`Selesai dalam ${durasiMs} ms setelah ${l.percobaan} percobaan.`);
   return { jadwal: hasil.jadwal, laporan: l };
@@ -400,7 +494,7 @@ export function checkConflicts(p: Project): Conflict[] {
     }
   }
 
-  // 2. Jadwal pada baris di luar jam pelajaran (istirahat/apel/kustom) / data tidak valid.
+  // 2. Jadwal pada baris di luar jam pelajaran / di luar JP aktif hari itu.
   for (const j of p.jadwal) {
     const per = perM.get(j.periodeId);
     if (!per || per.tipe !== 'pelajaran') {
@@ -409,6 +503,14 @@ export function checkConflicts(p: Project): Conflict[] {
         tipe: 'istirahat',
         tingkat: 'error',
         pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) dijadwalkan di ${slotLabel(p, j.hari, j.periodeId)} — bertipe ${per ? labelTipeWaktu(per).toLowerCase() : 'di luar jam pelajaran'}, bukan jam pelajaran.`,
+        refJadwal: [j.id],
+      });
+    } else if (!slotHariAktif(p, j.hari, j.periodeId)) {
+      out.push({
+        id: `nonaktif|${j.id}`,
+        tipe: 'nonaktif',
+        tingkat: 'error',
+        pesan: `${namaMapel(j.mapelId)} (${kelasM.get(j.kelasId)?.nama ?? '?'}) berada di ${slotLabel(p, j.hari, j.periodeId)} — JP tersebut non-aktif pada hari ${p.hari[j.hari] ?? '?'} (batas maks. JP / dimatikan manual).`,
         refJadwal: [j.id],
       });
     }
@@ -544,4 +646,162 @@ export function checkConflicts(p: Project): Conflict[] {
 /** Benar-benar bersih? (hanya entri "aman" buatan). */
 export function isClean(conflicts: Conflict[]): boolean {
   return conflicts.length === 1 && conflicts[0].id === 'aman';
+}
+
+// ---------------------------------------------------------------------------
+// Perbaikan konflik otomatis (trial-and-error pindah/swap slot)
+// ---------------------------------------------------------------------------
+
+export interface HasilAutoFix {
+  jadwal: Assignment[];
+  /** Jumlah konflik keras sebelum perbaikan. */
+  sebelum: number;
+  /** Jumlah konflik keras yang tersisa. */
+  sesudah: number;
+  /** Konflik yang berhasil dihilangkan. */
+  berhasil: number;
+  /** Sisa konflik (sama dengan `sesudah`). */
+  tersisa: number;
+  /** Banyak langkah pemindahan/penukaran yang dilakukan. */
+  gerakan: number;
+}
+
+/** Tipe konflik yang bisa diperbaiki dengan memindahkan/menukar slot. */
+const TIPE_OTOMATIS = new Set([
+  'kelas-bentrok',
+  'guru-bentrok',
+  'ruang-bentrok',
+  'blokir',
+  'istirahat',
+  'nonaktif',
+]);
+
+function errorJadwal(p: Project, jadwal: Assignment[]): Conflict[] {
+  return checkConflicts({ ...p, jadwal }).filter(
+    (k) => k.id !== 'aman' && k.tingkat === 'error',
+  );
+}
+
+function errorBisaDiperbaiki(p: Project, jadwal: Assignment[]): Conflict[] {
+  return errorJadwal(p, jadwal).filter((k) => TIPE_OTOMATIS.has(k.tipe));
+}
+
+/** Apakah assignment boleh diletakkan di slot tertentu tanpa bentrok keras? */
+function slotAman(
+  p: Project,
+  jadwal: Assignment[],
+  a: Assignment,
+  hari: number,
+  periodeId: string,
+  abaikan: Set<string>,
+): boolean {
+  if (!slotHariAktif(p, hari, periodeId)) return false;
+  // Blokir kelas/guru pada slot tujuan (ruang tujuan menyesuaikan: ruang
+  // terblokir pada slot itu ditolak lewat pemeriksaan bentrok di bawah).
+  for (const b of p.blokir) {
+    if (b.hari !== hari || b.periodeId !== periodeId) continue;
+    if (
+      (b.jenis === 'kelas' && b.refId === a.kelasId) ||
+      (b.jenis === 'guru' && b.refId === a.guruId)
+    )
+      return false;
+  }
+  for (const j of jadwal) {
+    if (abaikan.has(j.id)) continue;
+    if (j.hari !== hari || j.periodeId !== periodeId) continue;
+    if (
+      j.kelasId === a.kelasId ||
+      j.guruId === a.guruId ||
+      (a.ruangId && j.ruangId === a.ruangId)
+    )
+      return false;
+  }
+  return true;
+}
+
+/** Cari slot kosong terdekat untuk memindahkan satu pelajaran. */
+function cariSlotBebas(
+  p: Project,
+  jadwal: Assignment[],
+  a: Assignment,
+): { hari: number; periodeId: string } | null {
+  const urutanHari = [a.hari, ...p.hari.map((_, i) => i).filter((i) => i !== a.hari)];
+  for (const hari of urutanHari) {
+    for (const per of periodeAktifHari(p, hari)) {
+      if (hari === a.hari && per.id === a.periodeId) continue;
+      if (slotAman(p, jadwal, a, hari, per.id, new Set([a.id]))) {
+        return { hari, periodeId: per.id };
+      }
+    }
+  }
+  return null;
+}
+
+export function autoFixConflicts(p: Project): HasilAutoFix {
+  let jadwal = p.jadwal.map((j) => ({ ...j }));
+  const sebelum = errorJadwal(p, jadwal).length;
+  let gerakan = 0;
+
+  // Batas iterasi mencegah loop panjang pada data yang memang tidak mungkin
+  // dirapikan (mis. slot terlalu sedikit).
+  for (let iter = 0; iter < 400; iter++) {
+    const errs = errorBisaDiperbaiki(p, jadwal);
+    if (!errs.length) break;
+    let maju = false;
+
+    for (const konflik of errs) {
+      const ids = konflik.refJadwal;
+      // 1) Pindahkan salah satu pelajaran ke slot yang benar-benar bebas.
+      for (const id of ids) {
+        const a = jadwal.find((x) => x.id === id);
+        if (!a || a.tetap) continue;
+        const slot = cariSlotBebas(p, jadwal, a);
+        if (!slot) continue;
+        jadwal = jadwal.map((x) =>
+          x.id === a.id ? { ...x, hari: slot.hari, periodeId: slot.periodeId } : x,
+        );
+        maju = true;
+        break;
+      }
+      if (maju) break;
+
+      // 2) Tukar posisi dengan pelajaran lain (tetap menghormati jadwal tetap).
+      for (const id of ids) {
+        const a = jadwal.find((x) => x.id === id);
+        if (!a || a.tetap) continue;
+        for (const b of jadwal) {
+          if (b.id === a.id || b.tetap) continue;
+          if (b.hari === a.hari && b.periodeId === a.periodeId) continue;
+          const abaikan = new Set([a.id, b.id]);
+          if (
+            !slotAman(p, jadwal, a, b.hari, b.periodeId, abaikan) ||
+            !slotAman(p, jadwal, b, a.hari, a.periodeId, abaikan)
+          )
+            continue;
+          jadwal = jadwal.map((x) => {
+            if (x.id === a.id) return { ...x, hari: b.hari, periodeId: b.periodeId };
+            if (x.id === b.id) return { ...x, hari: a.hari, periodeId: a.periodeId };
+            return x;
+          });
+          maju = true;
+          break;
+        }
+        if (maju) break;
+      }
+      if (maju) break;
+    }
+
+    if (!maju) break;
+    gerakan++;
+  }
+
+  const sesudah = errorJadwal(p, jadwal).length;
+  return {
+    jadwal,
+    sebelum,
+    sesudah,
+    berhasil: Math.max(0, sebelum - sesudah),
+    tersisa: sesudah,
+    gerakan,
+  };
 }

@@ -4,7 +4,7 @@
 
 import { Fragment, useMemo, useState } from 'react';
 import { useProject } from '../store';
-import { buatMatriks, matriksKeXlsx } from '../matrix';
+import { buatMatriks, kunciSel, matriksKeXlsx } from '../matrix';
 import { downloadXlsx } from '../xlsx';
 import { hexA } from '../utils';
 import { Banner, Btn, EmptyState, PageHead } from '../ui';
@@ -93,34 +93,50 @@ export function HalMatriks() {
             <tbody>
               {m.blok.map((b) => (
                 <Fragment key={b.hari}>
-                  {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => (
-                    <tr key={`${b.hari}-${br.periodeId}`}>
-                      {i === 0 ? (
-                        <td className="c-hari" rowSpan={b.jumlah}>
-                          {b.nama}
-                        </td>
-                      ) : null}
-                      <td className="c-jam">{br.jam}</td>
-                      {br.tipe !== 'pelajaran' ? (
-                        <td colSpan={m.kelas.length} className={`c-ist c-ist-${br.tipe}`}>
-                          {br.label}
-                        </td>
-                      ) : (
-                        m.kelas.map((k) => {
-                          const s = m.sel.get(`${br.hari}|${br.periodeId}|${k.id}`);
-                          return (
-                            <td
-                              key={k.id}
-                              className={s ? 'c-kode' : ''}
-                              style={s ? { background: hexA(s.warna, 0.35) } : undefined}
-                            >
-                              {s?.kode ?? ''}
-                            </td>
-                          );
-                        })
-                      )}
-                    </tr>
-                  ))}
+                  {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => {
+                    const barisIni = b.mulai + i;
+                    return (
+                      <tr key={`${b.hari}-${br.periodeId}`}>
+                        {i === 0 ? (
+                          <td className="c-hari" rowSpan={b.jumlah}>
+                            {b.nama}
+                          </td>
+                        ) : null}
+                        <td className="c-jam">{br.jam}</td>
+                        {br.tipe !== 'pelajaran' ? (
+                          <td colSpan={m.kelas.length} className={`c-ist c-ist-${br.tipe}`}>
+                            {br.label}
+                          </td>
+                        ) : !br.aktif ? (
+                          <td colSpan={m.kelas.length} className="c-nonaktif">
+                            JP NON-AKTIF PADA HARI INI
+                          </td>
+                        ) : (
+                          m.kelas.map((k) => {
+                            const blok = m.blokSel.find(
+                              (bl) =>
+                                bl.kelasId === k.id &&
+                                bl.mulai <= barisIni &&
+                                barisIni < bl.mulai + bl.jumlah,
+                            );
+                            // Bagian lanjutan blok digabung ke sel di atasnya.
+                            if (blok && blok.mulai !== barisIni) return null;
+                            const s = m.sel.get(kunciSel(br.hari, br.periodeId, k.id));
+                            return (
+                              <td
+                                key={k.id}
+                                className={s ? (blok ? 'c-kode c-blok' : 'c-kode') : ''}
+                                rowSpan={blok ? blok.jumlah : undefined}
+                                style={s ? { background: hexA(s.warna, 0.35) } : undefined}
+                              >
+                                {s?.kode ?? ''}
+                              </td>
+                            );
+                          })
+                        )}
+                      </tr>
+                    );
+                  })}
                 </Fragment>
               ))}
             </tbody>

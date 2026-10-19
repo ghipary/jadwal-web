@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import {
+  HARI_KONFIG_BAWAAN,
   LABEL_TIPE_RUANG,
   PALET_GURU,
+  konfigHari,
   parseSlotKey,
+  periodeAktifHari,
   slotKey,
   TIPE_RUANG_KEBUTUHAN,
   TIPE_RUANG_OPTIONS,
@@ -13,7 +16,9 @@ import {
 } from '../types';
 import type {
   Block,
+  HariKonfig,
   Period,
+  Project,
   SchoolClass,
   SlotKey,
   Student,
@@ -21,7 +26,7 @@ import type {
   Teacher,
 } from '../types';
 import { useProject } from '../store';
-import { Btn, Icon, type FieldDef } from '../ui';
+import { Btn, Icon, Modal, type FieldDef } from '../ui';
 import { DataPage, EntityConfig } from './DataPage';
 import { uid } from '../utils';
 
@@ -52,6 +57,7 @@ export function HalGuru() {
       maxPerHari: 6,
       slotDiinginkan: [],
       slotDilarang: [],
+      polaJP: [],
       catatan: '',
     }),
     kolom: [
@@ -90,6 +96,15 @@ export function HalGuru() {
         ),
       },
       { label: 'Batas / Hari', render: (r) => r.maxPerHari },
+      {
+        label: 'Pola JP',
+        render: (r) =>
+          r.polaJP.length ? (
+            <span className="badge badge-biru">{r.polaJP.join(' + ')}</span>
+          ) : (
+            <span className="hint">—</span>
+          ),
+      },
       {
         label: 'Slot Dilarang',
         render: (r) => <span className="badge badge-abu">{r.slotDilarang.length} slot</span>,
@@ -137,6 +152,13 @@ export function HalGuru() {
         label: 'Slot yang Dilarang',
         type: 'slots',
         hint: 'Klik sel untuk memilih — generator tidak akan memakai slot ini.',
+      },
+      {
+        key: 'polaJP',
+        label: 'Pola Distribusi JP (Block Scheduling)',
+        type: 'pola',
+        placeholder: 'Contoh: 2, 1',
+        hint: 'Pecah JP guru menjadi blok berurutan, mis. 2, 1 = 3 JP dijadwalkan 2 JP menyambung lalu 1 JP. Kosongkan bila tidak perlu.',
       },
       { key: 'catatan', label: 'Catatan', type: 'textarea', placeholder: 'Opsional…' },
     ],
@@ -401,53 +423,91 @@ function petaSlotHari(daftar: SlotKey[], peta: (h: number) => number | null): Sl
   return [...new Set(out)];
 }
 
+/** Susun konfigurasi hari sejajar `project.hari` (bawaan bila belum ada). */
+function konfigLengkap(project: Project): HariKonfig[] {
+  return project.hari.map((_, i) => ({
+    ...HARI_KONFIG_BAWAAN,
+    ...(project.hariKonfig?.[i] ?? {}),
+  }));
+}
+
+/** Draft isi Modal Tambah/Ubah Hari. */
+interface DraftHari {
+  mode: 'tambah' | 'ubah';
+  /** Indeks hari yang diubah; -1 untuk tambah. */
+  idx: number;
+  nama: string;
+  maksJP: number;
+  slotNonAktif: string[];
+}
+
 function HariAktifCard() {
   const { project, set } = useProject();
-  const [baru, setBaru] = useState('');
-  const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [editNama, setEditNama] = useState('');
+  const [modal, setModal] = useState<DraftHari | null>(null);
 
   const jumlahJadwal = (idx: number) =>
     project.jadwal.filter((j) => j.hari === idx).length;
   const jumlahBlokir = (idx: number) =>
     project.blokir.filter((b) => b.hari === idx).length;
 
-  const tambah = () => {
-    const nama = baru.trim();
-    if (!nama) return;
-    if (project.hari.some((h) => h.toLowerCase() === nama.toLowerCase())) {
-      window.alert(`Hari "${nama}" sudah ada.`);
-      return;
-    }
-    set({ hari: [...project.hari, nama] });
-    setBaru('');
+  const jpBaris = project.periode.filter((p) => p.tipe === 'pelajaran');
+
+  const bukaTambah = () =>
+    setModal({ mode: 'tambah', idx: -1, nama: '', maksJP: 0, slotNonAktif: [] });
+
+  const bukaUbah = (idx: number) => {
+    const k = konfigHari(project, idx);
+    setModal({
+      mode: 'ubah',
+      idx,
+      nama: project.hari[idx],
+      maksJP: k.maksJP,
+      slotNonAktif: [...k.slotNonAktif],
+    });
   };
 
-  const mulaiEdit = (idx: number) => {
-    setEditIdx(idx);
-    setEditNama(project.hari[idx]);
-  };
+  const toggleSlot = (id: string) =>
+    setModal((m) =>
+      m
+        ? {
+            ...m,
+            slotNonAktif: m.slotNonAktif.includes(id)
+              ? m.slotNonAktif.filter((x) => x !== id)
+              : [...m.slotNonAktif, id],
+          }
+        : m,
+    );
 
-  const simpanEdit = () => {
-    if (editIdx === null) return;
-    const nama = editNama.trim();
+  const simpanModal = () => {
+    if (!modal) return;
+    const nama = modal.nama.trim();
     if (!nama) {
       window.alert('Nama hari tidak boleh kosong.');
       return;
     }
     if (
       project.hari.some(
-        (h, i) => i !== editIdx && h.toLowerCase() === nama.toLowerCase(),
+        (h, i) => i !== modal.idx && h.toLowerCase() === nama.toLowerCase(),
       )
     ) {
       window.alert(`Hari "${nama}" sudah ada.`);
       return;
     }
-    const hari = [...project.hari];
-    hari[editIdx] = nama;
-    set({ hari });
-    setEditIdx(null);
-    setEditNama('');
+    const konfig = konfigLengkap(project);
+    const baru: HariKonfig = {
+      maksJP: Math.max(0, Math.floor(modal.maksJP) || 0),
+      slotNonAktif: [...new Set(modal.slotNonAktif)],
+    };
+    if (modal.mode === 'tambah') {
+      set({ hari: [...project.hari, nama], hariKonfig: [...konfig, baru] });
+    } else {
+      const hari = [...project.hari];
+      hari[modal.idx] = nama;
+      const hk = [...konfig];
+      hk[modal.idx] = baru;
+      set({ hari, hariKonfig: hk });
+    }
+    setModal(null);
   };
 
   /** Urutkan ulang hari sekaligus memindahkan seluruh referensi indeksnya. */
@@ -456,9 +516,12 @@ function HariAktifCard() {
     if (tujuan < 0 || tujuan >= project.hari.length) return;
     const hari = [...project.hari];
     [hari[idx], hari[tujuan]] = [hari[tujuan], hari[idx]];
+    const konfig = konfigLengkap(project);
+    [konfig[idx], konfig[tujuan]] = [konfig[tujuan], konfig[idx]];
     const peta = (h: number) => (h === idx ? tujuan : h === tujuan ? idx : h);
     set({
       hari,
+      hariKonfig: konfig,
       jadwal: project.jadwal.map((j) => ({ ...j, hari: peta(j.hari) })),
       blokir: project.blokir.map((b) => ({ ...b, hari: peta(b.hari) })),
       guru: project.guru.map((g) => ({
@@ -491,9 +554,11 @@ function HariAktifCard() {
       return;
 
     const hari = project.hari.filter((_, i) => i !== idx);
+    const konfig = konfigLengkap(project).filter((_, i) => i !== idx);
     const peta = (h: number): number | null => (h === idx ? null : h > idx ? h - 1 : h);
     set({
       hari,
+      hariKonfig: konfig,
       jadwal: project.jadwal
         .filter((j) => j.hari !== idx)
         .map((j) => ({ ...j, hari: peta(j.hari) as number })),
@@ -512,92 +577,183 @@ function HariAktifCard() {
     <div className="card">
       <div className="card-title">Hari Aktif</div>
       <div className="card-sub">
-        Tambah, ubah nama, urutkan, atau hapus hari. Perubahan otomatis diikuti tab
+        Tambah, ubah nama &amp; batas JP, urutkan, atau hapus hari. Perubahan otomatis diikuti tab
         hari di halaman Jadwal, grid, matriks, dan generator.
       </div>
 
       <div className="hari-list">
-        {project.hari.map((nama, i) => (
-          <div className="hari-item" key={`${i}-${nama}`}>
-            <span className="hari-no">{i + 1}</span>
-            {editIdx === i ? (
-              <input
-                className="input"
-                autoFocus
-                value={editNama}
-                onChange={(e) => setEditNama(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') simpanEdit();
-                  if (e.key === 'Escape') setEditIdx(null);
-                }}
-              />
-            ) : (
+        {project.hari.map((nama, i) => {
+          const jpAktif = periodeAktifHari(project, i).length;
+          const konfig = konfigHari(project, i);
+          return (
+            <div className="hari-item" key={`${i}-${nama}`}>
+              <span className="hari-no">{i + 1}</span>
               <b className="hari-nama">{nama}</b>
-            )}
-            <span className="hint">
-              {jumlahJadwal(i)} jadwal
-              {jumlahBlokir(i) ? ` · ${jumlahBlokir(i)} batasan` : ''}
-            </span>
-            <div className="aksi-inline">
-              {editIdx === i ? (
-                <>
-                  <button className="icon-btn" title="Simpan nama" onClick={simpanEdit}>
-                    <Icon name="cek" size={15} />
-                  </button>
-                  <button className="icon-btn" title="Batal" onClick={() => setEditIdx(null)}>
-                    <Icon name="tutup" size={15} />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    className="icon-btn"
-                    title="Naikkan"
-                    disabled={i === 0}
-                    onClick={() => geser(i, -1)}
-                  >
-                    <span style={{ fontSize: 13, lineHeight: 1 }}>↑</span>
-                  </button>
-                  <button
-                    className="icon-btn"
-                    title="Turunkan"
-                    disabled={i === project.hari.length - 1}
-                    onClick={() => geser(i, 1)}
-                  >
-                    <span style={{ fontSize: 13, lineHeight: 1 }}>↓</span>
-                  </button>
-                  <button className="icon-btn" title="Ubah nama" onClick={() => mulaiEdit(i)}>
-                    <Icon name="ubah" size={15} />
-                  </button>
-                  <button
-                    className="icon-btn"
-                    title="Hapus hari"
-                    disabled={project.hari.length <= 1}
-                    onClick={() => hapus(i)}
-                  >
-                    <Icon name="hapus" size={15} />
-                  </button>
-                </>
-              )}
+              <span className="hint">
+                {jumlahJadwal(i)} jadwal
+                {jumlahBlokir(i) ? ` · ${jumlahBlokir(i)} batasan` : ''}
+              </span>
+              <span className={`badge ${jpAktif < jpBaris.length ? 'badge-kuning' : 'badge-abu'}`}>
+                {jpAktif} JP aktif
+                {konfig.maksJP > 0 ? ` (maks ${konfig.maksJP})` : ''}
+              </span>
+              <div className="aksi-inline">
+                <button
+                  className="icon-btn"
+                  title="Naikkan"
+                  disabled={i === 0}
+                  onClick={() => geser(i, -1)}
+                >
+                  <span style={{ fontSize: 13, lineHeight: 1 }}>↑</span>
+                </button>
+                <button
+                  className="icon-btn"
+                  title="Turunkan"
+                  disabled={i === project.hari.length - 1}
+                  onClick={() => geser(i, 1)}
+                >
+                  <span style={{ fontSize: 13, lineHeight: 1 }}>↓</span>
+                </button>
+                <button
+                  className="icon-btn"
+                  title="Ubah nama & pengaturan JP"
+                  onClick={() => bukaUbah(i)}
+                >
+                  <Icon name="ubah" size={15} />
+                </button>
+                <button
+                  className="icon-btn"
+                  title="Hapus hari"
+                  disabled={project.hari.length <= 1}
+                  onClick={() => hapus(i)}
+                >
+                  <Icon name="hapus" size={15} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="hari-tambah">
-        <input
-          className="input"
-          placeholder="Nama hari baru (mis. Minggu, Sabtu Khusus)…"
-          value={baru}
-          onChange={(e) => setBaru(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') tambah();
-          }}
-        />
-        <Btn icon="tambah" onClick={tambah} disabled={!baru.trim()}>
+        <Btn icon="tambah" onClick={bukaTambah}>
           Tambah Hari
         </Btn>
+        <span className="hint">
+          Hari baru dibuka lewat modal — lengkapi nama hari dan batas JP khusus hari itu.
+        </span>
       </div>
+
+      {/* --- Modal Tambah / Ubah Hari --- */}
+      <Modal
+        open={modal !== null}
+        title={modal?.mode === 'ubah' ? 'Ubah Hari' : 'Tambah Hari'}
+        desc={
+          modal?.mode === 'ubah'
+            ? `Ubah nama dan pengaturan JP untuk hari “${project.hari[modal.idx] ?? ''}”.`
+            : 'Tentukan nama hari serta batas JP khusus untuk hari baru.'
+        }
+        onClose={() => setModal(null)}
+        footer={
+          <>
+            <Btn variant="ghost" onClick={() => setModal(null)}>
+              Batal
+            </Btn>
+            <Btn variant="primary" icon="cek" onClick={simpanModal}>
+              Simpan Hari
+            </Btn>
+          </>
+        }
+      >
+        {modal ? (
+          <div className="form-grid">
+            <div className="span2 field">
+              <label htmlFor="hari-nama">Nama Hari</label>
+              <input
+                id="hari-nama"
+                className="input"
+                autoFocus
+                placeholder="Contoh: Minggu, Sabtu Khusus…"
+                value={modal.nama}
+                onChange={(e) => setModal({ ...modal, nama: e.target.value })}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') simpanModal();
+                }}
+              />
+              <span className="hint">
+                Nama tampil pada tab, grid, matriks cetak, dan ekspor. Nama harus unik.
+              </span>
+            </div>
+
+            <div className="field">
+              <label htmlFor="hari-maksjp">Batas Maks. JP Hari Ini</label>
+              <input
+                id="hari-maksjp"
+                type="number"
+                className="input"
+                min={0}
+                max={jpBaris.length}
+                value={modal.maksJP}
+                onChange={(e) =>
+                  setModal({
+                    ...modal,
+                    maksJP: Math.max(0, Math.min(jpBaris.length, Number(e.target.value) || 0)),
+                  })
+                }
+              />
+              <span className="hint">
+                0 = tanpa batas (ikut semua {jpBaris.length} JP). Contoh: Jumat diisi 5 → grid
+                berhenti di JP ke-5.
+              </span>
+            </div>
+
+            <div className="field">
+              <label>Ringkasan</label>
+              <div className="kv" style={{ border: 'none', padding: '4px 0' }}>
+                <b>
+                  {Math.max(
+                    0,
+                    (modal.maksJP > 0 ? modal.maksJP : jpBaris.length) -
+                      modal.slotNonAktif.length,
+                  )}{' '}
+                  JP aktif
+                </b>
+                <span className="hint">
+                  dari {jpBaris.length} baris JP global · {modal.slotNonAktif.length} dimatikan
+                </span>
+              </div>
+            </div>
+
+            <div className="span2 field">
+              <label>Slot JP yang Aktif untuk Hari Ini</label>
+              <div className="multi">
+                {jpBaris.map((p, urut) => {
+                  const on = !modal.slotNonAktif.includes(p.id) &&
+                    (modal.maksJP === 0 || urut < modal.maksJP);
+                  const dimatikan = modal.slotNonAktif.includes(p.id);
+                  return (
+                    <button
+                      type="button"
+                      key={p.id}
+                      className={`chip ${on ? 'chip-on' : ''}`}
+                      title={`${p.nama} (${p.mulai}–${p.selesai})${dimatikan ? ' — dimatikan manual' : on ? '' : ' — di luar batas maks. JP'}`}
+                      onClick={() => toggleSlot(p.id)}
+                    >
+                      {on ? <Icon name="cek" size={12} /> : null}
+                      {p.nama}
+                      <span className="chip-sub">{p.mulai}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="hint">
+                Klik slot untuk mematikan/mengaktifkan JP tertentu khusus hari ini. Slot di luar
+                batas maks. JP ikut non-aktif dan tidak akan dipakai generator.
+              </span>
+            </div>
+          </div>
+        ) : null}
+      </Modal>
     </div>
   );
 }
