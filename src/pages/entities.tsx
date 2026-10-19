@@ -282,7 +282,7 @@ export function HalMapel() {
       id: uid('m'),
       nama: '',
       kode: '',
-      warna: '#4f46e5',
+      warna: '#138046',
       tipeRuang: 'reguler',
       pilihan: false,
     }),

@@ -6,6 +6,7 @@ import App from '../src/App';
 
 const rute = [
   '/',
+  '/sekolah',
   '/guru',
   '/kelas',
   '/siswa',
@@ -16,6 +17,7 @@ const rute = [
   '/batasan',
   '/generate',
   '/jadwal',
+  '/jadwal-matriks',
   '/konflik',
   '/berkas',
   '/publikasi',

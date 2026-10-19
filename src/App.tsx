@@ -7,9 +7,11 @@ import { checkConflicts } from './scheduler';
 import { Icon } from './ui';
 import { Dashboard } from './pages/Dashboard';
 import { HalBlokir, HalGuru, HalJam, HalKelas, HalMapel, HalRuang, HalSiswa } from './pages/entities';
+import { HalSekolah } from './pages/Sekolah';
 import { HalKebutuhan } from './pages/Kebutuhan';
 import { HalGenerate } from './pages/Generate';
 import { HalJadwal } from './pages/Jadwal';
+import { HalMatriks } from './pages/Matriks';
 import { HalKonflik } from './pages/Konflik';
 import { HalBerkas } from './pages/Berkas';
 import { HalPublikasi, PublikasiReadonly } from './pages/Publikasi';
@@ -33,6 +35,7 @@ const NAV: { grup: string; items: NavItem[] }[] = [
   {
     grup: 'Data Sekolah',
     items: [
+      { to: '/sekolah', label: 'Identitas Sekolah', ikon: 'sekolah' },
       { to: '/guru', label: 'Guru', ikon: 'guru' },
       { to: '/kelas', label: 'Kelas', ikon: 'kelas' },
       { to: '/siswa', label: 'Siswa', ikon: 'siswa' },
@@ -46,6 +49,7 @@ const NAV: { grup: string; items: NavItem[] }[] = [
   {
     grup: 'Hasil',
     items: [
+      { to: '/jadwal-matriks', label: 'Matriks & Cetak', ikon: 'sekolah' },
       { to: '/berkas', label: 'Berkas & Data', ikon: 'berkas' },
       { to: '/publikasi', label: 'Publikasi', ikon: 'bagikan' },
     ],
@@ -80,7 +84,7 @@ function Layout() {
       <aside className={`sidebar ${menu ? 'buka' : ''}`}>
         <div className="brand">
           <div className="brand-logo">
-            <Icon name="jadwal" size={20} />
+            <img src="/logo-sekolah.png" alt="Logo sekolah" />
           </div>
           <div>
             <div className="brand-name">Jadwal Sekolah</div>
@@ -146,6 +150,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/sekolah" element={<HalSekolah />} />
         <Route path="/guru" element={<HalGuru />} />
         <Route path="/kelas" element={<HalKelas />} />
         <Route path="/siswa" element={<HalSiswa />} />
@@ -156,6 +161,7 @@ export default function App() {
         <Route path="/batasan" element={<HalBlokir />} />
         <Route path="/generate" element={<HalGenerate />} />
         <Route path="/jadwal" element={<HalJadwal />} />
+        <Route path="/jadwal-matriks" element={<HalMatriks />} />
         <Route path="/konflik" element={<HalKonflik />} />
         <Route path="/berkas" element={<HalBerkas />} />
         <Route path="/publikasi" element={<HalPublikasi />} />

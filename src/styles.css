@@ -3,30 +3,33 @@
    ========================================================================== */
 
 :root {
-  --ink: #1a1c33;
-  --ink-2: #4b4f6a;
-  --ink-3: #8a8fa8;
-  --bg: #f3f4fb;
+  /* Palet diambil dari logo sekolah: hijau #138046, emas #FAC10F,
+     merah #E6212A, tinta gelap #342C2A, putih. */
+  --ink: #342c2a;
+  --ink-2: #5d544f;
+  --ink-3: #93897f;
+  --bg: #f1f5ef;
   --card: #ffffff;
-  --line: #e7e8f3;
-  --line-2: #d9dbeb;
-  --brand: #4f46e5;
-  --brand-2: #7c5cf0;
-  --brand-soft: #eeecfe;
-  --pink: #ec4899;
-  --sukses: #10b981;
-  --sukses-soft: #e5f9f1;
-  --bahaya: #e5484d;
+  --line: #e2e9dd;
+  --line-2: #d1d9c9;
+  --brand: #138046;
+  --brand-2: #1aa057;
+  --brand-soft: #e4f3ea;
+  --emas: #fac10f;
+  --emas-soft: #fff6dc;
+  --sukses: #138046;
+  --sukses-soft: #e4f3ea;
+  --bahaya: #e6212a;
   --bahaya-soft: #fdebec;
-  --peringatan: #f59e0b;
-  --peringatan-soft: #fef4e2;
+  --peringatan: #e0a50c;
+  --peringatan-soft: #fef6e0;
   --info-soft: #e8f1fe;
   --info: #2563eb;
-  --sidebar: #16183a;
-  --sidebar-2: #1e2150;
+  --sidebar: #0a4a2c;
+  --sidebar-2: #10683c;
   --radius: 14px;
-  --shadow: 0 1px 2px rgba(24, 26, 60, 0.05), 0 8px 24px -12px rgba(24, 26, 60, 0.12);
-  --shadow-lg: 0 12px 40px -12px rgba(24, 26, 60, 0.35);
+  --shadow: 0 1px 2px rgba(22, 46, 32, 0.05), 0 8px 24px -12px rgba(22, 46, 32, 0.14);
+  --shadow-lg: 0 12px 40px -12px rgba(14, 60, 38, 0.35);
   --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
@@ -85,7 +88,7 @@ a {
   width: 250px;
   flex: none;
   background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-2) 100%);
-  color: #c9cbe8;
+  color: #cfe3d7;
   position: fixed;
   inset: 0 auto 0 0;
   display: flex;
@@ -102,14 +105,25 @@ a {
 }
 
 .brand-logo {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--pink) 130%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
   display: grid;
   place-items: center;
   color: #fff;
-  box-shadow: 0 6px 18px -6px rgba(124, 92, 240, 0.8);
+  box-shadow: 0 6px 18px -6px rgba(250, 193, 15, 0.55);
+  overflow: hidden;
+  flex: none;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 .brand-name {
@@ -122,7 +136,7 @@ a {
 
 .brand-sub {
   font-size: 11px;
-  color: #8f93c4;
+  color: #9fc4ae;
   font-weight: 500;
 }
 
@@ -136,7 +150,7 @@ a {
   font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: #6d70a8;
+  color: #7fb195;
   font-weight: 700;
   padding: 16px 10px 7px;
 }
@@ -147,7 +161,7 @@ a {
   gap: 11px;
   padding: 9px 11px;
   border-radius: 10px;
-  color: #c9cbe8;
+  color: #cfe3d7;
   font-weight: 500;
   font-size: 13.5px;
   margin-bottom: 2px;
@@ -165,9 +179,9 @@ a {
 }
 
 .nav-link.aktif {
-  background: linear-gradient(90deg, rgba(124, 92, 240, 0.35), rgba(236, 72, 153, 0.18));
+  background: linear-gradient(90deg, rgba(250, 193, 15, 0.28), rgba(19, 128, 70, 0.22));
   color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .nav-link .ic {
@@ -189,9 +203,9 @@ a {
 
 .sidebar-foot {
   padding: 14px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 11.5px;
-  color: #8f93c4;
+  color: #9fc4ae;
 }
 
 .main {
@@ -206,7 +220,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 30;
-  background: rgba(243, 244, 251, 0.85);
+  background: rgba(241, 245, 239, 0.85);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
   padding: 12px 26px;
@@ -328,12 +342,12 @@ a {
   color: #fff;
 }
 
-.stat-ic.i-brand { background: linear-gradient(135deg, #4f46e5, #7c5cf0); }
-.stat-ic.i-sukses { background: linear-gradient(135deg, #10b981, #34d399); }
-.stat-ic.i-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
-.stat-ic.i-oring { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.stat-ic.i-brand { background: linear-gradient(135deg, #138046, #1aa057); }
+.stat-ic.i-sukses { background: linear-gradient(135deg, #138046, #2fb86b); }
+.stat-ic.i-pink { background: linear-gradient(135deg, #d9a30c, #fac10f); }
+.stat-ic.i-oring { background: linear-gradient(135deg, #e0a50c, #fac10f); }
 .stat-ic.i-biru { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
-.stat-ic.i-bahaya { background: linear-gradient(135deg, #e5484d, #f87171); }
+.stat-ic.i-bahaya { background: linear-gradient(135deg, #e6212a, #f87171); }
 
 .stat-val {
   font-size: 22px;
@@ -406,11 +420,11 @@ a {
 .btn-primary {
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
   color: #fff;
-  box-shadow: 0 6px 16px -8px rgba(79, 70, 229, 0.9);
+  box-shadow: 0 6px 16px -8px rgba(19, 128, 70, 0.9);
 }
 
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 10px 22px -8px rgba(79, 70, 229, 0.95);
+  box-shadow: 0 10px 22px -8px rgba(19, 128, 70, 0.95);
 }
 
 .btn-soft {
@@ -419,7 +433,7 @@ a {
 }
 
 .btn-soft:hover {
-  background: #e2defc;
+  background: #d5eedf;
 }
 
 .btn-ghost {
@@ -472,7 +486,7 @@ a {
 .tabs {
   display: inline-flex;
   gap: 4px;
-  background: #e9eaf5;
+  background: #e9efe6;
   padding: 4px;
   border-radius: 12px;
   flex-wrap: wrap;
@@ -500,7 +514,7 @@ a {
 .tab.aktif {
   background: var(--card);
   color: var(--brand);
-  box-shadow: 0 2px 8px -3px rgba(24, 26, 60, 0.25);
+  box-shadow: 0 2px 8px -3px rgba(22, 46, 32, 0.25);
 }
 
 .tab-badge {
@@ -531,7 +545,7 @@ a {
   font-weight: 700;
   padding: 10px 12px;
   border-bottom: 1px solid var(--line);
-  background: #fafaff;
+  background: #fbfcfa;
   white-space: nowrap;
 }
 
@@ -546,7 +560,7 @@ a {
 }
 
 .tbl tbody tr:hover td {
-  background: #fafaff;
+  background: #fbfcfa;
 }
 
 .tbl .aksi {
@@ -606,7 +620,7 @@ a {
 .input:focus {
   outline: none;
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 3px rgba(19, 128, 70, 0.16);
 }
 
 textarea.input {
@@ -750,7 +764,7 @@ select.input {
 }
 
 .slotpicker tr.istirahat {
-  background: #f6f7fc;
+  background: #f4f7f2;
 }
 
 .slotcell {
@@ -771,12 +785,12 @@ select.input {
 .slotcell.on {
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
   border-color: var(--brand);
-  box-shadow: 0 3px 8px -4px rgba(79, 70, 229, 0.9);
+  box-shadow: 0 3px 8px -4px rgba(19, 128, 70, 0.9);
 }
 
 .slotcell.mati {
   cursor: not-allowed;
-  background: repeating-linear-gradient(45deg, #f1f2f9, #f1f2f9 4px, #e9eaf4 4px, #e9eaf4 8px);
+  background: repeating-linear-gradient(45deg, #f1f4ef, #f1f4ef 4px, #e9eee6 4px, #e9eee6 8px);
 }
 
 /* --------------------------------------------------------------------------
@@ -786,7 +800,7 @@ select.input {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(16, 18, 46, 0.55);
+  background: rgba(16, 38, 26, 0.55);
   backdrop-filter: blur(3px);
   display: grid;
   place-items: center;
@@ -881,7 +895,7 @@ select.input {
 }
 
 .banner-info { background: var(--info-soft); color: #1d4ed8; }
-.banner-sukses { background: var(--sukses-soft); color: #047857; }
+.banner-sukses { background: var(--sukses-soft); color: #0c6b3d; }
 .banner-bahaya { background: var(--bahaya-soft); color: #b31217; }
 .banner-peringatan { background: var(--peringatan-soft); color: #b45309; }
 
@@ -936,7 +950,7 @@ select.input {
 }
 
 .badge-biru { background: var(--info-soft); color: #1d4ed8; }
-.badge-hijau { background: var(--sukses-soft); color: #047857; }
+.badge-hijau { background: var(--sukses-soft); color: #0c6b3d; }
 .badge-merah { background: var(--bahaya-soft); color: #b31217; }
 .badge-kuning { background: var(--peringatan-soft); color: #b45309; }
 .badge-abu { background: #eef0f7; color: var(--ink-2); }
@@ -976,7 +990,7 @@ select.input {
   gap: 10px;
   padding: 10px 14px;
   border-bottom: 1px solid var(--line);
-  background: #fafaff;
+  background: #fbfcfa;
 }
 
 .tt-titel-judul {
@@ -1019,7 +1033,7 @@ select.input {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: #fafaff;
+  background: #fbfcfa;
   padding: 11px 10px;
   font-size: 12px;
   font-weight: 700;
@@ -1037,7 +1051,7 @@ select.input {
 .tt th.jam-cell {
   width: 132px;
   text-align: left;
-  background: #fafaff;
+  background: #fbfcfa;
   padding: 9px 12px;
   font-size: 12.5px;
   color: var(--ink-2);
@@ -1059,7 +1073,7 @@ select.input {
 
 .tt tr.baris-istirahat td {
   height: 30px;
-  background: #f6f7fc;
+  background: #f4f7f2;
   text-align: center;
   color: var(--ink-3);
   font-size: 11.5px;
@@ -1090,7 +1104,7 @@ select.input {
   border-radius: 9px;
   padding: 6px 8px;
   cursor: grab;
-  box-shadow: 0 1px 3px rgba(24, 26, 60, 0.14);
+  box-shadow: 0 1px 3px rgba(22, 46, 32, 0.14);
   transition: transform 0.12s, box-shadow 0.12s;
   font-family: inherit;
   overflow: hidden;
@@ -1099,7 +1113,7 @@ select.input {
 
 .les:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px -6px rgba(24, 26, 60, 0.4);
+  box-shadow: 0 6px 14px -6px rgba(22, 46, 32, 0.4);
   z-index: 2;
   position: relative;
 }
@@ -1133,11 +1147,11 @@ select.input {
 
 .les-tetap {
   border-style: solid;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35), 0 1px 3px rgba(24, 26, 60, 0.14);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35), 0 1px 3px rgba(22, 46, 32, 0.14);
 }
 
 .les-konflik {
-  box-shadow: 0 0 0 2px var(--bahaya), 0 1px 3px rgba(24, 26, 60, 0.14);
+  box-shadow: 0 0 0 2px var(--bahaya), 0 1px 3px rgba(22, 46, 32, 0.14);
 }
 
 .les-redup {
@@ -1191,7 +1205,7 @@ select.input {
    -------------------------------------------------------------------------- */
 
 .generate-hero {
-  background: linear-gradient(120deg, var(--sidebar) 0%, var(--sidebar-2) 55%, #3b2f7a 100%);
+  background: linear-gradient(120deg, var(--sidebar) 0%, var(--sidebar-2) 55%, #0f7a45 100%);
   border-radius: 18px;
   color: #fff;
   padding: 26px 28px;
@@ -1208,7 +1222,7 @@ select.input {
 }
 
 .generate-hero p {
-  color: #b9bce4;
+  color: #bfe0cd;
   font-size: 13.5px;
   margin-top: 5px;
   max-width: 62ch;
@@ -1218,7 +1232,7 @@ select.input {
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--brand), var(--pink));
+  background: linear-gradient(135deg, var(--brand), var(--emas));
   display: grid;
   place-items: center;
   flex: none;
@@ -1275,13 +1289,13 @@ select.input {
 .progress {
   height: 9px;
   border-radius: 999px;
-  background: #e9eaf5;
+  background: #e9efe6;
   overflow: hidden;
 }
 
 .progress > div {
   height: 100%;
-  background: linear-gradient(90deg, var(--brand), var(--pink));
+  background: linear-gradient(90deg, var(--brand), var(--emas));
   border-radius: 999px;
   transition: width 0.2s;
 }
@@ -1377,7 +1391,7 @@ select.input {
 
 .bar {
   height: 8px;
-  background: #e9eaf5;
+  background: #e9efe6;
   border-radius: 999px;
   overflow: hidden;
 }
@@ -1440,7 +1454,7 @@ select.input {
   padding: 26px;
   text-align: center;
   color: var(--ink-2);
-  background: #fafaff;
+  background: #fbfcfa;
   transition: 0.15s;
   cursor: pointer;
 }
@@ -1481,7 +1495,7 @@ select.input {
 }
 
 .readonly-top p {
-  color: #b9bce4;
+  color: #bfe0cd;
   font-size: 13px;
 }
 
@@ -1508,7 +1522,7 @@ select.input {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(16, 18, 46, 0.5);
+    background: rgba(16, 38, 26, 0.5);
     z-index: 35;
   }
 
@@ -1536,6 +1550,199 @@ select.input {
     margin-left: 0;
     width: 100%;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Matriks cetak (ala lembar resmi: baris = hari×jam, kolom = kelas)
+   -------------------------------------------------------------------------- */
+
+.mx-doc {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.mx-title {
+  text-align: center;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+
+.mx-school {
+  text-align: center;
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-top: 2px;
+}
+
+.mx-ta {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin: 2px 0 16px;
+}
+
+.mx-wrap {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+table.mx {
+  border-collapse: collapse;
+  font-size: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mx th,
+.mx td {
+  border: 1px solid #64748b;
+  padding: 4px 6px;
+}
+
+.mx thead th {
+  background: #e6ece3;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mx td.c-hari,
+.mx thead th.c-hari {
+  background: #e3f2e9;
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+  min-width: 58px;
+}
+
+.mx td.c-jam,
+.mx thead th.c-jam {
+  text-align: center;
+  white-space: nowrap;
+  color: #334155;
+  background: #f8fafc;
+  min-width: 108px;
+}
+
+.mx td.c-kode {
+  text-align: center;
+  font-weight: 600;
+  min-width: 62px;
+}
+
+.mx td.c-ist {
+  text-align: center;
+  font-style: italic;
+  background: #f1f5f9;
+  color: #64748b;
+  letter-spacing: 0.08em;
+}
+
+table.mx-legend {
+  border-collapse: collapse;
+  font-size: 12px;
+  flex: 0 0 auto;
+}
+
+.mx-legend th,
+.mx-legend td {
+  border: 1px solid #64748b;
+  padding: 4px 8px;
+}
+
+.mx-legend thead th {
+  background: #e6ece3;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.mx-legend td.c-kode {
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Halaman Identitas Sekolah (logo, palet, pratinjau kop)
+   -------------------------------------------------------------------------- */
+
+.sekolah-logo {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbfcfa;
+}
+
+.sekolah-logo img {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 4px;
+  object-fit: cover;
+  flex: none;
+}
+
+.sekolah-logo b {
+  font-size: 15px;
+}
+
+.sekolah-logo a {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.palet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.palet span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px 4px 6px;
+}
+
+.palet i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.kop-preview {
+  margin-top: 14px;
+  padding: 18px 16px;
+  border: 1.5px dashed var(--line-2);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.kop-caption {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
 }
 
 /* --------------------------------------------------------------------------
@@ -1597,5 +1804,34 @@ select.input {
     box-shadow: none;
     border: 1px solid #bbb;
     border-left-width: 4px;
+  }
+
+  /* Matriks: A4 landscape, tanpa bingkai kartu. */
+  @page {
+    size: landscape;
+    margin: 8mm;
+  }
+
+  .mx-doc {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .mx-wrap {
+    gap: 10mm;
+    overflow: visible;
+  }
+
+  .mx,
+  .mx-legend {
+    font-size: 9.5pt;
+  }
+
+  .mx th,
+  .mx td,
+  .mx-legend th,
+  .mx-legend td {
+    padding: 2px 4px;
   }
 }

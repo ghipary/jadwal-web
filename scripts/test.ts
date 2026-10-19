@@ -1,6 +1,7 @@
 // Uji cepat mesin generator (dijalankan via esbuild + node).
 import { demoProject } from '../src/store';
 import { checkConflicts, generate } from '../src/scheduler';
+import { buatMatriks, matriksKeXlsx } from '../src/matrix';
 
 async function main() {
   const p = demoProject();
@@ -39,8 +40,50 @@ async function main() {
   }
 
   const ok = laporan.totalGagal === 0 && errors.length === 0;
-  console.log('\nHASIL:', ok ? 'LULUS ✅' : 'GAGAL ❌');
-  process.exit(ok ? 0 : 1);
+
+  // Matriks + ekspor Excel
+  console.log('\n=== MATRIKS & XLSX ===');
+  let matriksOk = true;
+  try {
+    const m = buatMatriks(p);
+    const totalSel = [...m.sel.values()].reduce((a, s) => a + s.les.length, 0);
+    console.log('kelas          :', m.kelas.length);
+    console.log('baris matriks  :', m.baris.length, `(${m.blok.length} hari)`);
+    console.log('sel terisi     :', m.sel.size, `(=${totalSel} pelajaran)`);
+    console.log('entri legenda  :', m.legenda.length);
+    if (totalSel !== p.jadwal.length) {
+      console.log('  ⚠ jumlah sel tidak cocok dengan jadwal!');
+      matriksOk = false;
+    }
+    const kodeContoh = m.legenda.slice(0, 5).map((e) => `${e.kode}=${e.guru.split(' ')[0]}`);
+    console.log('contoh kode    :', kodeContoh.join(', '));
+
+    const bytes = matriksKeXlsx(p, m);
+    const magic = String.fromCharCode(...bytes.slice(0, 2));
+    const isi = new TextDecoder('latin1').decode(bytes); // STORE → teks polos
+    const punyaPK = magic === 'PK';
+    const punyaSheet = isi.includes('<sheetData>') && isi.includes('JADWAL PELAJARAN');
+    const punyaStyle = isi.includes('<styleSheet');
+    console.log('xlsx byte      :', bytes.length, 'magic:', magic, punyaPK ? '✓' : '✗');
+    console.log('isi worksheet  :', punyaSheet ? '✓' : '✗', '| gaya:', punyaStyle ? '✓' : '✗');
+    matriksOk = matriksOk && punyaPK && punyaSheet && punyaStyle;
+
+    // Tulis contoh berkas untuk pemeriksaan manual.
+    try {
+      const fs = await import('fs');
+      fs.mkdirSync('temp', { recursive: true });
+      fs.writeFileSync('temp/matriks-test.xlsx', bytes);
+      console.log('contoh ditulis : temp/matriks-test.xlsx');
+    } catch {
+      /* lingkungan tanpa fs — lewati */
+    }
+  } catch (e) {
+    console.log('GAGAL matriks/xlsx:', e instanceof Error ? e.message : e);
+    matriksOk = false;
+  }
+
+  console.log('\nHASIL:', ok && matriksOk ? 'LULUS ✅' : 'GAGAL ❌');
+  process.exit(ok && matriksOk ? 0 : 1);
 }
 
 main();

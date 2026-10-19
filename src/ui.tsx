@@ -473,7 +473,7 @@ export function FormField<T>({
             id={id}
             type="color"
             className="color-input"
-            value={String(value ?? '#4f46e5')}
+            value={String(value ?? '#138046')}
             onChange={(e) => onChange(e.target.value)}
           />
           <input
