@@ -7,7 +7,6 @@
 import {
   Assignment,
   Conflict,
-  DAYS,
   labelTipeWaktu,
   Period,
   Project,
@@ -48,7 +47,7 @@ export function periodeAktif(p: Project): Period[] {
 
 export function slotLabel(p: Project, hari: number, periodeId: string): string {
   const per = p.periode.find((x) => x.id === periodeId);
-  return `${DAYS[hari] ?? '?'}${per ? ` · ${per.nama} (${per.mulai}–${per.selesai})` : ''}`;
+  return `${p.hari[hari] ?? '?'}${per ? ` · ${per.nama} (${per.mulai}–${per.selesai})` : ''}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -177,7 +176,7 @@ export async function generate(
       const res: Cand[] = [];
       const dilarangGuru = new Set(g.slotDilarang);
       const diinginkanGuru = new Set(g.slotDiinginkan);
-      for (let hari = 0; hari < DAYS.length; hari++) {
+      for (let hari = 0; hari < p.hari.length; hari++) {
         const dayLoad = teacherDay.get(`${g.id}|${hari}`) ?? 0;
         if (dayLoad >= g.maxPerHari) continue;
         for (const per of assignable) {
@@ -223,7 +222,7 @@ export async function generate(
         return `guru melebihi maksimum ${g.maxJam} jam/minggu`;
       const counts: Record<string, number> = {};
       const bump = (s: string) => (counts[s] = (counts[s] ?? 0) + 1);
-      for (let hari = 0; hari < DAYS.length; hari++) {
+      for (let hari = 0; hari < p.hari.length; hari++) {
         const dayLoad = teacherDay.get(`${g.id}|${hari}`) ?? 0;
         if (dayLoad >= g.maxPerHari) {
           bump('guru melebihi batas jam per hari');

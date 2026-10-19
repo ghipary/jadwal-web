@@ -2,7 +2,7 @@
 // baris = hari × jam pelajaran, kolom = kelas, isi sel = kode (nomor guru +
 // kode mapel), dengan legenda kode → guru → mata pelajaran di sisi kanan.
 
-import { Assignment, DAYS, labelTipeWaktu, Project, TipeWaktu } from './types';
+import { Assignment, labelTipeWaktu, Project, TipeWaktu } from './types';
 import { buildXlsx, colName, StyleBook, XlsRow, XlsSheet } from './xlsx';
 
 export interface SelMatriks {
@@ -72,7 +72,7 @@ export function buatMatriks(project: Project): Matriks {
 
   const baris: BarisMatriks[] = [];
   const blok: BlokHari[] = [];
-  for (let hari = 0; hari < DAYS.length; hari++) {
+  for (let hari = 0; hari < project.hari.length; hari++) {
     const mulai = baris.length;
     for (const per of project.periode) {
       baris.push({
@@ -86,7 +86,7 @@ export function buatMatriks(project: Project): Matriks {
         tipe: per.tipe,
       });
     }
-    blok.push({ hari, nama: DAYS[hari], mulai, jumlah: baris.length - mulai });
+    blok.push({ hari, nama: project.hari[hari], mulai, jumlah: baris.length - mulai });
   }
 
   const sel = new Map<string, SelMatriks>();

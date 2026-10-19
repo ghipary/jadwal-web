@@ -102,13 +102,11 @@ function IsiPublikasi({ data }: { data: Project }) {
         <TimetableGrid project={data} items={items} scope={scope} />
       )}
       <div className="tt-legend">
-        <span>Tersedia {DAYS_LABEL}</span>
+        <span>Tersedia {data.hari.join(' · ')}</span>
       </div>
     </>
   );
 }
-
-const DAYS_LABEL = 'Senin–Sabtu';
 
 export function HalPublikasi() {
   const { project } = useProject();

@@ -1,6 +1,10 @@
 // Model data aplikasi perencana jadwal pelajaran sekolah.
 
+/** Nama hari bawaan — dipakai sebagai nilai awal & fallback data lama. */
 export const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'] as const;
+
+/** Daftar hari bawaan sebagai array biasa (bisa diubah pengguna). */
+export const HARI_BAWAAN: string[] = [...DAYS];
 
 export interface HasId {
   id: string;
@@ -143,6 +147,12 @@ export interface Project {
   // Multi-tenant: terikat ke user_id (owner). Kosong/null jika mode lokal/offline.
   ownerId?: string | null;
   info: SchoolInfo;
+  /**
+   * Nama hari aktif, urut sesuai indeks `hari` pada jadwal/batasan.
+   * Dinamis: pengguna boleh menambah, mengganti nama, menghapus, atau
+   * mengurutkan ulang hari. Semua referensi hari memakai indeks array ini.
+   */
+  hari: string[];
   periode: Period[];
   guru: Teacher[];
   kelas: SchoolClass[];

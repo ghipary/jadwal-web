@@ -1,10 +1,21 @@
 // Halaman-halaman data: Guru, Kelas, Siswa, Mapel, Ruang, Jam, Batasan.
 
-import { DAYS, LABEL_TIPE_RUANG, PALET_GURU, TIPE_RUANG_KEBUTUHAN, TIPE_RUANG_OPTIONS, TIPE_WAKTU_OPTIONS, labelTipeWaktu } from '../types';
+import { useState } from 'react';
+import {
+  LABEL_TIPE_RUANG,
+  PALET_GURU,
+  parseSlotKey,
+  slotKey,
+  TIPE_RUANG_KEBUTUHAN,
+  TIPE_RUANG_OPTIONS,
+  TIPE_WAKTU_OPTIONS,
+  labelTipeWaktu,
+} from '../types';
 import type {
   Block,
   Period,
   SchoolClass,
+  SlotKey,
   Student,
   Subject,
   Teacher,
@@ -376,8 +387,220 @@ export function HalRuang() {
 }
 
 // ---------------------------------------------------------------------------
-// Jam Pelajaran
+// Jam Pelajaran + pengelolaan hari aktif
 // ---------------------------------------------------------------------------
+
+/** Peta ulang indeks hari pada daftar slot (mis. saat hari dihapus/diurutkan). */
+function petaSlotHari(daftar: SlotKey[], peta: (h: number) => number | null): SlotKey[] {
+  const out: SlotKey[] = [];
+  for (const k of daftar) {
+    const { hari, periodeId } = parseSlotKey(k);
+    const baru = peta(hari);
+    if (baru !== null) out.push(slotKey(baru, periodeId));
+  }
+  return [...new Set(out)];
+}
+
+function HariAktifCard() {
+  const { project, set } = useProject();
+  const [baru, setBaru] = useState('');
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editNama, setEditNama] = useState('');
+
+  const jumlahJadwal = (idx: number) =>
+    project.jadwal.filter((j) => j.hari === idx).length;
+  const jumlahBlokir = (idx: number) =>
+    project.blokir.filter((b) => b.hari === idx).length;
+
+  const tambah = () => {
+    const nama = baru.trim();
+    if (!nama) return;
+    if (project.hari.some((h) => h.toLowerCase() === nama.toLowerCase())) {
+      window.alert(`Hari "${nama}" sudah ada.`);
+      return;
+    }
+    set({ hari: [...project.hari, nama] });
+    setBaru('');
+  };
+
+  const mulaiEdit = (idx: number) => {
+    setEditIdx(idx);
+    setEditNama(project.hari[idx]);
+  };
+
+  const simpanEdit = () => {
+    if (editIdx === null) return;
+    const nama = editNama.trim();
+    if (!nama) {
+      window.alert('Nama hari tidak boleh kosong.');
+      return;
+    }
+    if (
+      project.hari.some(
+        (h, i) => i !== editIdx && h.toLowerCase() === nama.toLowerCase(),
+      )
+    ) {
+      window.alert(`Hari "${nama}" sudah ada.`);
+      return;
+    }
+    const hari = [...project.hari];
+    hari[editIdx] = nama;
+    set({ hari });
+    setEditIdx(null);
+    setEditNama('');
+  };
+
+  /** Urutkan ulang hari sekaligus memindahkan seluruh referensi indeksnya. */
+  const geser = (idx: number, arah: -1 | 1) => {
+    const tujuan = idx + arah;
+    if (tujuan < 0 || tujuan >= project.hari.length) return;
+    const hari = [...project.hari];
+    [hari[idx], hari[tujuan]] = [hari[tujuan], hari[idx]];
+    const peta = (h: number) => (h === idx ? tujuan : h === tujuan ? idx : h);
+    set({
+      hari,
+      jadwal: project.jadwal.map((j) => ({ ...j, hari: peta(j.hari) })),
+      blokir: project.blokir.map((b) => ({ ...b, hari: peta(b.hari) })),
+      guru: project.guru.map((g) => ({
+        ...g,
+        slotDiinginkan: petaSlotHari(g.slotDiinginkan, peta),
+        slotDilarang: petaSlotHari(g.slotDilarang, peta),
+      })),
+    });
+  };
+
+  const hapus = (idx: number) => {
+    if (project.hari.length <= 1) {
+      window.alert('Minimal harus ada satu hari aktif.');
+      return;
+    }
+    const nama = project.hari[idx];
+    const jmlJadwal = jumlahJadwal(idx);
+    const jmlBlokir = jumlahBlokir(idx);
+    const rincian = [
+      jmlJadwal ? `${jmlJadwal} jadwal` : '',
+      jmlBlokir ? `${jmlBlokir} batasan` : '',
+    ]
+      .filter(Boolean)
+      .join(' dan ');
+    if (
+      !window.confirm(
+        `Hapus hari "${nama}"?${rincian ? ` ${rincian} pada hari ini ikut dihapus.` : ''}\n\nHari setelahnya akan digeser otomatis.`,
+      )
+    )
+      return;
+
+    const hari = project.hari.filter((_, i) => i !== idx);
+    const peta = (h: number): number | null => (h === idx ? null : h > idx ? h - 1 : h);
+    set({
+      hari,
+      jadwal: project.jadwal
+        .filter((j) => j.hari !== idx)
+        .map((j) => ({ ...j, hari: peta(j.hari) as number })),
+      blokir: project.blokir
+        .filter((b) => b.hari !== idx)
+        .map((b) => ({ ...b, hari: peta(b.hari) as number })),
+      guru: project.guru.map((g) => ({
+        ...g,
+        slotDiinginkan: petaSlotHari(g.slotDiinginkan, peta),
+        slotDilarang: petaSlotHari(g.slotDilarang, peta),
+      })),
+    });
+  };
+
+  return (
+    <div className="card">
+      <div className="card-title">Hari Aktif</div>
+      <div className="card-sub">
+        Tambah, ubah nama, urutkan, atau hapus hari. Perubahan otomatis diikuti tab
+        hari di halaman Jadwal, grid, matriks, dan generator.
+      </div>
+
+      <div className="hari-list">
+        {project.hari.map((nama, i) => (
+          <div className="hari-item" key={`${i}-${nama}`}>
+            <span className="hari-no">{i + 1}</span>
+            {editIdx === i ? (
+              <input
+                className="input"
+                autoFocus
+                value={editNama}
+                onChange={(e) => setEditNama(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') simpanEdit();
+                  if (e.key === 'Escape') setEditIdx(null);
+                }}
+              />
+            ) : (
+              <b className="hari-nama">{nama}</b>
+            )}
+            <span className="hint">
+              {jumlahJadwal(i)} jadwal
+              {jumlahBlokir(i) ? ` · ${jumlahBlokir(i)} batasan` : ''}
+            </span>
+            <div className="aksi-inline">
+              {editIdx === i ? (
+                <>
+                  <button className="icon-btn" title="Simpan nama" onClick={simpanEdit}>
+                    <Icon name="cek" size={15} />
+                  </button>
+                  <button className="icon-btn" title="Batal" onClick={() => setEditIdx(null)}>
+                    <Icon name="tutup" size={15} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="icon-btn"
+                    title="Naikkan"
+                    disabled={i === 0}
+                    onClick={() => geser(i, -1)}
+                  >
+                    <span style={{ fontSize: 13, lineHeight: 1 }}>↑</span>
+                  </button>
+                  <button
+                    className="icon-btn"
+                    title="Turunkan"
+                    disabled={i === project.hari.length - 1}
+                    onClick={() => geser(i, 1)}
+                  >
+                    <span style={{ fontSize: 13, lineHeight: 1 }}>↓</span>
+                  </button>
+                  <button className="icon-btn" title="Ubah nama" onClick={() => mulaiEdit(i)}>
+                    <Icon name="ubah" size={15} />
+                  </button>
+                  <button
+                    className="icon-btn"
+                    title="Hapus hari"
+                    disabled={project.hari.length <= 1}
+                    onClick={() => hapus(i)}
+                  >
+                    <Icon name="hapus" size={15} />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hari-tambah">
+        <input
+          className="input"
+          placeholder="Nama hari baru (mis. Minggu, Sabtu Khusus)…"
+          value={baru}
+          onChange={(e) => setBaru(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') tambah();
+          }}
+        />
+        <Btn icon="tambah" onClick={tambah} disabled={!baru.trim()}>
+          Tambah Hari
+        </Btn>
+      </div>
+    </div>
+  );
+}
 
 export function HalJam() {
   const { project, set } = useProject();
@@ -460,7 +683,7 @@ export function HalJam() {
         : []),
     ],
   };
-  return <DataPage cfg={cfg} />;
+  return <DataPage cfg={cfg} atas={<HariAktifCard />} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -509,7 +732,7 @@ export function HalBlokir() {
         ),
       },
       { label: 'Objek', render: (r) => <b>{namaRef(r)}</b> },
-      { label: 'Hari', render: (r) => DAYS[r.hari] ?? '?' },
+      { label: 'Hari', render: (r) => project.hari[r.hari] ?? '?' },
       {
         label: 'Jam',
         render: (r) => {
@@ -541,7 +764,7 @@ export function HalBlokir() {
         label: 'Hari',
         type: 'select',
         numeric: true,
-        options: DAYS.map((d, i) => ({ value: String(i), label: d })),
+        options: project.hari.map((d, i) => ({ value: String(i), label: d })),
       },
       {
         key: 'periodeId',

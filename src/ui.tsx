@@ -1,7 +1,7 @@
 // Komponen UI bersama: ikon, tombol, modal, tabs, empty state, dan renderer form.
 
 import { ReactNode, useEffect } from 'react';
-import { DAYS, labelTipeWaktu, SlotKey, slotKey } from './types';
+import { labelTipeWaktu, SlotKey, slotKey } from './types';
 import { useProject } from './store';
 
 // ---------------------------------------------------------------------------
@@ -113,6 +113,19 @@ const ICONS: Record<string, ReactNode> = {
     </>
   ),
   tambah: <path d="M12 5v14M5 12h14" />,
+  salin: (
+    <>
+      <rect x="8" y="8" width="11.5" height="11.5" rx="2" />
+      <path d="M5.5 15.5H5a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 5 3.5h9A1.5 1.5 0 0 1 15.5 5v.5" />
+    </>
+  ),
+  hari: (
+    <>
+      <rect x="3" y="5" width="18" height="15.5" rx="2.2" />
+      <path d="M3 9.5h18M8 3v4M16 3v4" />
+      <path d="M7.5 13.5h3M13.5 13.5h3M7.5 17.5h3M13.5 17.5h3" />
+    </>
+  ),
   hapus: (
     <>
       <path d="M4 7h16M9.5 7V4h5v3" />
@@ -581,7 +594,7 @@ export function SlotPicker({
         <thead>
           <tr>
             <th />
-            {DAYS.map((d) => (
+            {project.hari.map((d) => (
               <th key={d}>{d.slice(0, 3)}</th>
             ))}
           </tr>
@@ -595,14 +608,14 @@ export function SlotPicker({
                   {per.tipe === 'pelajaran' ? ` · ${per.mulai}` : ` · ${labelTipeWaktu(per).toLowerCase()}`}
                 </span>
               </th>
-              {DAYS.map((_, h) => {
+              {project.hari.map((_, h) => {
                 const k = slotKey(h, per.id);
                 const on = set.has(k);
                 return (
                   <td key={k}>
                     <button
                       type="button"
-                      title={`${DAYS[h]} ${per.nama}`}
+                      title={`${project.hari[h]} ${per.nama}`}
                       className={`slotcell ${on ? 'on' : ''} ${per.tipe !== 'pelajaran' ? 'mati' : ''}`}
                       onClick={() => per.tipe === 'pelajaran' && toggle(k)}
                     />

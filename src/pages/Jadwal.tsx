@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Assignment, DAYS } from '../types';
+import { Assignment } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
 import { Legend, Scope, TimetableGrid } from '../timetable';
@@ -28,6 +28,11 @@ export function HalJadwal() {
   const [refId, setRefId] = useState('');
   const [bukaLes, setBukaLes] = useState<Assignment | null>(null);
   const [tambah, setTambah] = useState<Draft | null>(null);
+  /** `null` = tampilkan semua hari; angka = tab hari yang sedang aktif. */
+  const [hariAktif, setHariAktif] = useState<number | null>(null);
+  /** Hari sumber saat modal "Salin" terbuka. */
+  const [salinDari, setSalinDari] = useState<number | null>(null);
+  const [salinTujuan, setSalinTujuan] = useState<number[]>([]);
 
   const state = location.state as { lesId?: string } | null;
   const focusLes = state?.lesId
@@ -59,14 +64,22 @@ export function HalJadwal() {
 
   const siswa = scope === 'siswa' ? project.siswa.find((s) => s.id === refId) : undefined;
 
-  const items = project.jadwal.filter((j) => {
+  /** Apakah jadwal termasuk cakupan tampilan saat ini? */
+  const cocokScope = (j: Assignment) => {
     if (scope === 'sekolah') return true;
     if (scope === 'kelas') return j.kelasId === refId;
     if (scope === 'guru') return j.guruId === refId;
     if (scope === 'ruang') return j.ruangId === refId;
     if (scope === 'siswa') return Boolean(siswa) && j.kelasId === siswa!.kelasId;
     return false;
-  });
+  };
+
+  const items = project.jadwal.filter(cocokScope);
+
+  // Jaga agar tab hari tetap valid setelah hari dihapus/diubah di halaman Jam.
+  useEffect(() => {
+    if (hariAktif !== null && hariAktif >= project.hari.length) setHariAktif(null);
+  }, [project.hari.length, hariAktif]);
 
   const konflikSet = useMemo(
     () => new Set(checkConflicts(project).flatMap((c) => c.refJadwal)),
@@ -119,7 +132,7 @@ export function HalJadwal() {
     const cand: Assignment = { ...a, hari, periodeId };
     const bentrok = cekBentrok(cand);
     const per = project.periode.find((p) => p.id === periodeId);
-    const tujuan = `${DAYS[hari]} · ${per?.nama ?? ''}`;
+    const tujuan = `${project.hari[hari] ?? '?'} · ${per?.nama ?? ''}`;
     if (
       bentrok.length &&
       !window.confirm(`Pindahkan ke ${tujuan}?\n\nPotensi bentrok:\n• ${bentrok.join('\n• ')}\n\nTetap pindahkan?`)
@@ -184,6 +197,58 @@ export function HalJadwal() {
     setBukaLes(null);
   };
 
+  // --- Salin jadwal antar hari -------------------------------------------
+  const bukaSalin = (dari: number) => {
+    setHariAktif(dari);
+    setSalinDari(dari);
+    setSalinTujuan([]);
+  };
+
+  const tutupSalin = () => {
+    setSalinDari(null);
+    setSalinTujuan([]);
+  };
+
+  const toggleTujuan = (hari: number) => {
+    setSalinTujuan((arr) =>
+      arr.includes(hari) ? arr.filter((h) => h !== hari) : [...arr, hari],
+    );
+  };
+
+  const sumberSalin =
+    salinDari === null
+      ? []
+      : project.jadwal.filter((j) => j.hari === salinDari && cocokScope(j));
+
+  const lakukanSalin = () => {
+    if (salinDari === null || salinTujuan.length === 0) return;
+    if (sumberSalin.length === 0) {
+      window.alert('Tidak ada jadwal pada hari sumber untuk cakupan tampilan ini.');
+      return;
+    }
+    const tujuan = new Set(salinTujuan);
+    // Ganti hanya data pada hari tujuan untuk cakupan yang sedang dilihat,
+    // agar jadwal kelas/guru lain di hari yang sama tidak ikut terhapus.
+    const sisa = project.jadwal.filter(
+      (j) => !(tujuan.has(j.hari) && cocokScope(j)),
+    );
+    // `periodeId` disalin apa adanya — tipe waktu (Pelajaran/Istirahat/Apel/
+    // Kustom) tetap terjaga dan tetap mengikuti pengaturan Jam Pelajaran.
+    const salinan = [...tujuan].flatMap((hari) =>
+      sumberSalin.map((j) => ({ ...j, id: uid('j'), hari })),
+    );
+    set({ jadwal: [...sisa, ...salinan] });
+    const namaTujuan = salinTujuan
+      .map((h) => project.hari[h])
+      .filter(Boolean)
+      .join(', ');
+    setHariAktif(salinTujuan[0] ?? salinDari);
+    tutupSalin();
+    window.alert(
+      `${sumberSalin.length} jadwal disalin ke ${namaTujuan}.\n\nTipe waktu tiap baris tetap sama karena mengikuti data Jam Pelajaran.`,
+    );
+  };
+
   const eksporCSV = () => {
     const urutPeriode = new Map(project.periode.map((p, i) => [p.id, i]));
     const sorted = [...items].sort(
@@ -196,7 +261,7 @@ export function HalJadwal() {
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);
         return [
-          DAYS[j.hari] ?? '',
+          project.hari[j.hari] ?? '',
           per?.nama ?? '',
           `${per?.mulai ?? ''}-${per?.selesai ?? ''}`,
           kelasNama(j.kelasId),
@@ -289,6 +354,17 @@ export function HalJadwal() {
     ];
   })();
 
+  const labelScope =
+    scope === 'sekolah'
+      ? 'seluruh sekolah'
+      : scope === 'kelas'
+        ? `kelas ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
+        : scope === 'guru'
+          ? `guru ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
+          : scope === 'ruang'
+            ? `ruang ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
+            : `kelas ${kelasNama(siswa?.kelasId ?? '')}`;
+
   if (scope === 'sekolah' ? project.kelas.length === 0 : daftar.length === 0) {
     return (
       <>
@@ -316,6 +392,9 @@ export function HalJadwal() {
             </Btn>
             <Btn variant="ghost" icon="cetak" onClick={() => window.print()}>
               Cetak
+            </Btn>
+            <Btn variant="ghost" icon="hari" onClick={() => navigate('/jam')}>
+              Kelola Hari
             </Btn>
             <Btn variant="danger" icon="hapus" onClick={kosongkan}>
               Kosongkan Non-Tetap
@@ -362,6 +441,43 @@ export function HalJadwal() {
         </span>
       </div>
 
+      <div className="hari-tabs no-print" role="tablist" aria-label="Pilih hari">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={hariAktif === null}
+          className={`hari-tab ${hariAktif === null ? 'aktif' : ''}`}
+          onClick={() => setHariAktif(null)}
+        >
+          Semua Hari
+        </button>
+        {project.hari.map((nama, i) => (
+          <div
+            key={`${i}-${nama}`}
+            className={`hari-tab-grup ${hariAktif === i ? 'aktif' : ''}`}
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={hariAktif === i}
+              className="hari-tab-judul"
+              onClick={() => setHariAktif(i)}
+            >
+              {nama}
+            </button>
+            <button
+              type="button"
+              className="hari-tab-salin"
+              title={`Salin seluruh jadwal hari ${nama} ke hari lain`}
+              onClick={() => bukaSalin(i)}
+            >
+              <Icon name="salin" size={12} />
+              Salin
+            </button>
+          </div>
+        ))}
+      </div>
+
       {scope === 'siswa' && siswa && siswa.pilihan.length ? (
         <Banner tone="info" icon="info">
           Menampilkan jadwal kelas <b>{kelasNama(siswa.kelasId)}</b>. Mapel pilihan yang tidak diambil siswa ini
@@ -389,6 +505,7 @@ export function HalJadwal() {
                   butuh ? `${les.length}/${butuh} jam dari kebutuhan` : `${les.length} jam/minggu`
                 }
                 focusId={focusLes?.id ?? null}
+                hariTampil={hariAktif}
                 onOpen={(a) => setBukaLes({ ...a })}
                 onAdd={(hari, periodeId) => mulaiTambah(k.id, hari, periodeId)}
                 onMove={pindah}
@@ -405,12 +522,88 @@ export function HalJadwal() {
           konflik={konflikSet}
           dimMapel={dimMapel}
           focusId={focusLes?.id ?? null}
+          hariTampil={hariAktif}
           onOpen={(a) => setBukaLes({ ...a })}
           onAdd={(hari, periodeId) => mulaiTambah(refId, hari, periodeId)}
           onMove={pindah}
         />
       )}
       <Legend />
+
+      {/* --- Modal salin jadwal antar hari --- */}
+      <Modal
+        open={salinDari !== null}
+        title="Salin Jadwal per Hari"
+        desc={
+          salinDari !== null
+            ? `Salin jadwal hari ${project.hari[salinDari]} ke hari tujuan.`
+            : undefined
+        }
+        onClose={tutupSalin}
+        footer={
+          <>
+            <Btn variant="ghost" onClick={tutupSalin}>
+              Batal
+            </Btn>
+            <Btn
+              variant="primary"
+              icon="salin"
+              disabled={salinTujuan.length === 0 || sumberSalin.length === 0}
+              onClick={lakukanSalin}
+            >
+              Salin ke {salinTujuan.length || 0} Hari
+            </Btn>
+          </>
+        }
+      >
+        {salinDari !== null ? (
+          <div className="form-grid">
+            <div className="span2">
+              <Banner tone="info" icon="info">
+                Cakupan: <b>{labelScope}</b> · <b>{sumberSalin.length}</b> jadwal pada hari{' '}
+                <b>{project.hari[salinDari]}</b>. Jadwal pada hari tujuan untuk cakupan ini akan
+                diganti. Tipe waktu (Pelajaran/Istirahat/Apel/Kustom) tetap mengikuti data{' '}
+                <b>Jam Pelajaran</b> dan tidak diubah.
+              </Banner>
+            </div>
+            <div className="span2 field">
+              <label>Salin ke hari</label>
+              <div className="multi">
+                {project.hari.map((nama, i) => {
+                  if (i === salinDari) return null;
+                  const on = salinTujuan.includes(i);
+                  const terisi = project.jadwal.filter(
+                    (j) => j.hari === i && cocokScope(j),
+                  ).length;
+                  return (
+                    <button
+                      type="button"
+                      key={`${i}-${nama}`}
+                      className={`chip ${on ? 'chip-on' : ''}`}
+                      onClick={() => toggleTujuan(i)}
+                    >
+                      {on ? <Icon name="cek" size={12} /> : null}
+                      {nama}
+                      {terisi ? <span className="chip-sub">{terisi} jadwal</span> : null}
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="hint">
+                Bisa pilih lebih dari satu hari. Hari sumber tidak dapat dipilih.
+              </span>
+            </div>
+            {sumberSalin.length === 0 ? (
+              <div className="span2">
+                <Banner tone="peringatan" icon="konflik">
+                  Belum ada jadwal pada hari ini untuk cakupan {labelScope}. Tambahkan atau hasilkan
+                  jadwal terlebih dahulu.
+                </Banner>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </Modal>
 
       {/* --- Modal ubah pelajaran --- */}
       <Modal
@@ -462,7 +655,7 @@ export function HalJadwal() {
                 {bukaLes.tetap ? <span className="badge badge-hijau">Tetap</span> : <span className="badge badge-abu">Fleksibel</span>}
               </div>
               <span className="hint">
-                {kelasNama(bukaLes.kelasId)} · {guruNama(bukaLes.guruId)} · {DAYS[bukaLes.hari]} ·{' '}
+                {kelasNama(bukaLes.kelasId)} · {guruNama(bukaLes.guruId)} · {project.hari[bukaLes.hari] ?? '?'} ·{' '}
                 {project.periode.find((p) => p.id === bukaLes.periodeId)?.nama}
               </span>
             </div>
@@ -514,7 +707,7 @@ export function HalJadwal() {
         title="Tambah Pelajaran"
         desc={
           tambah
-            ? `${kelasNama(tambah.kelasId)} · ${DAYS[tambah.hari]} · ${project.periode.find((p) => p.id === tambah.periodeId)?.nama ?? ''}`
+            ? `${kelasNama(tambah.kelasId)} · ${project.hari[tambah.hari] ?? '?'} · ${project.periode.find((p) => p.id === tambah.periodeId)?.nama ?? ''}`
             : undefined
         }
         onClose={() => setTambah(null)}

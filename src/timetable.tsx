@@ -1,7 +1,7 @@
-// Grid jadwal mingguan (Senin–Sabtu) — dipakai halaman Jadwal dan Publikasi.
+// Grid jadwal mingguan — dipakai halaman Jadwal dan Publikasi.
 
 import { DragEvent, useState } from 'react';
-import { Assignment, DAYS, labelTipeWaktu, Project, slotKey } from './types';
+import { Assignment, labelTipeWaktu, Project, slotKey } from './types';
 import { hexA } from './utils';
 
 export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
@@ -16,6 +16,7 @@ export function TimetableGrid({
   focusId,
   judul,
   subjudul,
+  hariTampil,
   onOpen,
   onAdd,
   onMove,
@@ -30,11 +31,17 @@ export function TimetableGrid({
   /** Judul di atas grid (mis. nama kelas pada tampilan sekolah). */
   judul?: string;
   subjudul?: string;
+  /** Bila diisi, grid hanya menampilkan satu hari (indeks pada `project.hari`). */
+  hariTampil?: number | null;
   onOpen?: (a: Assignment) => void;
   onAdd?: (hari: number, periodeId: string) => void;
   onMove?: (a: Assignment, hari: number, periodeId: string) => void;
 }) {
   const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const hariList =
+    hariTampil !== null && hariTampil !== undefined && hariTampil >= 0 && hariTampil < project.hari.length
+      ? [hariTampil]
+      : project.hari.map((_, i) => i);
 
   const mapelM = new Map(project.mapel.map((m) => [m.id, m]));
   const guruM = new Map(project.guru.map((g) => [g.id, g]));
@@ -85,9 +92,9 @@ export function TimetableGrid({
         <thead>
           <tr>
             <th className="jam-cell">Jam Pelajaran</th>
-            {DAYS.map((d, i) => (
-              <th key={d}>
-                {d}
+            {hariList.map((i) => (
+              <th key={`${i}-${project.hari[i]}`}>
+                {project.hari[i]}
                 <span className="sub">Hari ke-{i + 1}</span>
               </th>
             ))}
@@ -105,7 +112,7 @@ export function TimetableGrid({
                       {per.mulai}–{per.selesai}
                     </span>
                   </th>
-                  <td colSpan={DAYS.length}>
+                  <td colSpan={hariList.length}>
                     {ikon} {labelTipeWaktu(per)}
                   </td>
                 </tr>
@@ -119,7 +126,7 @@ export function TimetableGrid({
                     {per.mulai}–{per.selesai}
                   </span>
                 </th>
-                {DAYS.map((_, hari) => {
+                {hariList.map((hari) => {
                   const key = cellKey(hari, per.id);
                   const list = cells.get(key) ?? [];
                   const cls = [

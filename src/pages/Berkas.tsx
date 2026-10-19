@@ -1,7 +1,6 @@
 // Halaman berkas: simpan/muat proyek (JSON), ekspor CSV, reset data.
 
 import { useRef, useState } from 'react';
-import { DAYS } from '../types';
 import { parseProyek, useProject } from '../store';
 import { bacaBerkasExcel, bacaWorkbook, buatTemplateXlsx } from '../excel';
 import { downloadXlsx } from '../xlsx';
@@ -118,7 +117,7 @@ export function HalBerkas() {
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);
         return [
-          DAYS[j.hari] ?? '',
+          project.hari[j.hari] ?? '',
           per?.nama ?? '',
           `${per?.mulai ?? ''}-${per?.selesai ?? ''}`,
           project.kelas.find((c) => c.id === j.kelasId)?.nama ?? '',
@@ -134,10 +133,26 @@ export function HalBerkas() {
   const unduhTemplate = () => {
     const slug = project.info.nama.replace(/[^\w-]+/g, '_').toLowerCase() || 'sekolah';
     const tgl = new Date().toISOString().slice(0, 10);
-    downloadXlsx(`template-jadwal-${slug}-${tgl}.xlsx`, buatTemplateXlsx(project));
+    downloadXlsx(
+      `template-jadwal-${slug}-${tgl}.xlsx`,
+      buatTemplateXlsx(project, { sertakanData: false }),
+    );
     setPesan({
       tone: 'sukses',
-      teks: 'Template Excel diunduh — 8 sheet (Guru, Kelas, Siswa, Mata Pelajaran, Ruang, Jam Pelajaran, Kebutuhan Jam, Batasan). Isi datanya lalu unggah kembali ke sini.',
+      teks: 'Template kosong diunduh — 9 sheet data + sheet Petunjuk. Urutan hari diambil dari sheet Hari; isi datanya lalu unggah kembali ke sini.',
+    });
+  };
+
+  const eksporExcel = () => {
+    const slug = project.info.nama.replace(/[^\w-]+/g, '_').toLowerCase() || 'sekolah';
+    const tgl = new Date().toISOString().slice(0, 10);
+    downloadXlsx(
+      `data-jadwal-${slug}-${tgl}.xlsx`,
+      buatTemplateXlsx(project, { sertakanData: true }),
+    );
+    setPesan({
+      tone: 'sukses',
+      teks: 'Seluruh data proyek diekspor ke Excel (termasuk sheet Hari). Berkas ini juga bisa diunggah kembali untuk memulihkan data.',
     });
   };
 
@@ -154,7 +169,7 @@ export function HalBerkas() {
         return;
       }
       const j = hasil.jumlah;
-      const ringkas = `Guru ${j.guru} · Kelas ${j.kelas} · Siswa ${j.siswa} · Mapel ${j.mapel} · Ruang ${j.ruang} · Jam ${j.periode} · Kebutuhan ${j.kebutuhan} · Batasan ${j.blokir}`;
+      const ringkas = `Hari ${j.hari} · Guru ${j.guru} · Kelas ${j.kelas} · Siswa ${j.siswa} · Mapel ${j.mapel} · Ruang ${j.ruang} · Jam ${j.periode} · Kebutuhan ${j.kebutuhan} · Batasan ${j.blokir}`;
       const konfirmasi =
         `Impor data dari “${f.name}”?\n\n` +
         ringkas +
@@ -301,14 +316,18 @@ export function HalBerkas() {
       <Card>
         <div className="card-title">Excel Massal (Template & Impor)</div>
         <div className="card-sub">
-          Unduh template berisi 8 sheet — <b>Guru</b>, <b>Kelas</b>, <b>Siswa</b>,{' '}
-          <b>Mata Pelajaran</b>, <b>Ruang</b>, <b>Jam Pelajaran</b>, <b>Kebutuhan Jam</b>, dan{' '}
-          <b>Batasan</b> — isi datanya di Excel, lalu seret berkasnya ke kotak berikut untuk
-          mengimpor seluruh data sekaligus.
+          Template kosong berisi sheet <b>Petunjuk</b>, <b>Hari</b>, <b>Guru</b>, <b>Kelas</b>,{' '}
+          <b>Siswa</b>, <b>Mata Pelajaran</b>, <b>Ruang</b>, <b>Jam Pelajaran</b>,{' '}
+          <b>Kebutuhan Jam</b>, dan <b>Batasan</b>. Isi datanya di Excel, lalu seret berkasnya ke
+          kotak berikut untuk mengimpor seluruh data sekaligus. Gunakan tombol ekspor bila ingin
+          mengunduh data yang sudah ada.
         </div>
         <div style={{ display: 'flex', gap: 9, flexWrap: 'wrap', marginBottom: 12 }}>
           <Btn variant="primary" icon="unduh" onClick={unduhTemplate}>
             Download Template Excel
+          </Btn>
+          <Btn variant="ghost" icon="unduh" onClick={eksporExcel}>
+            Ekspor Data ke Excel
           </Btn>
           <Btn variant="ghost" icon="unggah" onClick={() => xlsxRef.current?.click()}>
             Pilih Berkas Excel

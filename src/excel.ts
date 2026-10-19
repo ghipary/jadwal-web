@@ -27,6 +27,8 @@ import { uid } from './utils';
 
 /** Nama-nama sheet yang dikenali (harus sama antara template & pembaca). */
 export const NAMA_SHEET = {
+  petunjuk: 'Petunjuk',
+  hari: 'Hari',
   guru: 'Guru',
   kelas: 'Kelas',
   siswa: 'Siswa',
@@ -36,6 +38,19 @@ export const NAMA_SHEET = {
   kebutuhan: 'Kebutuhan Jam',
   blokir: 'Batasan',
 } as const;
+
+/** Sheet berisi data — "Petunjuk" tidak dihitung saat mendeteksi berkas. */
+const SHEET_DATA = [
+  NAMA_SHEET.hari,
+  NAMA_SHEET.guru,
+  NAMA_SHEET.kelas,
+  NAMA_SHEET.siswa,
+  NAMA_SHEET.mapel,
+  NAMA_SHEET.ruang,
+  NAMA_SHEET.periode,
+  NAMA_SHEET.kebutuhan,
+  NAMA_SHEET.blokir,
+] as const;
 
 type Sel = (string | number)[];
 
@@ -57,21 +72,66 @@ function lebarKolom(header: Sel, baris: Sel[]): { wch: number }[] {
 // 1. Generator template
 // ---------------------------------------------------------------------------
 
-/** Susun workbook template 8 sheet berisi header + data proyek saat ini. */
-export function buatTemplateXlsx(project: Project): Uint8Array {
-  const wb = XLSX.utils.book_new();
+export interface OpsiTemplateExcel {
+  /**
+   * `true` = sertakan data proyek saat ini (ekspor/round-trip),
+   * `false` = template kosong siap diisi (hanya header + panduan).
+   */
+  sertakanData?: boolean;
+}
 
-  const add = (nama: string, header: Sel, baris: Sel[]) => {
+/**
+ * Susun workbook Excel. Template kosong dipakai untuk mengisi data massal;
+ * mode `sertakanData` dipakai untuk mengekspor data yang sudah ada.
+ */
+export function buatTemplateXlsx(
+  project: Project,
+  opsi: OpsiTemplateExcel = {},
+): Uint8Array {
+  const wb = XLSX.utils.book_new();
+  const denganData = opsi.sertakanData !== false;
+  const data = <T>(arr: T[]): T[] => (denganData ? arr : []);
+
+  const add = (nama: string, header: Sel, baris: Sel[], filter = true) => {
     const ws = XLSX.utils.aoa_to_sheet([header, ...baris]);
     ws['!cols'] = lebarKolom(header, baris);
+    if (filter && baris.length > 0) {
+      ws['!autofilter'] = {
+        ref: XLSX.utils.encode_range({
+          s: { r: 0, c: 0 },
+          e: { r: baris.length, c: Math.max(0, header.length - 1) },
+        }),
+      };
+    }
     XLSX.utils.book_append_sheet(wb, ws, nama);
   };
+
+  // Panduan singkat — sheet ini diabaikan saat impor.
+  add(
+    NAMA_SHEET.petunjuk,
+    ['Panduan Template Excel', 'Cara Isi', 'Contoh / Catatan'],
+    [
+      ['1. Hari', 'Satu nama hari per baris. Urutan baris = urutan hari di grid.', 'Senin, Selasa, Sabtu…'],
+      ['2. Guru', 'Isi nama; mapel & slot dipisah titik koma.', 'MTK; FIS — slot: Senin Jam ke-1; Selasa Jam ke-2'],
+      ['3. Kelas', 'Nama kelas harus unik. Wali kelas opsional.', 'X-1, XI-2, XII-3'],
+      ['4. Siswa', 'Kelas harus sudah ada di sheet Kelas.', 'Pilihan mapel dipisah titik koma.'],
+      ['5. Mata Pelajaran', 'Tipe ruang: Reguler / Lab Komputer / Lab Sains / Lapangan / Semua.', 'Mapel Pilihan: Ya / Tidak'],
+      ['6. Ruang', 'Tipe ruang mengikuti daftar pada sheet Mata Pelajaran.', 'Kapasitas diisi angka.'],
+      ['7. Jam Pelajaran', 'Tipe Waktu: Pelajaran / Istirahat / Apel / Kustom.', 'Hanya tipe Pelajaran yang dipakai generator.'],
+      ['8. Kebutuhan Jam', 'Kelas, mapel, dan guru harus sudah terdaftar.', 'Ruang "Otomatis" bila tidak ditentukan.'],
+      ['9. Batasan', 'Hari harus sama dengan sheet Hari; jam harus ada di sheet Jam Pelajaran.', 'Jenis: Kelas / Guru / Ruang.'],
+      ['Catatan', 'Jangan mengganti nama sheet atau judul kolom.', 'Jadwal lama dikosongkan setelah impor — jalankan generator ulang.'],
+    ],
+    false,
+  );
+
+  add(NAMA_SHEET.hari, ['Nama Hari'], project.hari.map((h) => [h]));
 
   const periodeNama = new Map(project.periode.map((p) => [p.id, p.nama]));
   const formatSlot = (k: SlotKey): string => {
     const { hari, periodeId } = parseSlotKey(k);
     const nama = periodeNama.get(periodeId);
-    return nama ? `${DAYS[hari] ?? ''} ${nama}` : k;
+    return nama ? `${project.hari[hari] ?? ''} ${nama}` : k;
   };
   const slotTeks = (arr: SlotKey[]) => arr.map(formatSlot).join('; ');
 
@@ -85,90 +145,102 @@ export function buatTemplateXlsx(project: Project): Uint8Array {
   add(
     NAMA_SHEET.guru,
     ['Kode', 'Nama', 'Warna', 'Mata Pelajaran', 'Maks Jam/Minggu', 'Maks Jam/Hari', 'Slot Diinginkan', 'Slot Dilarang', 'Catatan'],
-    project.guru.map((g) => [
-      g.kode,
-      g.nama,
-      g.warna,
-      g.mapelIds.map((id) => namaMapel.get(id) ?? '(terhapus)').join('; '),
-      g.maxJam,
-      g.maxPerHari,
-      slotTeks(g.slotDiinginkan),
-      slotTeks(g.slotDilarang),
-      g.catatan,
-    ]),
+    data(
+      project.guru.map((g) => [
+        g.kode,
+        g.nama,
+        g.warna,
+        g.mapelIds.map((id) => namaMapel.get(id) ?? '').filter(Boolean).join('; '),
+        g.maxJam,
+        g.maxPerHari,
+        slotTeks(g.slotDiinginkan),
+        slotTeks(g.slotDilarang),
+        g.catatan,
+      ]),
+    ),
   );
 
   add(
     NAMA_SHEET.kelas,
     ['Nama', 'Tingkat', 'Wali Kelas', 'Jumlah Siswa'],
-    project.kelas.map((c) => [
-      c.nama,
-      c.tingkat,
-      namaGuru.get(c.waliKelasId) ?? '',
-      c.jumlahSiswa,
-    ]),
+    data(
+      project.kelas.map((c) => [
+        c.nama,
+        c.tingkat,
+        namaGuru.get(c.waliKelasId) ?? '',
+        c.jumlahSiswa,
+      ]),
+    ),
   );
 
   add(
     NAMA_SHEET.siswa,
     ['Nama', 'Kelas', 'Pilihan Mapel'],
-    project.siswa.map((s) => [
-      s.nama,
-      namaKelas.get(s.kelasId) ?? '',
-      s.pilihan.map((id) => namaMapel.get(id) ?? '?').join('; '),
-    ]),
+    data(
+      project.siswa.map((s) => [
+        s.nama,
+        namaKelas.get(s.kelasId) ?? '',
+        s.pilihan.map((id) => namaMapel.get(id) ?? '').filter(Boolean).join('; '),
+      ]),
+    ),
   );
 
   add(
     NAMA_SHEET.mapel,
     ['Kode', 'Nama', 'Tipe Ruang', 'Mapel Pilihan'],
-    project.mapel.map((m) => [m.kode, m.nama, tipeTeks(m.tipeRuang), yaTidak(m.pilihan)]),
+    data(project.mapel.map((m) => [m.kode, m.nama, tipeTeks(m.tipeRuang), yaTidak(m.pilihan)])),
   );
 
   add(
     NAMA_SHEET.ruang,
     ['Nama', 'Tipe', 'Kapasitas'],
-    project.ruang.map((r) => [r.nama, tipeTeks(r.tipe), r.kapasitas]),
+    data(project.ruang.map((r) => [r.nama, tipeTeks(r.tipe), r.kapasitas])),
   );
 
   add(
     NAMA_SHEET.periode,
     ['Nama', 'Mulai', 'Selesai', 'Tipe Waktu', 'Keterangan'],
-    project.periode.map((p) => [
-      p.nama,
-      p.mulai,
-      p.selesai,
-      LABEL_TIPE_WAKTU[p.tipe],
-      p.tipe === 'kustom' ? (p.tipeKet ?? '') : '',
-    ]),
+    data(
+      project.periode.map((p) => [
+        p.nama,
+        p.mulai,
+        p.selesai,
+        LABEL_TIPE_WAKTU[p.tipe],
+        p.tipe === 'kustom' ? (p.tipeKet ?? '') : '',
+      ]),
+    ),
   );
 
   add(
     NAMA_SHEET.kebutuhan,
     ['Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Jam/Minggu'],
-    project.kebutuhan.map((k) => [
-      namaKelas.get(k.kelasId) ?? '',
-      namaMapel.get(k.mapelId) ?? '',
-      namaGuru.get(k.guruId) ?? '',
-      k.ruangId ? (namaRuang.get(k.ruangId) ?? '') : 'Otomatis',
-      k.jumlahJam,
-    ]),
+    data(
+      project.kebutuhan.map((k) => [
+        namaKelas.get(k.kelasId) ?? '',
+        namaMapel.get(k.mapelId) ?? '',
+        namaGuru.get(k.guruId) ?? '',
+        k.ruangId ? (namaRuang.get(k.ruangId) ?? '') : 'Otomatis',
+        k.jumlahJam,
+      ]),
+    ),
   );
 
   add(
     NAMA_SHEET.blokir,
     ['Jenis', 'Objek', 'Hari', 'Jam', 'Alasan'],
-    project.blokir.map((b) => [
-      b.jenis === 'kelas' ? 'Kelas' : b.jenis === 'guru' ? 'Guru' : 'Ruang',
-      b.jenis === 'kelas'
-        ? (namaKelas.get(b.refId) ?? '')
-        : b.jenis === 'guru'
-          ? (namaGuru.get(b.refId) ?? '')
-          : (namaRuang.get(b.refId) ?? ''),
-      DAYS[b.hari] ?? '',
-      periodeNama.get(b.periodeId) ?? '',
-      b.alasan,
-    ]),
+    data(
+      project.blokir.map((b) => [
+        b.jenis === 'kelas' ? 'Kelas' : b.jenis === 'guru' ? 'Guru' : 'Ruang',
+        b.jenis === 'kelas'
+          ? (namaKelas.get(b.refId) ?? '')
+          : b.jenis === 'guru'
+            ? (namaGuru.get(b.refId) ?? '')
+            : (namaRuang.get(b.refId) ?? ''),
+        project.hari[b.hari] ?? '',
+        periodeNama.get(b.periodeId) ?? '',
+        b.alasan,
+      ]),
+    ),
   );
 
   const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }) as ArrayBuffer;
@@ -180,6 +252,7 @@ export function buatTemplateXlsx(project: Project): Uint8Array {
 // ---------------------------------------------------------------------------
 
 export interface JumlahImpor {
+  hari: number;
   guru: number;
   kelas: number;
   siswa: number;
@@ -265,8 +338,19 @@ function hexValid(v: unknown): v is string {
   return typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v);
 }
 
+/** Baca daftar hari dari sheet "Hari" (fallback: hari proyek / Senin–Sabtu). */
+function bacaHari(wb: XLSX.WorkBook, cadangan: string[]): string[] {
+  const out: string[] = [];
+  for (const r of barisSheet(wb, NAMA_SHEET.hari)) {
+    const nama = str(r['Nama Hari']) || str(r['Nama']) || str(r['Hari']);
+    if (nama && !out.includes(nama)) out.push(nama);
+  }
+  if (out.length) return out;
+  return cadangan.length ? [...cadangan] : [...DAYS];
+}
+
 /** "Senin Jam ke-1; Selasa Jam ke-2" (atau format mentah "0#p1") → SlotKey[]. */
-function parseSlotList(teks: string, periode: Period[]): SlotKey[] {
+function parseSlotList(teks: string, periode: Period[], hari: string[]): SlotKey[] {
   const byNama = new Map(periode.map((p) => [p.nama.toLowerCase(), p.id]));
   const out: SlotKey[] = [];
   for (const entri of teks.split(/[;,]/)) {
@@ -277,7 +361,7 @@ function parseSlotList(teks: string, periode: Period[]): SlotKey[] {
       continue;
     }
     const [kata, ...sisa] = s.split(/\s+/);
-    const h = DAYS.findIndex((d) => d.toLowerCase() === kata.toLowerCase());
+    const h = hari.findIndex((d) => d.toLowerCase() === kata.toLowerCase());
     const pid = byNama.get(sisa.join(' ').toLowerCase());
     if (h >= 0 && pid) out.push(slotKey(h, pid));
   }
@@ -290,10 +374,13 @@ function parseSlotList(teks: string, periode: Period[]): SlotKey[] {
  * `jadwal` sengaja dikosongkan: referensi id berubah, jadwal lama tidak sah.
  */
 export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel | null {
-  const dikenal = Object.values(NAMA_SHEET).some((n) => wb.SheetNames.includes(n));
+  const dikenal = SHEET_DATA.some((n) => wb.SheetNames.includes(n));
   if (!dikenal) return null;
 
   let dilewati = 0;
+
+  // 0. Hari (urutan hari aktif — dipakai seluruh referensi hari).
+  const hari = bacaHari(wb, dasar.hari);
 
   // 1. Jam Pelajaran (dulu — dipakai resolving slot guru & batasan).
   const periode: Period[] = barisSheet(wb, NAMA_SHEET.periode)
@@ -350,8 +437,8 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       mapelIds: [...new Set(idMapel(str(r['Mata Pelajaran'])))],
       maxJam: num(r['Maks Jam/Minggu'], 24),
       maxPerHari: num(r['Maks Jam/Hari'], 6),
-      slotDiinginkan: parseSlotList(str(r['Slot Diinginkan']), periode),
-      slotDilarang: parseSlotList(str(r['Slot Dilarang']), periode),
+      slotDiinginkan: parseSlotList(str(r['Slot Diinginkan']), periode, hari),
+      slotDilarang: parseSlotList(str(r['Slot Dilarang']), periode, hari),
       catatan: str(r['Catatan']),
     };
     guru.push(g);
@@ -452,12 +539,12 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
     const teksHari = str(r['Hari']);
     const hariIdx = /^\d+$/.test(teksHari)
       ? Number(teksHari)
-      : DAYS.findIndex((d) => d.toLowerCase() === teksHari.toLowerCase());
+      : hari.findIndex((d) => d.toLowerCase() === teksHari.toLowerCase());
     const teksJam = str(r['Jam']);
     const periodeId =
       periode.find((p) => p.nama.toLowerCase() === teksJam.toLowerCase())?.id ?? '';
 
-    if (!refId || hariIdx < 0 || hariIdx >= DAYS.length || !periodeId) {
+    if (!refId || hariIdx < 0 || hariIdx >= hari.length || !periodeId) {
       if (Object.values(r).some((v) => str(v))) dilewati++;
       continue;
     }
@@ -473,6 +560,7 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
 
   const project: Project = {
     ...dasar,
+    hari,
     periode,
     guru,
     kelas,
@@ -487,6 +575,7 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
   return {
     project,
     jumlah: {
+      hari: hari.length,
       guru: guru.length,
       kelas: kelas.length,
       siswa: siswa.length,

@@ -14,13 +14,16 @@ import {
   Assignment,
   Block,
   CollectionKey,
+  HARI_BAWAAN,
   HasId,
   PALET_GURU,
+  parseSlotKey,
   Period,
   Project,
   Requirement,
   SchoolClass,
   slotKey,
+  SlotKey,
   Student,
   Subject,
   Teacher,
@@ -269,6 +272,7 @@ function demoProject(): Project {
       tahunAjaran: '2026/2027',
       kepalaSekolah: 'Drs. H. Bambang Suryono, M.Pd.',
     },
+    hari: [...HARI_BAWAAN],
     periode,
     guru,
     kelas,
@@ -359,6 +363,37 @@ function migrasiWarna(p: Project, raw: Record<string, unknown>): Project {
   return { ...p, guru, mapel };
 }
 
+/**
+ * Migrasi daftar hari: data baru memakai `hari`, data lama (belum punya
+ * properti ini) memakai Senin–Sabtu. Nama kosong/duplikat dibuang.
+ */
+function migrasiHari(raw: unknown): string[] {
+  const arr = Array.isArray(raw) ? raw : [];
+  const out: string[] = [];
+  for (const v of arr) {
+    const nama = String(v ?? '').trim();
+    if (nama && !out.includes(nama)) out.push(nama);
+  }
+  return out.length ? out : [...HARI_BAWAAN];
+}
+
+/** Buang referensi hari yang berada di luar jumlah hari aktif. */
+function rapikanReferensiHari(p: Project): Project {
+  const n = p.hari.length;
+  const valid = (h: number) => Number.isInteger(h) && h >= 0 && h < n;
+  const slotValid = (k: SlotKey) => valid(parseSlotKey(k).hari);
+  return {
+    ...p,
+    jadwal: p.jadwal.filter((j) => valid(j.hari)),
+    blokir: p.blokir.filter((b) => valid(b.hari)),
+    guru: p.guru.map((g) => ({
+      ...g,
+      slotDiinginkan: g.slotDiinginkan.filter(slotValid),
+      slotDilarang: g.slotDilarang.filter(slotValid),
+    })),
+  };
+}
+
 function sanitize(raw: unknown): Project | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
@@ -370,10 +405,11 @@ function sanitize(raw: unknown): Project | null {
   const proj = {
     ...(base as unknown as Record<string, unknown>),
     ...r,
+    hari: migrasiHari(r.hari),
     periode: migrasiPeriode(r.periode),
     opsi: { ...base.opsi, ...(r.opsi as object) },
   } as unknown as Project;
-  return migrasiWarna(proj, r);
+  return rapikanReferensiHari(migrasiWarna(proj, r));
 }
 
 /**

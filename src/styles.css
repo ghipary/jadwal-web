@@ -563,6 +563,178 @@ a {
   font-weight: 700;
 }
 
+/* Tab hari dinamis + tombol salin per hari. */
+.hari-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.hari-tab {
+  border: 1px solid var(--line-2);
+  background: var(--card);
+  color: var(--ink-2);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.hari-tab:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.hari-tab.aktif {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.hari-tab-grup {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--card);
+  transition: 0.15s;
+}
+
+.hari-tab-grup:hover,
+.hari-tab-grup.aktif {
+  border-color: var(--brand);
+}
+
+.hari-tab-grup.aktif {
+  box-shadow: 0 0 0 2px rgba(19, 128, 70, 0.16);
+}
+
+.hari-tab-judul {
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hari-tab-grup.aktif .hari-tab-judul {
+  background: var(--brand);
+  color: #fff;
+}
+
+.hari-tab-salin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: #fbfcfa;
+  color: var(--ink-2);
+  padding: 0 10px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.hari-tab-salin:hover {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.hari-tab-grup.aktif .hari-tab-salin {
+  background: #0f6d3b;
+  border-left-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.hari-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hari-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfa;
+}
+
+.hari-no {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.hari-nama {
+  min-width: 90px;
+}
+
+.hari-item .hint {
+  flex: 1;
+  text-align: right;
+}
+
+.hari-item .input {
+  max-width: 260px;
+}
+
+.hari-tambah {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hari-tambah .input {
+  max-width: 340px;
+}
+
+.chip-sub {
+  margin-left: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+  .hari-item {
+    flex-wrap: wrap;
+  }
+
+  .hari-item .hint {
+    text-align: left;
+    width: 100%;
+    order: 3;
+  }
+
+  .hari-tambah .input {
+    max-width: none;
+  }
+}
+
 /* --------------------------------------------------------------------------
    Tabel
    -------------------------------------------------------------------------- */

@@ -8,9 +8,10 @@
 --
 -- Model isolasi data:
 --   Satu baris `projects` per pengguna (user_id = auth.users.id).
---   Seluruh data aplikasi (info sekolah, periode, guru, kelas, siswa, mapel,
---   ruang, kebutuhan jam, jadwal, batasan, opsi) tersimpan sebagai JSONB di
---   kolom `data`, sehingga setiap entitas ikut terikat pada `user_id`.
+--   Seluruh data aplikasi (info sekolah, daftar hari dinamis, periode, guru,
+--   kelas, siswa, mapel, ruang, kebutuhan jam, jadwal, batasan, opsi) tersimpan
+--   sebagai JSONB di kolom `data`, sehingga setiap entitas ikut terikat pada
+--   `user_id`.
 --   Row Level Security memaksa setiap operasi menyaring `auth.uid() = user_id`,
 --   sehingga user tidak pernah bisa membaca/mengubah data user lain.
 --   Tidak ada peran admin: semua akun setara.

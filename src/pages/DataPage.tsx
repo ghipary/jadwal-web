@@ -22,7 +22,14 @@ export interface EntityConfig<T extends HasId> {
   setelahSimpan?: (row: T) => void;
 }
 
-export function DataPage<T extends HasId>({ cfg }: { cfg: EntityConfig<T> }) {
+export function DataPage<T extends HasId>({
+  cfg,
+  atas,
+}: {
+  cfg: EntityConfig<T>;
+  /** Konten tambahan di bawah judul halaman (mis. pengelola hari). */
+  atas?: ReactNode;
+}) {
   const { project, upsert, remove } = useProject();
   const [q, setQ] = useState('');
   const [form, setForm] = useState<T | null>(null);
@@ -78,6 +85,8 @@ export function DataPage<T extends HasId>({ cfg }: { cfg: EntityConfig<T> }) {
           </>
         }
       />
+
+      {atas}
 
       {rows.length === 0 ? (
         <div className="card">
