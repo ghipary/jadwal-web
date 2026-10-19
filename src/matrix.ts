@@ -2,7 +2,7 @@
 // baris = hari × jam pelajaran, kolom = kelas, isi sel = kode (nomor guru +
 // kode mapel), dengan legenda kode → guru → mata pelajaran di sisi kanan.
 
-import { Assignment, labelTipeWaktu, periodeAktifHari, Project, TipeWaktu } from './types';
+import { Assignment, labelTipeWaktu, periodeAktifDiHari, periodeAktifHari, Project, TipeWaktu } from './types';
 import { buildXlsx, colName, StyleBook, XlsRow, XlsSheet } from './xlsx';
 
 export interface SelMatriks {
@@ -20,8 +20,6 @@ export interface BarisMatriks {
   label: string;
   /** Tipe waktu baris — hanya "pelajaran" yang terisi kode; selain itu baris gabungan. */
   tipe: TipeWaktu;
-  /** Apakah baris ini JP aktif pada harinya (mengikuti batas maks./slot non-aktif). */
-  aktif: boolean;
 }
 
 export interface BlokHari {
@@ -88,12 +86,25 @@ export function buatMatriks(project: Project): Matriks {
 
   const baris: BarisMatriks[] = [];
   const blok: BlokHari[] = [];
-  const perAktifHari = project.hari.map((_, h) => new Set(periodeAktifHari(project, h).map((p) => p.id)));
+  // Periode yang tampil pada tiap hari:
+  //  - JP pelajaran: mengikuti periodeAktifHari (hariAktif + slotNonAktif + maksJP)
+  //  - jam lain (istirahat/apel/kustom): selalu tampil, kecuali dibatasi hariAktif-nya
+  const perTampilHari = project.hari.map((_, h) => {
+    const aktif = new Set(periodeAktifHari(project, h).map((p) => p.id));
+    for (const per of project.periode) {
+      if (per.tipe === 'pelajaran') continue;
+      if (periodeAktifDiHari(per, h)) aktif.add(per.id);
+    }
+    return aktif;
+  });
   for (let hari = 0; hari < project.hari.length; hari++) {
     const mulai = baris.length;
-    for (const per of project.periode) {
-      const aktif =
-        per.tipe === 'pelajaran' ? (perAktifHari[hari]?.has(per.id) ?? true) : true;
+    // Hanya periode yang berlaku pada hari ini yang dicetak; JP yang dibatasi
+    // lewat `hariAktif` tidak lagi memunculkan baris kosong/placeholder.
+    const perHari = project.periode
+      .filter((per) => perTampilHari[hari]?.has(per.id) ?? true)
+      .sort((a, b) => a.mulai.localeCompare(b.mulai) || a.selesai.localeCompare(b.selesai));
+    for (const per of perHari) {
       baris.push({
         hari,
         periodeId: per.id,
@@ -103,7 +114,6 @@ export function buatMatriks(project: Project): Matriks {
             ? per.nama
             : `${labelTipeWaktu(per)}${per.nama && per.nama !== labelTipeWaktu(per) ? ` (${per.nama})` : ''}`.toUpperCase(),
         tipe: per.tipe,
-        aktif,
       });
     }
     blok.push({ hari, nama: project.hari[hari], mulai, jumlah: baris.length - mulai });

@@ -1461,22 +1461,6 @@ select.input {
   font-weight: 700;
 }
 
-/* Baris JP non-aktif pada matriks cetak */
-.mx td.c-nonaktif {
-  text-align: center;
-  font-style: italic;
-  font-size: 10.5px;
-  letter-spacing: 0.05em;
-  color: #94a3b8;
-  background: repeating-linear-gradient(
-    -45deg,
-    #f8fafc,
-    #f8fafc 6px,
-    #eef2f7 6px,
-    #eef2f7 12px
-  );
-}
-
 /* Sel blok menyatu pada matriks */
 .mx td.c-blok {
   vertical-align: middle;

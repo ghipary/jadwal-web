@@ -131,7 +131,37 @@ async function main() {
     console.log('pelajaran di hari terlarang :', salahTempat, salahTempat === 0 ? '✓' : '✗');
     const konflik2 = checkConflicts(p2).filter((k) => k.tingkat === 'error');
     console.log('gagal & konflik error       :', hasil.laporan.totalGagal, '/', konflik2.length);
-    hariAktifOk = benar && hpJumat === '4' && salahTempat === 0 && konflik2.length === 0;
+
+    // Matriks: baris per hari harus HANYA memuat periode aktif hari itu,
+    // terurut menaik berdasarkan jam mulai, tanpa baris placeholder.
+    const { buatMatriks } = await import('../src/matrix');
+    const m2 = buatMatriks(p2);
+    const hrSenin = m2.blok.find((b) => b.hari === 0);
+    const hrJumat = m2.blok.find((b) => b.hari === 4);
+    const barisHari = (h: number) => m2.baris.filter((b) => b.hari === h);
+    const jumatId = new Set(barisHari(4).map((b) => b.periodeId));
+    const p8DiJumat = jumatId.has('p8');
+    const ifDiJumat = jumatId.has('if_jumat');
+    const seninId = new Set(barisHari(0).map((b) => b.periodeId));
+    const p8DiSenin = seninId.has('p8');
+    const ifDiSenin = seninId.has('if_jumat');
+    // Jam pada tiap hari harus terurut menaik.
+    const urut = (h: number) => {
+      const jam = barisHari(h).map((b) => b.jam.split(' - ')[0]);
+      return jam.every((x, i) => i === 0 || jam[i - 1] <= x);
+    };
+    const semuaUrut = [0, 1, 2, 3, 4, 5].every(urut);
+    const jmlSenin = hrSenin?.jumlah ?? 0;
+    const jmlJumat = hrJumat?.jumlah ?? 0;
+    console.log('baris Jumat tanpa JP non-aktif:', p8DiJumat ? '✗' : '✓', `(${jmlJumat} baris)`);
+    console.log('istirahat Jumat ada di hari 4 :', ifDiJumat ? '✓' : '✗');
+    console.log('J4 ada di Senin, tak ada Jumat :', p8DiSenin && !p8DiJumat ? '✓' : '✗');
+    console.log('istirahat Jumat bukan di Senin :', ifDiSenin ? '✗' : '✓');
+    console.log('baris tiap hari terurut jam    :', semuaUrut ? '✓' : '✗', `(Senin ${jmlSenin}, Jumat ${jmlJumat})`);
+    const barisOk =
+      !p8DiJumat && ifDiJumat && p8DiSenin && !ifDiSenin && semuaUrut && jmlSenin > 0 && jmlJumat > 0;
+
+    hariAktifOk = benar && hpJumat === '4' && salahTempat === 0 && konflik2.length === 0 && barisOk;
     console.log('status hariAktif            :', hariAktifOk ? 'LULUS ✅' : 'GAGAL ❌');
   } catch (e) {
     console.log('GAGAL uji hariAktif:', e instanceof Error ? e.message : e);

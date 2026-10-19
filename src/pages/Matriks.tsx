@@ -89,7 +89,9 @@ export function HalMatriks() {
               </tr>
             </thead>
             <tbody>
-              {m.blok.map((b) => (
+              {m.blok
+                .filter((b) => b.jumlah > 0)
+                .map((b) => (
                 <Fragment key={b.hari}>
                   {m.baris.slice(b.mulai, b.mulai + b.jumlah).map((br, i) => {
                     const barisIni = b.mulai + i;
@@ -104,10 +106,6 @@ export function HalMatriks() {
                         {br.tipe !== 'pelajaran' ? (
                           <td colSpan={m.kelas.length} className={`c-ist c-ist-${br.tipe}`}>
                             {br.label}
-                          </td>
-                        ) : !br.aktif ? (
-                          <td colSpan={m.kelas.length} className="c-nonaktif">
-                            JP NON-AKTIF PADA HARI INI
                           </td>
                         ) : (
                           m.kelas.map((k) => {
