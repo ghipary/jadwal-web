@@ -78,6 +78,171 @@ export function kodePasangan(nomorGuru: number, namaMapel: string, kodeMapel: st
   return `${nomorGuru}${kodeMapelSingkat(namaMapel, kodeMapel)}`;
 }
 
+/** Entitas generik untuk matriks (kelas/guru/ruang/siswa). */
+export interface EntitasMatriks {
+  id: string;
+  nama: string;
+}
+
+/** Matriks untuk satu entitas (kelas/guru/ruang/siswa). */
+export interface MatriksEntitas {
+  entitas: EntitasMatriks;
+  baris: BarisMatriks[];
+  blok: BlokHari[];
+  /** Blok sel menyatu (block scheduling) pada entitas ini. */
+  blokSel: BlokSel[];
+  sel: Map<string, SelMatriks>;
+  legenda: LegendaEntry[];
+  adaIsi: boolean;
+}
+
+/**
+ * Buat matriks jadwal untuk SATU entitas (kelas/guru/ruang/siswa).
+ * Struktur identik dengan `buatMatriks` tapi hanya untuk satu kolom entitas.
+ */
+export function buatMatriksEntitas(
+  project: Project,
+  scope: 'kelas' | 'guru' | 'ruang' | 'siswa',
+  entitasId: string,
+): MatriksEntitas {
+  const nomorGuru = new Map(project.guru.map((g, i) => [g.id, i + 1]));
+  const guruM = new Map(project.guru.map((g) => [g.id, g]));
+  const mapelM = new Map(project.mapel.map((m) => [m.id, m]));
+  const kelasM = new Map(project.kelas.map((c) => [c.id, c]));
+  const ruangM = new Map(project.ruang.map((r) => [r.id, r]));
+  const siswaM = new Map(project.siswa.map((s) => [s.id, s]));
+
+  // Tentukan entitas yang dipilih
+  let entitas: EntitasMatriks;
+  let filterJadwal: Assignment[];
+
+  if (scope === 'kelas') {
+    const k = kelasM.get(entitasId);
+    entitas = { id: entitasId, nama: k?.nama ?? '(kelas terhapus)' };
+    filterJadwal = project.jadwal.filter((j) => j.kelasId === entitasId);
+  } else if (scope === 'guru') {
+    const g = guruM.get(entitasId);
+    entitas = { id: entitasId, nama: g?.nama ?? '(guru terhapus)' };
+    filterJadwal = project.jadwal.filter((j) => j.guruId === entitasId);
+  } else if (scope === 'ruang') {
+    const r = ruangM.get(entitasId);
+    entitas = { id: entitasId, nama: r?.nama ?? '(ruang terhapus)' };
+    filterJadwal = project.jadwal.filter((j) => j.ruangId === entitasId);
+  } else {
+    // scope === 'siswa'
+    const s = siswaM.get(entitasId);
+    const kelasNama = s ? kelasM.get(s.kelasId)?.nama ?? '?' : '?';
+    entitas = { id: entitasId, nama: s ? `${s.nama} (${kelasNama})` : '(siswa terhapus)' };
+    filterJadwal = s
+      ? project.jadwal.filter((j) => j.kelasId === s.kelasId)
+      : [];
+  }
+
+  const baris: BarisMatriks[] = [];
+  const blok: BlokHari[] = [];
+
+  // Periode yang tampil pada tiap hari (sama persis logika buatMatriks)
+  const perTampilHari = project.hari.map((_, h) => {
+    const aktif = new Set(periodeAktifHari(project, h).map((p) => p.id));
+    for (const per of project.periode) {
+      if (per.tipe === 'pelajaran') continue;
+      if (periodeAktifDiHari(per, h)) aktif.add(per.id);
+    }
+    return aktif;
+  });
+
+  for (let hari = 0; hari < project.hari.length; hari++) {
+    const mulai = baris.length;
+    const perHari = project.periode
+      .filter((per) => perTampilHari[hari]?.has(per.id) ?? true)
+      .sort((a, b) => a.mulai.localeCompare(b.mulai) || a.selesai.localeCompare(b.selesai));
+    for (const per of perHari) {
+      baris.push({
+        hari,
+        periodeId: per.id,
+        jam: `${per.mulai} - ${per.selesai}`,
+        label:
+          per.tipe === 'pelajaran'
+            ? per.nama
+            : `${labelTipeWaktu(per)}${per.nama && per.nama !== labelTipeWaktu(per) ? ` (${per.nama})` : ''}`.toUpperCase(),
+        tipe: per.tipe,
+      });
+    }
+    blok.push({ hari, nama: project.hari[hari], mulai, jumlah: baris.length - mulai });
+  }
+
+  const sel = new Map<string, SelMatriks>();
+  const legendaMap = new Map<string, LegendaEntry>();
+  let adaIsi = false;
+
+  for (const les of filterJadwal) {
+    adaIsi = true;
+    const key = kunciSel(les.hari, les.periodeId, entitasId); // pakai entitasId sebagai "kolom"
+    const g = guruM.get(les.guruId);
+    const m = mapelM.get(les.mapelId);
+    const nomor = nomorGuru.get(les.guruId) ?? 0;
+    const kode = kodePasangan(nomor, m?.nama ?? '?', m?.kode ?? '');
+    const existing = sel.get(key);
+    if (existing) {
+      existing.les.push(les);
+      existing.kode = [...new Set([...existing.kode.split(' '), kode])].join(' ');
+      if (existing.blokId !== les.blokId) existing.blokId = undefined;
+    } else {
+      sel.set(key, { kode, les: [les], warna: g?.warna ?? '#94a3b8', blokId: les.blokId });
+    }
+    if (!legendaMap.has(kode)) {
+      legendaMap.set(kode, {
+        kode,
+        guru: g?.nama ?? '(terhapus)',
+        mapel: m?.nama ?? '(terhapus)',
+        warna: g?.warna ?? '#94a3b8',
+      });
+    }
+  }
+
+  // --- Blok sel menyatu: bagian pola JP yang berurutan & satu entitas ---------
+  const indeksBaris = new Map<string, number>();
+  baris.forEach((br, i) => indeksBaris.set(`${br.hari}|${br.periodeId}`, i));
+  const blokSel: BlokSel[] = [];
+
+  {
+    const perBlok = new Map<string, Assignment[]>();
+    for (const les of filterJadwal) {
+      if (!les.blokId) continue;
+      const arr = perBlok.get(`${les.blokId}|${entitasId}`);
+      if (arr) arr.push(les);
+      else perBlok.set(`${les.blokId}|${entitasId}`, [les]);
+    }
+    for (const [gabungan, list] of perBlok) {
+      const urut = [...list].sort((a, b) => a.hari - b.hari);
+      const pos = urut.map((a) => indeksBaris.get(`${a.hari}|${a.periodeId}`) ?? -1);
+      if (pos.some((p) => p < 0)) continue;
+      if (pos.some((p, i) => i > 0 && p !== pos[i - 1] + 1)) continue;
+      const unik = new Set(pos);
+      if (unik.size !== pos.length) continue;
+      if (pos.length < 2) continue;
+      // pakai entitasId sebagai kelasId untuk kompatibilitas struktur BlokSel
+      blokSel.push({ kelasId: entitasId, hari: urut[0].hari, mulai: pos[0], jumlah: pos.length });
+    }
+  }
+
+  const legenda = [...legendaMap.values()].sort((a, b) => {
+    const na = Number(a.kode.match(/^\d+/)?.[0] ?? 0);
+    const nb = Number(b.kode.match(/^\d+/)?.[0] ?? 0);
+    return na - nb || a.kode.localeCompare(b.kode);
+  });
+
+  return {
+    entitas,
+    baris,
+    blok,
+    blokSel,
+    sel,
+    legenda,
+    adaIsi,
+  };
+}
+
 export function buatMatriks(project: Project): Matriks {
   const nomorGuru = new Map(project.guru.map((g, i) => [g.id, i + 1]));
   const guruM = new Map(project.guru.map((g) => [g.id, g]));

@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Project } from '../types';
 import { parseProyek, useProject } from '../store';
 import { Banner, Btn, Card, EmptyState, PageHead, Tabs } from '../ui';
-import { Scope, SekolahMatrix, TimetableGrid } from '../timetable';
+import { Scope, SekolahMatrix, EntityMatrix } from '../timetable';
 import { decodePayload, encodePayload } from '../utils';
 
 function IsiPublikasi({ data }: { data: Project }) {
@@ -85,7 +85,7 @@ function IsiPublikasi({ data }: { data: Project }) {
       {scope === 'sekolah' ? (
         <SekolahMatrix project={data} />
       ) : (
-        <TimetableGrid project={data} items={items} scope={scope} />
+        <EntityMatrix project={data} scope={scope} entitasId={refId} editable={false} />
       )}
       <div className="tt-legend">
         <span>Tersedia {data.hari.join(' · ')}</span>

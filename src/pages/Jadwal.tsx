@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Assignment, slotHariAktif } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
-import { Legend, Scope, SekolahMatrix, TimetableGrid } from '../timetable';
+import { Legend, Scope, SekolahMatrix, EntityMatrix } from '../timetable';
 import { Banner, Btn, EmptyState, FormField, Icon, KopSurat, Modal, PageHead, Tabs } from '../ui';
 import { downloadCSV, uid } from '../utils';
 
@@ -514,17 +514,15 @@ export function HalJadwal() {
           onMove={pindah}
         />
       ) : (
-        <TimetableGrid
+        <EntityMatrix
           project={project}
-          items={items}
           scope={scope}
+          entitasId={refId}
           editable
           konflik={konflikSet}
-          dimMapel={dimMapel}
           focusId={focusLes?.id ?? null}
-          hariTampil={hariAktif}
           onOpen={(a) => setBukaLes({ ...a })}
-          onAdd={(hari, periodeId) => mulaiTambah(refId, hari, periodeId)}
+          onAdd={(entitasId, hari, periodeId) => mulaiTambah(entitasId, hari, periodeId)}
           onMove={pindah}
         />
       )}

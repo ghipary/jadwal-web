@@ -1,7 +1,8 @@
-// Uji markup Grid Jadwal (SSR): struktur tabel kaku, sel seragam, kartu <div>.
+// Uji markup Matriks Entitas (SSR): struktur tabel sama dengan SekolahMatrix (HARI & PUKUL di baris).
+import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { demoProject } from '../src/store';
-import { SekolahMatrix, TimetableGrid } from '../src/timetable';
+import { SekolahMatrix, EntityMatrix } from '../src/timetable';
 
 const p = demoProject();
 const kelas = p.kelas[0];
@@ -75,33 +76,10 @@ p.jadwal = [
   },
 ];
 
-const html = renderToStaticMarkup(
-  <TimetableGrid project={p} items={p.jadwal} scope="kelas" editable judul={kelas.nama} />,
-);
-
-let gagal = 0;
-const cek = (nama: string, syarat: boolean) => {
-  if (syarat) console.log(`OK   grid   ${nama}`);
-  else {
-    gagal++;
-    console.log(`GAGAL grid ${nama}`);
-  }
-};
-
-cek('<table class="tt">', html.includes('<table class="tt">'));
-cek('<th class="jam-cell">', html.includes('class="jam-cell"'));
-cek('sel class "cell"', /class="cell[ "]/i.test(html));
-cek('kartu les berupa <div>', /<div class="les[ "]/i.test(html));
-cek('kartu les bukan <button>', !/<button[^>]*class="[^"]*\bles\b/i.test(html));
-cek('sel dengan 2 kartu → class "multi"', /class="[^"]*\bmulti\b[^"]*"/.test(html));
-cek('sel blok menyatu → class "cell-blok"', /class="[^"]*\bcell-blok\b[^"]*"/.test(html));
-cek('tanpa tombol les-tambah', !html.includes('les-tambah'));
-cek('tanpa placeholder libur-tanda', !html.includes('libur-tanda'));
-cek('baris jam non-pelajaran tetap ada', html.includes('baris-waktu'));
-
 // --- Matriks "Per Sekolah": hari & pukul di baris, kelas di kolom ----------
 const mx = renderToStaticMarkup(<SekolahMatrix project={p} editable konflik={new Set()} />);
 
+let gagal = 0;
 const cek2 = (nama: string, syarat: boolean) => {
   if (syarat) console.log(`OK   sekolah   ${nama}`);
   else {
@@ -132,5 +110,29 @@ cek2('blok mapel bukan <button>', !/<button[^>]*les-mx/i.test(mx));
 cek2('tanpa .les generik', !/<div class="les[ "]/i.test(mx));
 cek2('tanpa judul per kelas (tt-titel)', !mx.includes('tt-titel'));
 
-console.log(gagal === 0 ? '\nGRID MARKUP LULUS ✅' : `\nGRID MARKUP GAGAL ❌ (${gagal})`);
+// --- Matriks "Per Entitas" (Kelas/Guru/Ruang/Siswa): struktur identik SekolahMatrix tapi 1 kolom ---
+const me = renderToStaticMarkup(
+  <EntityMatrix project={p} scope="kelas" entitasId={kelas.id} editable={false} />,
+);
+
+const cek3 = (nama: string, syarat: boolean) => {
+  if (syarat) console.log(`OK   entitas  ${nama}`);
+  else {
+    gagal++;
+    console.log(`GAGAL entitas ${nama}`);
+  }
+};
+
+cek3('<table class="mx mx-sekolah">', me.includes('<table class="mx mx-sekolah">'));
+cek3('header HARI', /<th class="c-hari">HARI<\/th>/.test(me));
+cek3('header PUKUL', /<th class="c-jam">PUKUL<\/th>/.test(me));
+cek3('header entitas (nama kelas)', me.includes(`<th>${kelas.nama}</th>`));
+cek3('kolom HARI memakai rowspan', /class="c-hari" rowspan="\d+"/.test(me));
+cek3('baris non-pelajaran digabung (colspan)', /<td[^>]*colspan="1"[^>]*class="c-ist c-ist-\w+"/i.test(me));
+cek3('blok mapel pakai .les-mx', /class="les-mx[ "]/i.test(me));
+cek3('blok mapel bukan <button>', !/<button[^>]*les-mx/i.test(me));
+cek3('tanpa .les generik', !/<div class="les[ "]/i.test(me));
+cek3('tanpa judul per kelas (tt-titel)', !me.includes('tt-titel'));
+
+console.log(gagal === 0 ? '\nMATRIKS MARKUP LULUS ✅' : `\nMATRIKS MARKUP GAGAL ❌ (${gagal})`);
 process.exit(gagal === 0 ? 0 : 1);
