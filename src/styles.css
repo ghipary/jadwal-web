@@ -1116,6 +1116,58 @@ select.input {
 .banner-bahaya { background: var(--bahaya-soft); color: #b31217; }
 .banner-peringatan { background: var(--peringatan-soft); color: #b45309; }
 
+/* Peringatan banner khusus untuk halaman Jadwal */
+.peringatan-banner {
+  width: 100%;
+}
+.peringatan-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #b45309;
+}
+.peringatan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.peringatan-list li {
+  display: flex;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #854d0e;
+}
+.peringatan-tipe {
+  font-weight: 700;
+  flex: none;
+  white-space: nowrap;
+  color: #b45309;
+}
+.peringatan-pesan {
+  flex: 1;
+  word-break: break-word;
+}
+.peringatan-more {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-3);
+  font-style: italic;
+}
+.peringatan-more a {
+  color: var(--brand);
+  font-weight: 600;
+}
+.peringatan-more a:hover {
+  text-decoration: underline;
+}
+
 .empty {
   text-align: center;
   padding: 46px 20px;

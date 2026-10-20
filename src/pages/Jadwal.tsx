@@ -3,12 +3,26 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Assignment, slotHariAktif } from '../types';
+import { Assignment, Conflict, ConflictTipe } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
 import { Legend, Scope, SekolahMatrix, EntityMatrix } from '../timetable';
 import { Banner, Btn, EmptyState, FormField, Icon, KopSurat, Modal, PageHead, Tabs } from '../ui';
 import { downloadCSV, uid } from '../utils';
+
+const LABEL_KONFLIK: Record<ConflictTipe, string> = {
+  'kelas-bentrok': 'Kelas Bentrok',
+  'guru-bentrok': 'Guru Bentrok',
+  'ruang-bentrok': 'Ruang Bentrok',
+  'kurang-jam': 'Kurang Jam',
+  'lebih-jam': 'Lebih Jam',
+  'guru-lebih-jam': 'Beban Guru Berlebih',
+  kapasitas: 'Kapasitas Ruang',
+  blokir: 'Slot Terblokir Dilanggar',
+  istirahat: 'Di Luar Jam Pelajaran',
+  nonaktif: 'JP Non-Aktif pada Hari Itu',
+  data: 'Masalah Data',
+};
 
 interface Draft {
   kelasId: string;
@@ -28,11 +42,6 @@ export function HalJadwal() {
   const [refId, setRefId] = useState('');
   const [bukaLes, setBukaLes] = useState<Assignment | null>(null);
   const [tambah, setTambah] = useState<Draft | null>(null);
-  /** `null` = tampilkan semua hari; angka = tab hari yang sedang aktif. */
-  const [hariAktif, setHariAktif] = useState<number | null>(null);
-  /** Hari sumber saat modal "Salin" terbuka. */
-  const [salinDari, setSalinDari] = useState<number | null>(null);
-  const [salinTujuan, setSalinTujuan] = useState<number[]>([]);
 
   const state = location.state as { lesId?: string } | null;
   const focusLes = state?.lesId
@@ -76,15 +85,10 @@ export function HalJadwal() {
 
   const items = project.jadwal.filter(cocokScope);
 
-  // Jaga agar tab hari tetap valid setelah hari dihapus/diubah di halaman Jam.
-  useEffect(() => {
-    if (hariAktif !== null && hariAktif >= project.hari.length) setHariAktif(null);
-  }, [project.hari.length, hariAktif]);
-
-  const konflikSet = useMemo(
-    () => new Set(checkConflicts(project).flatMap((c) => c.refJadwal)),
-    [project],
-  );
+  // Konflik & peringatan untuk grid jadwal
+  const konflik = useMemo(() => checkConflicts(project), [project]);
+  const konflikSet = useMemo(() => new Set(konflik.flatMap((c) => c.refJadwal)), [konflik]);
+  const peringatan = useMemo(() => konflik.filter((c) => c.tingkat === 'peringatan'), [konflik]);
 
   // --- lookup nama -------------------------------------------------------
   const kelasNama = (id: string) => project.kelas.find((c) => c.id === id)?.nama ?? '(terhapus)';
@@ -195,70 +199,6 @@ export function HalJadwal() {
       return;
     upsert('jadwal', bukaLes);
     setBukaLes(null);
-  };
-
-  // --- Salin jadwal antar hari -------------------------------------------
-  const bukaSalin = (dari: number) => {
-    setHariAktif(dari);
-    setSalinDari(dari);
-    setSalinTujuan([]);
-  };
-
-  const tutupSalin = () => {
-    setSalinDari(null);
-    setSalinTujuan([]);
-  };
-
-  const toggleTujuan = (hari: number) => {
-    setSalinTujuan((arr) =>
-      arr.includes(hari) ? arr.filter((h) => h !== hari) : [...arr, hari],
-    );
-  };
-
-  const sumberSalin =
-    salinDari === null
-      ? []
-      : project.jadwal.filter((j) => j.hari === salinDari && cocokScope(j));
-
-  const lakukanSalin = () => {
-    if (salinDari === null || salinTujuan.length === 0) return;
-    if (sumberSalin.length === 0) {
-      window.alert('Tidak ada jadwal pada hari sumber untuk cakupan tampilan ini.');
-      return;
-    }
-    const tujuan = new Set(salinTujuan);
-    // Ganti hanya data pada hari tujuan untuk cakupan yang sedang dilihat,
-    // agar jadwal kelas/guru lain di hari yang sama tidak ikut terhapus.
-    const sisa = project.jadwal.filter(
-      (j) => !(tujuan.has(j.hari) && cocokScope(j)),
-    );
-    // Hanya menyalin ke slot yang AKTIF pada hari tujuan — JP di luar batas
-    // maks./yang dimatikan khusus hari itu tidak menerima salinan.
-    let dilewati = 0;
-    const salinan: Assignment[] = [];
-    for (const hari of tujuan) {
-      for (const j of sumberSalin) {
-        if (!slotHariAktif(project, hari, j.periodeId)) {
-          dilewati++;
-          continue;
-        }
-        salinan.push({ ...j, id: uid('j'), hari });
-      }
-    }
-    set({ jadwal: [...sisa, ...salinan] });
-    const namaTujuan = salinTujuan
-      .map((h) => project.hari[h])
-      .filter(Boolean)
-      .join(', ');
-    setHariAktif(salinTujuan[0] ?? salinDari);
-    tutupSalin();
-    window.alert(
-      `${salinan.length} jadwal disalin ke ${namaTujuan}.` +
-        (dilewati
-          ? `\n\n${dilewati} jam dilewati karena JP-nya non-aktif pada hari tujuan (batas maks./JP dimatikan).`
-          : '') +
-        '\n\nTipe waktu tiap baris tetap sama karena mengikuti data Jam Pelajaran.',
-    );
   };
 
   const eksporCSV = () => {
@@ -428,7 +368,8 @@ export function HalJadwal() {
       <div className="tt-toolbar">
         <Tabs
           items={[
-            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },            { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
+            { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
+            { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
             { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
             { id: 'siswa', label: 'Per Siswa', icon: 'siswa' },
@@ -459,42 +400,28 @@ export function HalJadwal() {
         </span>
       </div>
 
-      <div className="hari-tabs no-print" role="tablist" aria-label="Pilih hari">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={hariAktif === null}
-          className={`hari-tab ${hariAktif === null ? 'aktif' : ''}`}
-          onClick={() => setHariAktif(null)}
-        >
-          Semua Hari
-        </button>
-        {project.hari.map((nama, i) => (
-          <div
-            key={`${i}-${nama}`}
-            className={`hari-tab-grup ${hariAktif === i ? 'aktif' : ''}`}
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={hariAktif === i}
-              className="hari-tab-judul"
-              onClick={() => setHariAktif(i)}
-            >
-              {nama}
-            </button>
-            <button
-              type="button"
-              className="hari-tab-salin"
-              title={`Salin seluruh jadwal hari ${nama} ke hari lain`}
-              onClick={() => bukaSalin(i)}
-            >
-              <Icon name="salin" size={12} />
-              Salin
-            </button>
+      {/* Banner peringatan dari pemeriksa konflik */}
+      {peringatan.length > 0 && (
+        <Banner tone="peringatan" icon="konflik">
+          <div className="peringatan-banner">
+            <div className="peringatan-title">
+              <Icon name="info" size={14} />
+              <strong>Ditemukan {peringatan.length} peringatan:</strong>
+            </div>
+            <ul className="peringatan-list">
+              {peringatan.slice(0, 5).map((p) => (
+                <li key={p.id}>
+                  <span className="peringatan-tipe">{LABEL_KONFLIK[p.tipe]}</span>
+                  <span className="peringatan-pesan">{p.pesan}</span>
+                </li>
+              ))}
+              {peringatan.length > 5 && (
+                <li className="peringatan-more">…dan {peringatan.length - 5} peringatan lainnya. Lihat di <a href="/konflik">Pemeriksa Konflik</a>.</li>
+              )}
+            </ul>
           </div>
-        ))}
-      </div>
+        </Banner>
+      )}
 
       {scope === 'siswa' && siswa && siswa.pilihan.length ? (
         <Banner tone="info" icon="info">
@@ -527,81 +454,6 @@ export function HalJadwal() {
         />
       )}
       <Legend />
-
-      {/* --- Modal salin jadwal antar hari --- */}
-      <Modal
-        open={salinDari !== null}
-        title="Salin Jadwal per Hari"
-        desc={
-          salinDari !== null
-            ? `Salin jadwal hari ${project.hari[salinDari]} ke hari tujuan.`
-            : undefined
-        }
-        onClose={tutupSalin}
-        footer={
-          <>
-            <Btn variant="ghost" onClick={tutupSalin}>
-              Batal
-            </Btn>
-            <Btn
-              variant="primary"
-              icon="salin"
-              disabled={salinTujuan.length === 0 || sumberSalin.length === 0}
-              onClick={lakukanSalin}
-            >
-              Salin ke {salinTujuan.length || 0} Hari
-            </Btn>
-          </>
-        }
-      >
-        {salinDari !== null ? (
-          <div className="form-grid">
-            <div className="span2">
-              <Banner tone="info" icon="info">
-                Cakupan: <b>{labelScope}</b> · <b>{sumberSalin.length}</b> jadwal pada hari{' '}
-                <b>{project.hari[salinDari]}</b>. Jadwal pada hari tujuan untuk cakupan ini akan
-                diganti. Tipe waktu (Pelajaran/Istirahat/Apel/Kustom) tetap mengikuti data{' '}
-                <b>Jam Pelajaran</b> dan tidak diubah.
-              </Banner>
-            </div>
-            <div className="span2 field">
-              <label>Salin ke hari</label>
-              <div className="multi">
-                {project.hari.map((nama, i) => {
-                  if (i === salinDari) return null;
-                  const on = salinTujuan.includes(i);
-                  const terisi = project.jadwal.filter(
-                    (j) => j.hari === i && cocokScope(j),
-                  ).length;
-                  return (
-                    <button
-                      type="button"
-                      key={`${i}-${nama}`}
-                      className={`chip ${on ? 'chip-on' : ''}`}
-                      onClick={() => toggleTujuan(i)}
-                    >
-                      {on ? <Icon name="cek" size={12} /> : null}
-                      {nama}
-                      {terisi ? <span className="chip-sub">{terisi} jadwal</span> : null}
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="hint">
-                Bisa pilih lebih dari satu hari. Hari sumber tidak dapat dipilih.
-              </span>
-            </div>
-            {sumberSalin.length === 0 ? (
-              <div className="span2">
-                <Banner tone="peringatan" icon="konflik">
-                  Belum ada jadwal pada hari ini untuk cakupan {labelScope}. Tambahkan atau hasilkan
-                  jadwal terlebih dahulu.
-                </Banner>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-      </Modal>
 
       {/* --- Modal ubah pelajaran --- */}
       <Modal

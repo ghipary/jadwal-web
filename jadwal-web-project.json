@@ -1,0 +1,8175 @@
+{
+  "ownerId": null,
+  "info": {
+    "nama": "SMA Wahidiyah",
+    "tahunAjaran": "2026/2027",
+    "kepalaSekolah": "",
+    "alamat": "",
+    "logo": ""
+  },
+  "hari": [
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu"
+  ],
+  "hariKonfig": [
+    {
+      "maksJP": 7,
+      "slotNonAktif": []
+    },
+    {
+      "maksJP": 8,
+      "slotNonAktif": []
+    },
+    {
+      "maksJP": 8,
+      "slotNonAktif": []
+    },
+    {
+      "maksJP": 8,
+      "slotNonAktif": []
+    },
+    {
+      "maksJP": 5,
+      "slotNonAktif": []
+    },
+    {
+      "maksJP": 8,
+      "slotNonAktif": []
+    }
+  ],
+  "periode": [
+    {
+      "id": "p0_1",
+      "nama": "UPACARA",
+      "mulai": "6.3",
+      "selesai": "7.4",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_2",
+      "nama": "J2",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_3",
+      "nama": "J3",
+      "mulai": "9.0",
+      "selesai": "9.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_4",
+      "nama": "J4",
+      "mulai": "10.1",
+      "selesai": "10.5",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_5",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.4",
+      "selesai": "10.1",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_6",
+      "nama": "SHOLAT DZUHUR",
+      "mulai": "11.3",
+      "selesai": "12.1",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p0_7",
+      "nama": "J7",
+      "mulai": "12.5",
+      "selesai": "13.3",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        0
+      ]
+    },
+    {
+      "id": "p1_1",
+      "nama": "APEL PAGI",
+      "mulai": "6.3",
+      "selesai": "7.0",
+      "tipe": "Apel",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_2",
+      "nama": "J2",
+      "mulai": "7.4",
+      "selesai": "8.2",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_3",
+      "nama": "J3",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_4",
+      "nama": "J4",
+      "mulai": "9.0",
+      "selesai": "9.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_5",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.4",
+      "selesai": "10.1",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_6",
+      "nama": "J6",
+      "mulai": "10.5",
+      "selesai": "11.3",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_7",
+      "nama": "J7",
+      "mulai": "12.1",
+      "selesai": "12.5",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p1_8",
+      "nama": "SHOLAT DZUHUR",
+      "mulai": "11.3",
+      "selesai": "12.1",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        1
+      ]
+    },
+    {
+      "id": "p2_1",
+      "nama": "APEL PAGI",
+      "mulai": "6.3",
+      "selesai": "7.0",
+      "tipe": "Apel",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_2",
+      "nama": "J2",
+      "mulai": "7.4",
+      "selesai": "8.2",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_3",
+      "nama": "J3",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_4",
+      "nama": "J4",
+      "mulai": "9.0",
+      "selesai": "9.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_5",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.4",
+      "selesai": "10.1",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_6",
+      "nama": "J6",
+      "mulai": "10.5",
+      "selesai": "11.3",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_7",
+      "nama": "J7",
+      "mulai": "12.1",
+      "selesai": "12.5",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p2_8",
+      "nama": "SHOLAT DZUHUR",
+      "mulai": "11.3",
+      "selesai": "12.1",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        2
+      ]
+    },
+    {
+      "id": "p3_1",
+      "nama": "APEL PAGI",
+      "mulai": "6.3",
+      "selesai": "7.0",
+      "tipe": "Apel",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_2",
+      "nama": "J2",
+      "mulai": "7.4",
+      "selesai": "8.2",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_3",
+      "nama": "J3",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_4",
+      "nama": "J4",
+      "mulai": "9.0",
+      "selesai": "9.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_5",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.4",
+      "selesai": "10.1",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_6",
+      "nama": "J6",
+      "mulai": "10.5",
+      "selesai": "11.3",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_7",
+      "nama": "J7",
+      "mulai": "12.1",
+      "selesai": "12.5",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p3_8",
+      "nama": "SHOLAT DZUHUR",
+      "mulai": "11.3",
+      "selesai": "12.1",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        3
+      ]
+    },
+    {
+      "id": "p4_1",
+      "nama": "APEL PAGI",
+      "mulai": "6.3",
+      "selesai": "7.0",
+      "tipe": "Apel",
+      "tipeKet": "",
+      "hariAktif": [
+        4
+      ]
+    },
+    {
+      "id": "p4_2",
+      "nama": "J2",
+      "mulai": "7.4",
+      "selesai": "8.2",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        4
+      ]
+    },
+    {
+      "id": "p4_3",
+      "nama": "J3",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        4
+      ]
+    },
+    {
+      "id": "p4_4",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.0",
+      "selesai": "9.2",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        4
+      ]
+    },
+    {
+      "id": "p4_5",
+      "nama": "J5",
+      "mulai": "10.0",
+      "selesai": "10.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        4
+      ]
+    },
+    {
+      "id": "p5_1",
+      "nama": "APEL PAGI",
+      "mulai": "6.3",
+      "selesai": "7.0",
+      "tipe": "Apel",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_2",
+      "nama": "J2",
+      "mulai": "7.4",
+      "selesai": "8.2",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_3",
+      "nama": "J3",
+      "mulai": "8.2",
+      "selesai": "9.0",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_4",
+      "nama": "J4",
+      "mulai": "9.0",
+      "selesai": "9.4",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_5",
+      "nama": "ISTIRAHAT",
+      "mulai": "9.4",
+      "selesai": "10.1",
+      "tipe": "Istirahat",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_6",
+      "nama": "J6",
+      "mulai": "10.5",
+      "selesai": "11.3",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_7",
+      "nama": "J7",
+      "mulai": "12.1",
+      "selesai": "12.5",
+      "tipe": "Pelajaran",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    },
+    {
+      "id": "p5_8",
+      "nama": "SHOLAT DZUHUR",
+      "mulai": "11.3",
+      "selesai": "12.1",
+      "tipe": "Kustom",
+      "tipeKet": "",
+      "hariAktif": [
+        5
+      ]
+    }
+  ],
+  "guru": [
+    {
+      "id": "guqrnb4fu",
+      "nama": "Pipik Dwi Rahayu, S.Pd.",
+      "kode": "1",
+      "warna": "#14b8a6",
+      "mapelIds": [
+        "mpdhas1sm"
+      ],
+      "maxJam": 18,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "2#p2_3",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "5#p5_8",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "5#p5_4",
+        "3#p3_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "5#p5_6",
+        "3#p3_7",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Hanya butuh Senin, Selasa, Rabu"
+    },
+    {
+      "id": "gul4zjueu",
+      "nama": "Musri'atun Nikmah, S.E.",
+      "kode": "2",
+      "warna": "#4f46e5",
+      "mapelIds": [
+        "mpdhas1sm",
+        "m00lrfsmx"
+      ],
+      "maxJam": 14,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "0#p0_6",
+        "1#p1_5",
+        "0#p0_2",
+        "1#p1_8",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "0#p0_3",
+        "1#p1_2"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "2#p2_3",
+        "5#p5_4",
+        "3#p3_8",
+        "2#p2_6",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Hanya butuh Senin, Selasa"
+    },
+    {
+      "id": "g0mgwkyxv",
+      "nama": "Firdausi Ahadiyah, S.Pd.",
+      "kode": "3",
+      "warna": "#14b8a6",
+      "mapelIds": [
+        "mpdhas1sm"
+      ],
+      "maxJam": 12,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "5#p5_5",
+        "4#p4_5",
+        "5#p5_8",
+        "4#p4_4",
+        "5#p5_1",
+        "4#p4_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_3",
+        "4#p4_3",
+        "5#p5_6",
+        "5#p5_2",
+        "4#p4_2"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "polaJP": [],
+      "catatan": "Cukup 2 hari mengajar"
+    },
+    {
+      "id": "g4w2hsris",
+      "nama": "Sabar Dewantara, S.Pd.",
+      "kode": "4",
+      "warna": "#f97316",
+      "mapelIds": [
+        "mpxqmkh9h",
+        "mlp4sc7h6"
+      ],
+      "maxJam": 24,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "2#p2_3",
+        "5#p5_4",
+        "3#p3_8",
+        "2#p2_6",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "slotDilarang": [
+        "0#p0_6",
+        "1#p1_5",
+        "0#p0_2",
+        "1#p1_8",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "0#p0_3",
+        "1#p1_2"
+      ],
+      "polaJP": [],
+      "catatan": "MTK 16 JP + BIND 8 JP"
+    },
+    {
+      "id": "gdnoosufd",
+      "nama": "Seliesya Alin Nabila",
+      "kode": "5",
+      "warna": "#6366f1",
+      "mapelIds": [
+        "mpxqmkh9h"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 4,
+      "slotDiinginkan": [
+        "0#p0_6",
+        "1#p1_5",
+        "0#p0_2",
+        "1#p1_8",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "0#p0_3",
+        "1#p1_2"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "2#p2_3",
+        "5#p5_4",
+        "3#p3_8",
+        "2#p2_6",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Cukup 2 hari mengajar"
+    },
+    {
+      "id": "gcoawwnle",
+      "nama": "Sofiatur Rizkiyah, S.Pd.",
+      "kode": "6",
+      "warna": "#4f46e5",
+      "mapelIds": [
+        "mqo5n4r8o",
+        "mpxqmkh9h",
+        "msjkvkqja"
+      ],
+      "maxJam": 26,
+      "maxPerHari": 7,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "1#p1_2",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "4#p4_5",
+        "5#p5_8",
+        "4#p4_4",
+        "5#p5_1",
+        "4#p4_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_3",
+        "4#p4_3",
+        "5#p5_6",
+        "5#p5_2",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "Mulai jam ke-2"
+    },
+    {
+      "id": "g0dvnhyv7",
+      "nama": "Yannis Mardukrtyarta W, S.Pd.",
+      "kode": "7",
+      "warna": "#ec4899",
+      "mapelIds": [
+        "msjkvkqja"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "3#p3_2",
+        "3#p3_5",
+        "3#p3_1",
+        "3#p3_8",
+        "3#p3_4",
+        "3#p3_7"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "5#p5_1",
+        "5#p5_7",
+        "5#p5_4",
+        "2#p2_3",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "5#p5_3",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Hanya Kamis Jam 1-6"
+    },
+    {
+      "id": "g6zl5kumj",
+      "nama": "Dewi Usria, S.Pd.",
+      "kode": "8",
+      "warna": "#10b981",
+      "mapelIds": [
+        "msjkvkqja",
+        "mpxqmkh9h"
+      ],
+      "maxJam": 28,
+      "maxPerHari": 7,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "4#p4_5",
+        "5#p5_8",
+        "4#p4_4",
+        "5#p5_1",
+        "4#p4_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_3",
+        "4#p4_3",
+        "5#p5_6",
+        "5#p5_2",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "-"
+    },
+    {
+      "id": "gub551gsu",
+      "nama": "Abdurrahman Al-Ghifari",
+      "kode": "9",
+      "warna": "#f59e0b",
+      "mapelIds": [
+        "mpxqmkh9h"
+      ],
+      "maxJam": 0,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "g5rbwdrtv",
+      "nama": "Umi So'im, S.Pd.",
+      "kode": "10",
+      "warna": "#4f46e5",
+      "mapelIds": [
+        "mg4lljgri"
+      ],
+      "maxJam": 14,
+      "maxPerHari": 5,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "5#p5_8",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "5#p5_4",
+        "3#p3_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "5#p5_6",
+        "3#p3_7",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "slotDilarang": [
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "2#p2_3",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "polaJP": [],
+      "catatan": "-"
+    },
+    {
+      "id": "g7cmya18h",
+      "nama": "Nur Lailatul Unzila, S.M.",
+      "kode": "11",
+      "warna": "#f59e0b",
+      "mapelIds": [
+        "mg4lljgri"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "gnx0eihek",
+      "nama": "Muhammad Kevin, S.Kom.",
+      "kode": "12",
+      "warna": "#f97316",
+      "mapelIds": [
+        "my5p86hsa"
+      ],
+      "maxJam": 24,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "g0h62kget",
+      "nama": "Zarabiatulrfa Alfidhlah",
+      "kode": "13",
+      "warna": "#10b981",
+      "mapelIds": [
+        "my5p86hsa"
+      ],
+      "maxJam": 4,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "g9tqg7y4y",
+      "nama": "Uni Widiyanti, S.Si.",
+      "kode": "14",
+      "warna": "#f59e0b",
+      "mapelIds": [
+        "mtesl40h2"
+      ],
+      "maxJam": 22,
+      "maxPerHari": 8,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "4#p4_3"
+      ],
+      "slotDilarang": [
+        "0#p0_6",
+        "5#p5_5",
+        "0#p0_2",
+        "5#p5_8",
+        "0#p0_5",
+        "5#p5_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_2",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "5#p5_3",
+        "5#p5_6",
+        "0#p0_3"
+      ],
+      "polaJP": [],
+      "catatan": "Sesuai jadwal smt 1"
+    },
+    {
+      "id": "g44mrdugm",
+      "nama": "Saiful Umam, S.Pd.",
+      "kode": "15",
+      "warna": "#ec4899",
+      "mapelIds": [
+        "mtesl40h2"
+      ],
+      "maxJam": 10,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "g71pbi4mi",
+      "nama": "Atika Mustika Murni, S.M.",
+      "kode": "16",
+      "warna": "#ec4899",
+      "mapelIds": [
+        "mvvr5bhcy"
+      ],
+      "maxJam": 12,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "0#p0_6",
+        "3#p3_6",
+        "0#p0_2",
+        "3#p3_3",
+        "0#p0_5",
+        "3#p3_2",
+        "3#p3_5",
+        "0#p0_1",
+        "0#p0_7",
+        "3#p3_1",
+        "3#p3_8",
+        "0#p0_4",
+        "3#p3_4",
+        "3#p3_7",
+        "0#p0_3"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_7",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_7",
+        "5#p5_4",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "3#p3_1",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3"
+      ],
+      "polaJP": [],
+      "catatan": "Waktu mengikuti request teks"
+    },
+    {
+      "id": "gbt20jwxz",
+      "nama": "Widhy Yustikasari, S.E.",
+      "kode": "17",
+      "warna": "#14b8a6",
+      "mapelIds": [
+        "mvvr5bhcy",
+        "mb9vx760t"
+      ],
+      "maxJam": 18,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "gkcesw1ey",
+      "nama": "Roihatul Jannah, S.E.",
+      "kode": "18",
+      "warna": "#14b8a6",
+      "mapelIds": [
+        "mb9vx760t"
+      ],
+      "maxJam": 16,
+      "maxPerHari": 4,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "4#p4_3"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "2#p2_5",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "5#p5_1",
+        "5#p5_7",
+        "2#p2_7",
+        "5#p5_4",
+        "2#p2_3",
+        "2#p2_6",
+        "5#p5_3",
+        "5#p5_6",
+        "5#p5_2",
+        "2#p2_2",
+        "2#p2_8"
+      ],
+      "polaJP": [],
+      "catatan": "Masuk setelah jam 08.00"
+    },
+    {
+      "id": "gqsithfzs",
+      "nama": "Shofi Salamatunnisa, S.Ak.",
+      "kode": "19",
+      "warna": "#f97316",
+      "mapelIds": [
+        "mb9vx760t"
+      ],
+      "maxJam": 10,
+      "maxPerHari": 8,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "4#p4_5",
+        "3#p3_3",
+        "4#p4_4",
+        "3#p3_2",
+        "4#p4_1",
+        "3#p3_5",
+        "3#p3_1",
+        "3#p3_8",
+        "3#p3_4",
+        "4#p4_3",
+        "3#p3_7",
+        "4#p4_2"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "5#p5_1",
+        "5#p5_7",
+        "5#p5_4",
+        "2#p2_3",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "5#p5_3",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Sama persis smt 1"
+    },
+    {
+      "id": "gksf886qu",
+      "nama": "Binti Mu'alifah, S.Pd.",
+      "kode": "20",
+      "warna": "#f97316",
+      "mapelIds": [
+        "m0v0xmtzy"
+      ],
+      "maxJam": 32,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "gp78vp5pp",
+      "nama": "Prasasti Pridirahayu, S.Sos.",
+      "kode": "21",
+      "warna": "#0ea5e9",
+      "mapelIds": [
+        "ma717p9ls"
+      ],
+      "maxJam": 16,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": "Harus pagi"
+    },
+    {
+      "id": "gqdd4hx6k",
+      "nama": "Nurul Ainun Nikmah, S.Sos.",
+      "kode": "22",
+      "warna": "#6366f1",
+      "mapelIds": [
+        "ma717p9ls"
+      ],
+      "maxJam": 12,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "0#p0_6",
+        "2#p2_5",
+        "0#p0_2",
+        "2#p2_1",
+        "0#p0_5",
+        "2#p2_4",
+        "2#p2_7",
+        "2#p2_3",
+        "0#p0_1",
+        "0#p0_7",
+        "2#p2_6",
+        "0#p0_4",
+        "0#p0_3",
+        "2#p2_2",
+        "2#p2_8"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "5#p5_8",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "5#p5_4",
+        "3#p3_8",
+        "1#p1_2",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Senin & Rabu"
+    },
+    {
+      "id": "ga6o89t2t",
+      "nama": "Misbakhul Anwar, M.H.",
+      "kode": "23",
+      "warna": "#0ea5e9",
+      "mapelIds": [
+        "mmidkfqes"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "0#p0_6",
+        "0#p0_2",
+        "0#p0_5",
+        "5#p5_1",
+        "5#p5_4",
+        "5#p5_2",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "5#p5_3",
+        "0#p0_3"
+      ],
+      "polaJP": [],
+      "catatan": "Sabtu hanya setelah istirahat"
+    },
+    {
+      "id": "gk8izyuwr",
+      "nama": "Abdullah Abadi, S.E., S.Pd.",
+      "kode": "24",
+      "warna": "#14b8a6",
+      "mapelIds": [
+        "mmidkfqes"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 4,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "4#p4_5",
+        "3#p3_3",
+        "4#p4_4",
+        "3#p3_2",
+        "4#p4_1",
+        "3#p3_5",
+        "3#p3_1",
+        "3#p3_8",
+        "3#p3_4",
+        "4#p4_3",
+        "3#p3_7",
+        "4#p4_2"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "polaJP": [],
+      "catatan": "Cukup 2 hari"
+    },
+    {
+      "id": "gwzfh67n6",
+      "nama": "Fathimatuz Zahro, S.Ag.",
+      "kode": "25",
+      "warna": "#f97316",
+      "mapelIds": [
+        "mzue28dao"
+      ],
+      "maxJam": 24,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "0#p0_6",
+        "5#p5_5",
+        "0#p0_2",
+        "5#p5_8",
+        "0#p0_5",
+        "5#p5_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_2",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "5#p5_3",
+        "5#p5_6",
+        "0#p0_3"
+      ],
+      "polaJP": [],
+      "catatan": "Kelas 12.3 di Senin pagi"
+    },
+    {
+      "id": "g10k7s0s9",
+      "nama": "Dede Jamalul Aziz, M.Pd.I",
+      "kode": "26",
+      "warna": "#a855f7",
+      "mapelIds": [
+        "mzue28dao"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 3,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "5#p5_8",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "5#p5_4",
+        "3#p3_1",
+        "3#p3_8",
+        "3#p3_4",
+        "5#p5_3",
+        "5#p5_6",
+        "3#p3_7",
+        "5#p5_2"
+      ],
+      "slotDilarang": [
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "2#p2_3",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3"
+      ],
+      "polaJP": [],
+      "catatan": "Hanya Kamis & Sabtu"
+    },
+    {
+      "id": "g4xcibv3t",
+      "nama": "Raghana Githa V., S.Pd.",
+      "kode": "27",
+      "warna": "#f97316",
+      "mapelIds": [
+        "mg89r8rcl"
+      ],
+      "maxJam": 24,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "slotDilarang": [
+        "5#p5_5",
+        "4#p4_5",
+        "5#p5_8",
+        "4#p4_4",
+        "5#p5_1",
+        "4#p4_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_3",
+        "4#p4_3",
+        "5#p5_6",
+        "5#p5_2",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "Senin-Kamis"
+    },
+    {
+      "id": "gckm03otx",
+      "nama": "Mualim, S.HI.",
+      "kode": "28",
+      "warna": "#0ea5e9",
+      "mapelIds": [
+        "mg89r8rcl"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "gdtbh10z7",
+      "nama": "Afif Afandi, S.E",
+      "kode": "29",
+      "warna": "#ec4899",
+      "mapelIds": [
+        "mg89r8rcl"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "g0ompkv3l",
+      "nama": "Fitri Isvi Sati R, S.Pd.",
+      "kode": "30",
+      "warna": "#a855f7",
+      "mapelIds": [
+        "mlp4sc7h6"
+      ],
+      "maxJam": 21,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "5#p5_5",
+        "5#p5_8",
+        "5#p5_1",
+        "5#p5_7",
+        "5#p5_4",
+        "5#p5_3",
+        "5#p5_6",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Harus pagi"
+    },
+    {
+      "id": "ghuceg2s0",
+      "nama": "Zainal Arifin, S.E.",
+      "kode": "31",
+      "warna": "#10b981",
+      "mapelIds": [
+        "mcr5ut8mx"
+      ],
+      "maxJam": 16,
+      "maxPerHari": 4,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "4#p4_5",
+        "4#p4_4",
+        "4#p4_1",
+        "4#p4_3",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "Maksimal 2 kelas (4 JP) per hari"
+    },
+    {
+      "id": "gc1e82mf6",
+      "nama": "Dwi Anik Suharianti, S.Pd.",
+      "kode": "32",
+      "warna": "#10b981",
+      "mapelIds": [
+        "mjy7kxo3w"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 4,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "3#p3_5",
+        "3#p3_8",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3"
+      ],
+      "polaJP": [],
+      "catatan": "Sesuai smt 1"
+    },
+    {
+      "id": "giw2kfrvq",
+      "nama": "Binti Rofiatul M, M.Pd.I.",
+      "kode": "33",
+      "warna": "#ef4444",
+      "mapelIds": [
+        "memm8vo7f"
+      ],
+      "maxJam": 4,
+      "maxPerHari": 4,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "4#p4_5",
+        "4#p4_4",
+        "4#p4_1",
+        "4#p4_3",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "-"
+    },
+    {
+      "id": "gwd34fria",
+      "nama": "Dewi Amilatul K., S.Pd.",
+      "kode": "34",
+      "warna": "#10b981",
+      "mapelIds": [
+        "memm8vo7f",
+        "mlp4sc7h6"
+      ],
+      "maxJam": 23,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "5#p5_5",
+        "4#p4_5",
+        "3#p3_6",
+        "5#p5_8",
+        "4#p4_4",
+        "5#p5_1",
+        "4#p4_1",
+        "5#p5_7",
+        "5#p5_4",
+        "3#p3_5",
+        "3#p3_8",
+        "3#p3_7",
+        "5#p5_3",
+        "4#p4_3",
+        "5#p5_6",
+        "5#p5_2",
+        "4#p4_2"
+      ],
+      "polaJP": [],
+      "catatan": "Kamis pagi saja"
+    },
+    {
+      "id": "gh23hfmy2",
+      "nama": "Umi Mualimah, S.Sy.",
+      "kode": "35",
+      "warna": "#4f46e5",
+      "mapelIds": [
+        "mu62gaac2",
+        "mzue28dao"
+      ],
+      "maxJam": 14,
+      "maxPerHari": 8,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    },
+    {
+      "id": "gvkap33ha",
+      "nama": "Anwar Musyafak, S.Pd.",
+      "kode": "36",
+      "warna": "#ef4444",
+      "mapelIds": [
+        "mu62gaac2"
+      ],
+      "maxJam": 6,
+      "maxPerHari": 6,
+      "slotDiinginkan": [
+        "4#p4_5",
+        "4#p4_4",
+        "4#p4_1",
+        "4#p4_3",
+        "4#p4_2"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3"
+      ],
+      "polaJP": [],
+      "catatan": "Boleh dijadikan 1 hari"
+    },
+    {
+      "id": "ggkawocxk",
+      "nama": "Ky Badrul Hamam, M.M.",
+      "kode": "37",
+      "warna": "#10b981",
+      "mapelIds": [
+        "mu62gaac2"
+      ],
+      "maxJam": 2,
+      "maxPerHari": 2,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "2#p2_3",
+        "5#p5_4",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "1#p1_5",
+        "1#p1_8",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Senin setelah istirahat"
+    },
+    {
+      "id": "gcw66cwph",
+      "nama": "Nunung Nurhayati, S.T.",
+      "kode": "38",
+      "warna": "#ef4444",
+      "mapelIds": [
+        "mu62gaac2"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 4,
+      "slotDiinginkan": [
+        "0#p0_6",
+        "0#p0_2",
+        "0#p0_5",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "0#p0_3"
+      ],
+      "slotDilarang": [
+        "3#p3_6",
+        "5#p5_5",
+        "3#p3_3",
+        "2#p2_1",
+        "5#p5_8",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_4",
+        "1#p1_3",
+        "4#p4_2",
+        "4#p4_5",
+        "3#p3_2",
+        "5#p5_1",
+        "5#p5_7",
+        "3#p3_5",
+        "2#p2_3",
+        "5#p5_4",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "4#p4_4",
+        "4#p4_1",
+        "3#p3_1",
+        "3#p3_4",
+        "5#p5_3",
+        "3#p3_7",
+        "5#p5_6",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "1#p1_1",
+        "1#p1_4",
+        "4#p4_3",
+        "5#p5_2"
+      ],
+      "polaJP": [],
+      "catatan": "Hanya Senin & Selasa setelah istirahat"
+    },
+    {
+      "id": "giygmdli7",
+      "nama": "Nurul Arifin, Amd. Kom.",
+      "kode": "39",
+      "warna": "#4f46e5",
+      "mapelIds": [
+        "my5p86hsa"
+      ],
+      "maxJam": 4,
+      "maxPerHari": 2,
+      "slotDiinginkan": [],
+      "slotDilarang": [
+        "3#p3_6",
+        "3#p3_3",
+        "2#p2_1",
+        "2#p2_4",
+        "2#p2_7",
+        "0#p0_1",
+        "0#p0_7",
+        "0#p0_4",
+        "1#p1_3",
+        "1#p1_6",
+        "3#p3_2",
+        "3#p3_5",
+        "2#p2_3",
+        "3#p3_8",
+        "2#p2_6",
+        "0#p0_3",
+        "1#p1_2",
+        "0#p0_6",
+        "1#p1_5",
+        "1#p1_8",
+        "3#p3_1",
+        "3#p3_4",
+        "3#p3_7",
+        "2#p2_2",
+        "2#p2_8",
+        "2#p2_5",
+        "0#p0_2",
+        "0#p0_5",
+        "1#p1_1",
+        "1#p1_7",
+        "1#p1_4"
+      ],
+      "polaJP": [],
+      "catatan": "Butuh 2 hari, pagi hari"
+    },
+    {
+      "id": "gc18h9da5",
+      "nama": "BELUM ADA",
+      "kode": "40",
+      "warna": "#8b5cf6",
+      "mapelIds": [
+        "mmidkfqes"
+      ],
+      "maxJam": 8,
+      "maxPerHari": 4,
+      "slotDiinginkan": [],
+      "slotDilarang": [],
+      "polaJP": [],
+      "catatan": ""
+    }
+  ],
+  "kelas": [
+    {
+      "id": "kria018kb",
+      "nama": "X-1",
+      "tingkat": "X",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kct47qw9r",
+      "nama": "X-2",
+      "tingkat": "X",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kkwhwy3vn",
+      "nama": "X-3",
+      "tingkat": "X",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "k4etz4tmi",
+      "nama": "X-4",
+      "tingkat": "X",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kzw81ug8k",
+      "nama": "XI-1",
+      "tingkat": "XI",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "k2q1zj98l",
+      "nama": "XI-2",
+      "tingkat": "XI",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kicxpkfmc",
+      "nama": "XI-3",
+      "tingkat": "XI",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "k2gqkhd1v",
+      "nama": "XI-4",
+      "tingkat": "XI",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kbk177whk",
+      "nama": "XII-1",
+      "tingkat": "XII",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kn11p8u2q",
+      "nama": "XII-2",
+      "tingkat": "XII",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "kqjgsw98b",
+      "nama": "XII-3",
+      "tingkat": "XII",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    },
+    {
+      "id": "ksrdni2v3",
+      "nama": "XII-4",
+      "tingkat": "XII",
+      "waliKelasId": "",
+      "jumlahSiswa": 36
+    }
+  ],
+  "siswa": [],
+  "mapel": [
+    {
+      "id": "mpdhas1sm",
+      "nama": "B. INGGRIS",
+      "kode": "BING",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "m00lrfsmx",
+      "nama": "B. INGGRIS Lanjut",
+      "kode": "BINGL",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mpxqmkh9h",
+      "nama": "MATEMATIKA",
+      "kode": "MTK",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mqo5n4r8o",
+      "nama": "MATEMATIKA Lanjut",
+      "kode": "MTKL",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "msjkvkqja",
+      "nama": "FISIKA",
+      "kode": "FIS",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mg4lljgri",
+      "nama": "BIOLOGI",
+      "kode": "BIO",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "my5p86hsa",
+      "nama": "INFORMATIKA",
+      "kode": "INF",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mtesl40h2",
+      "nama": "KIMIA",
+      "kode": "KIM",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mvvr5bhcy",
+      "nama": "SEJARAH",
+      "kode": "SEJ",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mb9vx760t",
+      "nama": "EKONOMI",
+      "kode": "EKO",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "m0v0xmtzy",
+      "nama": "GEOGRAFI",
+      "kode": "GEO",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "ma717p9ls",
+      "nama": "SOSIOLOGI",
+      "kode": "SOS",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mmidkfqes",
+      "nama": "PEND. PANCASILA",
+      "kode": "PP",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mzue28dao",
+      "nama": "PAI",
+      "kode": "PAI",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mg89r8rcl",
+      "nama": "PJOK",
+      "kode": "PJOK",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mlp4sc7h6",
+      "nama": "B. INDONESIA",
+      "kode": "BIND",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mcr5ut8mx",
+      "nama": "SENI BUDAYA",
+      "kode": "SENI",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mjy7kxo3w",
+      "nama": "PKWU",
+      "kode": "PKWU",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "memm8vo7f",
+      "nama": "B. ARAB",
+      "kode": "BAR",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    },
+    {
+      "id": "mu62gaac2",
+      "nama": "PEND. WAHIDIYAH",
+      "kode": "PW",
+      "tipeRuang": "reguler",
+      "pilihan": false
+    }
+  ],
+  "ruang": [
+    {
+      "id": "r8b5f7wpx",
+      "nama": "R1",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rnte3hvj2",
+      "nama": "R2",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rh8an9m2v",
+      "nama": "R3",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rpn1nwy24",
+      "nama": "R4",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "r059y555e",
+      "nama": "R5",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "r7wjxuxk6",
+      "nama": "R6",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "re470e2jg",
+      "nama": "R7",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rj7xhqc59",
+      "nama": "R8",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "reqltz25v",
+      "nama": "R9",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "roafgdd19",
+      "nama": "R10",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rn0de9o7f",
+      "nama": "R11",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    },
+    {
+      "id": "rr6h4oo4x",
+      "nama": "R12",
+      "kapasitas": 40,
+      "tipe": "reguler"
+    }
+  ],
+  "kebutuhan": [
+    {
+      "id": "kbuhww2m1e",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb4djzr6bl",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbls2vqiu4",
+      "kelasId": "kbk177whk",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbu8g8v68o",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbb8gzn29c",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbbdi9qcvs",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbzkeaamlo",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbyjlwuxsb",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m00lrfsmx",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbyoeqv54y",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "m00lrfsmx",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbctcnm7e7",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "m00lrfsmx",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbl0hjdb4v",
+      "kelasId": "kria018kb",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbekweskmr",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbnmqq6wbp",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbrm7rnua5",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbkvxhzxi3",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb418gtmkp",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb2z2a5zls",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbgiglmb0u",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbs1qqk9mj",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb5ug67yd5",
+      "kelasId": "kria018kb",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbftttx9bs",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb2ynz0rdy",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbh0tyenpp",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbs8ybagl1",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb1bwfjig9",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb5v665kr7",
+      "kelasId": "kria018kb",
+      "mapelId": "msjkvkqja",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbu1eplslj",
+      "kelasId": "kct47qw9r",
+      "mapelId": "msjkvkqja",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb84pve6ve",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbptcbuhas",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb8sip4wdi",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbpwsqlvuo",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kb93u0x9nb",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbb100uh4g",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbdzrfd8kr",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb0z32v6hf",
+      "kelasId": "kria018kb",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbwa2isku0",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb1cytn6jb",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbc5xdimzb",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbb544gpak",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb9t6d07iu",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mg4lljgri",
+      "guruId": "g7cmya18h",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbs8sb0im2",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mg4lljgri",
+      "guruId": "g7cmya18h",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbkp15vb2m",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbuxrsnmlo",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbsgaktpdz",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb5hty5e7w",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbbi4622ca",
+      "kelasId": "kbk177whk",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbeykooj44",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb50696v46",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb5hkyhp6p",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "my5p86hsa",
+      "guruId": "g0h62kget",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbms54nwxq",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "my5p86hsa",
+      "guruId": "g0h62kget",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbpy0o3wzv",
+      "kelasId": "kria018kb",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb40oo1o6w",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbr5u3onw1",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb7ixg8pag",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbem22cg8g",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbvgncez7j",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbn39whzbl",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbcg88453u",
+      "kelasId": "kria018kb",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb7y0y1a85",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbrt8vdvxi",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbst5f7cs0",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbso069igz",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb2ghn2dml",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbdx177gdw",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbg389g1l2",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbepwvuroq",
+      "kelasId": "kbk177whk",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbldhk30vu",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbzis4cbq4",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbo1q687yq",
+      "kelasId": "kria018kb",
+      "mapelId": "mb9vx760t",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbw7snu6e2",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mb9vx760t",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb2k6mnhka",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbt8rccp64",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbu4kss0zn",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbjq2he9dw",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kb0tltlr8w",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbj0e3k7ng",
+      "kelasId": "kria018kb",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbh4kg6kpf",
+      "kelasId": "kct47qw9r",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kboomdo191",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbcsr0ut0o",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbwm8lo6om",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbzmgbvqpv",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbofoqedov",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 10,
+      "polaJP": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "kb2g6kczdi",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbcn73hn6z",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbw6xskfyp",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbsvqboud7",
+      "kelasId": "kbk177whk",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kbvs58mfiv",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "jumlahJam": 4,
+      "polaJP": [
+        4
+      ]
+    },
+    {
+      "id": "kb9jj7qlt0",
+      "kelasId": "kria018kb",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb5on1td0i",
+      "kelasId": "kct47qw9r",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb2sp8h2wf",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbpvkkzz9o",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbco1tb1ch",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mmidkfqes",
+      "guruId": "ga6o89t2t",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbucd7diuo",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mmidkfqes",
+      "guruId": "ga6o89t2t",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kboki2ko8b",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mmidkfqes",
+      "guruId": "ga6o89t2t",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbrz4e4el2",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb87zkh833",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbe4cb3i6b",
+      "kelasId": "kbk177whk",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbqckreird",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbychfjsiv",
+      "kelasId": "kria018kb",
+      "mapelId": "mmidkfqes",
+      "guruId": "gc18h9da5",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbe8871gyk",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mmidkfqes",
+      "guruId": "gc18h9da5",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbynw2ncn4",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mmidkfqes",
+      "guruId": "gc18h9da5",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb1qb9u48n",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mmidkfqes",
+      "guruId": "gc18h9da5",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbvgkevwmn",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb9c8oszca",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbi8b69s0g",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbref84r0n",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb2k7dyvyz",
+      "kelasId": "kbk177whk",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbqgku4qwy",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbpa0o8lel",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kboepv3r23",
+      "kelasId": "kria018kb",
+      "mapelId": "mzue28dao",
+      "guruId": "g10k7s0s9",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb40bqru59",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mzue28dao",
+      "guruId": "g10k7s0s9",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbko2618lg",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbeohegrgs",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbpodcqqr9",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbyx1unego",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbuafnflzi",
+      "kelasId": "kbk177whk",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb2qhrpthm",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbl41ohwdg",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbq1xf2uv9",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gckm03otx",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbd91n2efd",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gckm03otx",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbzkg7xsrb",
+      "kelasId": "kria018kb",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gdtbh10z7",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbj8ttos4n",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gdtbh10z7",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb86he33a8",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbhdkgzvjt",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbtpohrl8t",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbf697czn8",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbnmab3g6h",
+      "kelasId": "kbk177whk",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbg0xze5m8",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbytvnuex1",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbzkseqlt7",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbi2vdxxch",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbigjfbl2t",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbp8rrcm6k",
+      "kelasId": "kbk177whk",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbz3cp486x",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb7cpgn4w6",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbjbncl0vm",
+      "kelasId": "kria018kb",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb77nyw2p7",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbswuzyeeg",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbrw1ilio7",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb2p39tmnw",
+      "kelasId": "kbk177whk",
+      "mapelId": "memm8vo7f",
+      "guruId": "giw2kfrvq",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbbzohq70q",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "memm8vo7f",
+      "guruId": "giw2kfrvq",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kb7bhrt1of",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "memm8vo7f",
+      "guruId": "giw2kfrvq",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kb7a4dbx4j",
+      "kelasId": "kria018kb",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kb7jcafstf",
+      "kelasId": "kct47qw9r",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbcp6qoano",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kblf3z8ef3",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbxns61krh",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbq7qepeto",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbn73862jo",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbpjty4phy",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    },
+    {
+      "id": "kbrwywbs58",
+      "kelasId": "kria018kb",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbg950ds25",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kb828o1csq",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbyjq008kz",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbdo4jjszn",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbzdd8kbth",
+      "kelasId": "kria018kb",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb2yz59k9k",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbptvap0h9",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbf9k10u2r",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbra2c145i",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbpsjb2xcz",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "jumlahJam": 3,
+      "polaJP": [
+        3
+      ]
+    },
+    {
+      "id": "kbjcqvypgo",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbpnf8rnvu",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbso1q2gkm",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb783ba3mv",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mu62gaac2",
+      "guruId": "ggkawocxk",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbdbudv4ob",
+      "kelasId": "kbk177whk",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb623111ii",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbcl7063n8",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbtc69q40k",
+      "kelasId": "kria018kb",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kb4fxfctcw",
+      "kelasId": "kct47qw9r",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "jumlahJam": 2,
+      "polaJP": [
+        2
+      ]
+    },
+    {
+      "id": "kbhi5542ey",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "jumlahJam": 5,
+      "polaJP": [
+        5
+      ]
+    },
+    {
+      "id": "kbxvi6tflz",
+      "kelasId": "kbk177whk",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "jumlahJam": 1,
+      "polaJP": [
+        1
+      ]
+    }
+  ],
+  "jadwal": [
+    {
+      "id": "jk190glk9",
+      "reqId": "kbz3lx2z0j",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1et6n408",
+      "reqId": "kb70ng3eer",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jrnijxyfc",
+      "reqId": "kb84k1ghv9",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mg4lljgri",
+      "guruId": "g7cmya18h",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5icf6frg",
+      "reqId": "kbfk1eda3p",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jryjws9nt",
+      "reqId": "kbr2xs7ovl",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9i4jhtda",
+      "reqId": "kb2k9s62si",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcpxedfsn",
+      "reqId": "kbbefvt4x8",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5wea6edi",
+      "reqId": "kbb4ys2dw5",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp71fu5zt",
+      "reqId": "kblks6wwt4",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jktphg17w",
+      "reqId": "kbos9hnb7c",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jeouzj3qi",
+      "reqId": "kbggfnap8j",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jwmy3j0la",
+      "reqId": "kbwfgqgw09",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2n9ab8ds",
+      "reqId": "kbx0tus9mo",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jkknyy1vu",
+      "reqId": "kbncubab6c",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhd4pwwlf",
+      "reqId": "kbvyiudez2",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jvtstphbn",
+      "reqId": "kbcgflbb63",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jdgswc8t5",
+      "reqId": "kbkbnt5e6h",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpn22x6bp",
+      "reqId": "kbdh3kc58z",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7sr64boh",
+      "reqId": "kbx68bz79i",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jl2bjn4mr",
+      "reqId": "kbm3e41cq9",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jx4cx6t12",
+      "reqId": "kbm68atcxl",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jzw1dpr3z",
+      "reqId": "kbm6cizgt4",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgovm90d7",
+      "reqId": "kb7i3gwl43",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jsfbzo4ep",
+      "reqId": "kbsb363ekx",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcvvbep6q",
+      "reqId": "kbwkbm4pre",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmr0ocev1",
+      "reqId": "kb25ky4l4x",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jteku1zdf",
+      "reqId": "kbvknqayr3",
+      "kelasId": "kicxpkfmc",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jejgy39q9",
+      "reqId": "kbic8lgltk",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jt2ytxv2h",
+      "reqId": "kb10msksjy",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmgnbyfpz",
+      "reqId": "kbny3yw43x",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jd3vz0xo6",
+      "reqId": "kbt8owm2ue",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jluqoimho",
+      "reqId": "kbxkfj6icv",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2mdcr4rg",
+      "reqId": "kbts1s4wp3",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jreeoul0u",
+      "reqId": "kb53irydaa",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpe3fmirg",
+      "reqId": "kbb58m148c",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmnpvb2t6",
+      "reqId": "kbhsn40er1",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j012ua79a",
+      "reqId": "kbt0iooznv",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jfvnqb4uk",
+      "reqId": "kbp3vl37u5",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j24wj1aq1",
+      "reqId": "kbgwuauj5u",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "juncridll",
+      "reqId": "kbao5ulo4n",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9ywces2d",
+      "reqId": "kbjrq3mrqf",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "joofb68ud",
+      "reqId": "kb3b3v87dv",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0gkzv1c6",
+      "reqId": "kbsd0w49ec",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jm3obfoil",
+      "reqId": "kb3v1edz2m",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2n2ntfjf",
+      "reqId": "kba3kyuvy3",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j8mpbejlv",
+      "reqId": "kbzjzpjegm",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jsd2m5tfi",
+      "reqId": "kb5nfg4lee",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jubb6eg25",
+      "reqId": "kbl7l430nk",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhdg9nnmr",
+      "reqId": "kbk8onr2ya",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhghljxwd",
+      "reqId": "kbcaqy8ssv",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mtesl40h2",
+      "guruId": "g44mrdugm",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jga4apo89",
+      "reqId": "kb0nuukx94",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcihzmr3d",
+      "reqId": "kbfybirops",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j6brpsqwd",
+      "reqId": "kbmyz79hvo",
+      "kelasId": "k2gqkhd1v",
+      "mapelId": "mg4lljgri",
+      "guruId": "g7cmya18h",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpmwy0fvr",
+      "reqId": "kbv6awb7hr",
+      "kelasId": "kbk177whk",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jkauchzom",
+      "reqId": "kbqg0945ni",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jv2953vgb",
+      "reqId": "kbotzipc31",
+      "kelasId": "kbk177whk",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqnqkf4jr",
+      "reqId": "kbu4s7cjxw",
+      "kelasId": "kbk177whk",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp9iqlyx6",
+      "reqId": "kbqn2tl2f1",
+      "kelasId": "kbk177whk",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjaakpskx",
+      "reqId": "kbdqwtli09",
+      "kelasId": "kbk177whk",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jtai7jyh2",
+      "reqId": "kbglacfqps",
+      "kelasId": "kbk177whk",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jrrtdk1p4",
+      "reqId": "kbu9cuw8nh",
+      "kelasId": "kbk177whk",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jzchfzyzp",
+      "reqId": "kbafpltktk",
+      "kelasId": "kbk177whk",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jt4e940ux",
+      "reqId": "kbi7k3eson",
+      "kelasId": "kbk177whk",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "johje9b7o",
+      "reqId": "kb6lrjx4o0",
+      "kelasId": "kbk177whk",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jorce0o61",
+      "reqId": "kboa6byq7h",
+      "kelasId": "kbk177whk",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jsdwi1xud",
+      "reqId": "kbxww6yp03",
+      "kelasId": "kbk177whk",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqv3uloie",
+      "reqId": "kbbiav8y0k",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpysooael",
+      "reqId": "kblchxjfzo",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7evrvsdd",
+      "reqId": "kbl1wtodju",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jr2eqc1i2",
+      "reqId": "kbnc9jjo77",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7wdhm2cw",
+      "reqId": "kb34xsfnhq",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jm4zu4ag0",
+      "reqId": "kboyd84qh5",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jeo0h1867",
+      "reqId": "kbyduq1ttw",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jkyzh5g15",
+      "reqId": "kbmqtcc0rv",
+      "kelasId": "kbk177whk",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j77xul676",
+      "reqId": "kbhel6bbrm",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jadmbtj37",
+      "reqId": "kbz7qxftom",
+      "kelasId": "kbk177whk",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jidbpq1yr",
+      "reqId": "kbh9hmuudr",
+      "kelasId": "kbk177whk",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jj1m5u2bv",
+      "reqId": "kbcmtl07mr",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqwovdhq8",
+      "reqId": "kb4iv0ucpj",
+      "kelasId": "kbk177whk",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jzeed49og",
+      "reqId": "kbju421xmg",
+      "kelasId": "kbk177whk",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jn1znv8iu",
+      "reqId": "kb2y2gkaf1",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "m00lrfsmx",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "js95dqcst",
+      "reqId": "kb1gloqg7o",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jewyjfxlu",
+      "reqId": "kbtkul8kuj",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "je6djry7d",
+      "reqId": "kbwuzly9wk",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4nb6qw6k",
+      "reqId": "kbsph6ba7m",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "juat6ommn",
+      "reqId": "kbzgfhk6aq",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j939kowzq",
+      "reqId": "kbnbkhwt3w",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j3lwcjpr0",
+      "reqId": "kbcd5p8mko",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jdpv0z7b7",
+      "reqId": "kb4i28rpej",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgdvawied",
+      "reqId": "kbohhf7hcx",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jha2jsh7m",
+      "reqId": "kb9ab9stq0",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jwypqxqxt",
+      "reqId": "kbehtc6g5v",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjjimtlo8",
+      "reqId": "kbb272qf0n",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jtt11xod5",
+      "reqId": "kbwhj2fazh",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jwmfnjbt4",
+      "reqId": "kbotuxqhsn",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jrwzfk5ta",
+      "reqId": "kbg7ke8i02",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j8dhulzh5",
+      "reqId": "kb4j62dz40",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jv1xg3qak",
+      "reqId": "kbfv92nkk1",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jc1asbbyn",
+      "reqId": "kbucu3j5a7",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqzwv80eh",
+      "reqId": "kbprzyky2i",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j38yepw9u",
+      "reqId": "kbyp5g6lve",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jdup7p5on",
+      "reqId": "kbxth7h8if",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mb9vx760t",
+      "guruId": "gqsithfzs",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jblxawkf8",
+      "reqId": "kbsjcdj4uz",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jem1ksa7h",
+      "reqId": "kb2g71soo8",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j72yelg6s",
+      "reqId": "kbr9dfspbr",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j6w50yo3h",
+      "reqId": "kbmm21b046",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "js52ch10z",
+      "reqId": "kbrzy9kz6q",
+      "kelasId": "kn11p8u2q",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jvnygol8g",
+      "reqId": "kbcgrfttf8",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jruekcysm",
+      "reqId": "kbfqyp6hhv",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0354ooo9",
+      "reqId": "kbk3ztlmst",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jt1u52ekn",
+      "reqId": "kbf45zwskv",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j38yt69f3",
+      "reqId": "kb22pjsx12",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jl1zk30ak",
+      "reqId": "kbv8kavcd2",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjilmd3dg",
+      "reqId": "kbbu5lmo16",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jzeccy9yl",
+      "reqId": "kbslwbiogp",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mu62gaac2",
+      "guruId": "gcw66cwph",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jfwhigon3",
+      "reqId": "kb0e45cu1y",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ja3m77o1e",
+      "reqId": "kb78e7d5dj",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jdwxjeqov",
+      "reqId": "kbxq44yu0r",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4xgnalva",
+      "reqId": "kbt4yy6h5j",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5xuqp377",
+      "reqId": "kbkwiz7ttz",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "juhoqyhyt",
+      "reqId": "kbvytobw5s",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpdhas1sm",
+      "guruId": "guqrnb4fu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j802vnzyp",
+      "reqId": "kbdxn2c141",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mqo5n4r8o",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jt8557n6p",
+      "reqId": "kbkqm53dzr",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jm0vrinwy",
+      "reqId": "kbab0gxuco",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jdbpp8ddg",
+      "reqId": "kbgkppmkp8",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "msjkvkqja",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jg22w22m0",
+      "reqId": "kbj2t2n1nw",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0v119wro",
+      "reqId": "kb4180lxth",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1tibp4mv",
+      "reqId": "kbyjlh2gz1",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcgoqnfx2",
+      "reqId": "kbfjse3gq8",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j3jv7rvoi",
+      "reqId": "kb7spkla6e",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jb0mbzk1i",
+      "reqId": "kbkjby7rvp",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jiid7xall",
+      "reqId": "kbr7qyvb74",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jllqigja5",
+      "reqId": "kb52alrh16",
+      "kelasId": "ksrdni2v3",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqax7cg59",
+      "reqId": "kbve3zmi5a",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m00lrfsmx",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j90a62h35",
+      "reqId": "kbqs6hs1o2",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ju4hxwgxk",
+      "reqId": "kbzqxdt9g5",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mcr5ut8mx",
+      "guruId": "ghuceg2s0",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqala3diq",
+      "reqId": "kb6l69zdhg",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mu62gaac2",
+      "guruId": "ggkawocxk",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j6lnwaqt5",
+      "reqId": "kbn2o9cgvl",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2gnnrxu3",
+      "reqId": "kb1nfs4ohu",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5d7tkj2q",
+      "reqId": "kbptagea69",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j8kp32j4l",
+      "reqId": "kbr511xh4s",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1lip00a6",
+      "reqId": "kb7hdp9ea6",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jahfc41qq",
+      "reqId": "kbw6dbqp5f",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ja1mknwni",
+      "reqId": "kbu2gobrmn",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp5uoo3uy",
+      "reqId": "kb105i9vtk",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmhzhr2ry",
+      "reqId": "kblr03v02j",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jzvpedg6r",
+      "reqId": "kbykevp8tl",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4vf7h97q",
+      "reqId": "kbbx88rxd3",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jvmz04yjq",
+      "reqId": "kbv1s0e8lg",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jxpya2lna",
+      "reqId": "kbqx0ruzgf",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j00exeaqi",
+      "reqId": "kbl7j7ch4o",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jc7axl1x9",
+      "reqId": "kbckfph8b6",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jizr5e1zc",
+      "reqId": "kbgkenzt0d",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jypwdh9nv",
+      "reqId": "kb82zgxe6b",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp1xliehp",
+      "reqId": "kbh88x9pks",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jew1ubu48",
+      "reqId": "kbx23qb6vq",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jyr0jj6qo",
+      "reqId": "kbmhbomgvy",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5s0xmb38",
+      "reqId": "kbz958j3qm",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9m93bj51",
+      "reqId": "kbkpr7en0s",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0drnel3x",
+      "reqId": "kb89qifcdv",
+      "kelasId": "kzw81ug8k",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jg4r09pvm",
+      "reqId": "kbtrubqo4y",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jh90h6da8",
+      "reqId": "kbnwy5gf2p",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jekf5cbrn",
+      "reqId": "kbq3cypng4",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "joethtnn8",
+      "reqId": "kbjyog4c8o",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1xuh154p",
+      "reqId": "kboheqxhql",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2tetqgke",
+      "reqId": "kb7asiigy2",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jin5urnzw",
+      "reqId": "kbhs1euxa1",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpdhas1sm",
+      "guruId": "gul4zjueu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1whl0pch",
+      "reqId": "kbp4udwwwl",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jye9fithp",
+      "reqId": "kbd3apyl3b",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ja3aifx2i",
+      "reqId": "kbs03eifxr",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhehpe5rn",
+      "reqId": "kbjcobayol",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mzue28dao",
+      "guruId": "gwzfh67n6",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jwkwberpr",
+      "reqId": "kbkt48kocq",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "ma717p9ls",
+      "guruId": "gp78vp5pp",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhwukza0k",
+      "reqId": "kb26bpm6wp",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jf9qsfdxz",
+      "reqId": "kb33hgbjcf",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mg89r8rcl",
+      "guruId": "g4xcibv3t",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jkn8tlu91",
+      "reqId": "kbnq15pya5",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jrzam3x04",
+      "reqId": "kb5uffjyqj",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcmwmhhzu",
+      "reqId": "kbsf7eq6g4",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jq6d1hlth",
+      "reqId": "kbj90xsobc",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "g0ompkv3l",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j8kahy5hf",
+      "reqId": "kb4by8bzpc",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jr5lzxwp7",
+      "reqId": "kb8dfqo1zz",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mmidkfqes",
+      "guruId": "gk8izyuwr",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jblzeeh11",
+      "reqId": "kbwbc5faon",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j06vy2eau",
+      "reqId": "kb0bb0991k",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmbro7s4i",
+      "reqId": "kbpfyfk5sj",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mu62gaac2",
+      "guruId": "gvkap33ha",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmkohhqvt",
+      "reqId": "kbnle95i97",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "my5p86hsa",
+      "guruId": "gnx0eihek",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jert31fwv",
+      "reqId": "kb2ba1sh4c",
+      "kelasId": "k2q1zj98l",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g4w2hsris",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhnukgihk",
+      "reqId": "kboww6y0k9",
+      "kelasId": "kria018kb",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j53ptivfe",
+      "reqId": "kb0ydnqi1s",
+      "kelasId": "kria018kb",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhm7680mv",
+      "reqId": "kbcj3cttty",
+      "kelasId": "kria018kb",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jazxgd541",
+      "reqId": "kbo4ckimlf",
+      "kelasId": "kria018kb",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpkzz3fie",
+      "reqId": "kbmvier8tb",
+      "kelasId": "kria018kb",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmlrhssru",
+      "reqId": "kbb5kewruc",
+      "kelasId": "kria018kb",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1ivw2s4j",
+      "reqId": "kb2xni7m73",
+      "kelasId": "kria018kb",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jppe4ykgf",
+      "reqId": "kbn7ta22mu",
+      "kelasId": "kria018kb",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j27oqk8ms",
+      "reqId": "kbgssmwqpb",
+      "kelasId": "kria018kb",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jq4hmnhyv",
+      "reqId": "kbgozs53ka",
+      "kelasId": "kria018kb",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgk5tikpq",
+      "reqId": "kbu64l7xni",
+      "kelasId": "kria018kb",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jvqrd4v59",
+      "reqId": "kbbqe8z2ik",
+      "kelasId": "kria018kb",
+      "mapelId": "mb9vx760t",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jvkvasjoa",
+      "reqId": "kbvwkfin2d",
+      "kelasId": "kria018kb",
+      "mapelId": "msjkvkqja",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0l5htsp2",
+      "reqId": "kb3fzjujts",
+      "kelasId": "kria018kb",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gdtbh10z7",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j33riw4bf",
+      "reqId": "kbcjkeuayi",
+      "kelasId": "kria018kb",
+      "mapelId": "mb9vx760t",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jlp2uoepy",
+      "reqId": "kb1pjvzx85",
+      "kelasId": "kria018kb",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1i78kzws",
+      "reqId": "kbppstjnqn",
+      "kelasId": "kria018kb",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9ff2kln1",
+      "reqId": "kbl4o8kvk2",
+      "kelasId": "kria018kb",
+      "mapelId": "msjkvkqja",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmildh1dh",
+      "reqId": "kbeevfppr5",
+      "kelasId": "kria018kb",
+      "mapelId": "mzue28dao",
+      "guruId": "g10k7s0s9",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2g3nfyaw",
+      "reqId": "kbir6anz71",
+      "kelasId": "kria018kb",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jewjsjn12",
+      "reqId": "kbcz1a9plp",
+      "kelasId": "kria018kb",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpibmm6pn",
+      "reqId": "kbz0b9n4h6",
+      "kelasId": "kria018kb",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jyo3r7cc8",
+      "reqId": "kb1n28vvgd",
+      "kelasId": "kria018kb",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jmlwzjsec",
+      "reqId": "kbg0odw8q6",
+      "kelasId": "kria018kb",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j3ov7kci0",
+      "reqId": "kbh6eoz9w7",
+      "kelasId": "kria018kb",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "js81yqzfv",
+      "reqId": "kbhlfo9yei",
+      "kelasId": "kria018kb",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7zl6a0fx",
+      "reqId": "kbf5zhqtiy",
+      "kelasId": "kria018kb",
+      "mapelId": "mzue28dao",
+      "guruId": "g10k7s0s9",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j0xklkntl",
+      "reqId": "kbhne9ugbm",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jtor77i02",
+      "reqId": "kbq86ea5te",
+      "kelasId": "kct47qw9r",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j2qr89du0",
+      "reqId": "kb4c8mecy4",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gdtbh10z7",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jr2tadon7",
+      "reqId": "kb9fd0ajns",
+      "kelasId": "kct47qw9r",
+      "mapelId": "msjkvkqja",
+      "guruId": "gcoawwnle",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jueibs4rc",
+      "reqId": "kb20mqhqxh",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ja7sw40r2",
+      "reqId": "kbu3qpb1gy",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jaqy7e74h",
+      "reqId": "kbed8m85xo",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4iiwk2dx",
+      "reqId": "kb1h1f27nv",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "gdnoosufd",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4t6v2ol1",
+      "reqId": "kbc3ribv77",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mmidkfqes",
+      "guruId": "gc18h9da5",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jyylfswmz",
+      "reqId": "kbnko3q2zh",
+      "kelasId": "kct47qw9r",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jahzwx7tq",
+      "reqId": "kbk7nfbp80",
+      "kelasId": "kct47qw9r",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "joks4jgza",
+      "reqId": "kboppv8wws",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j09qy7fki",
+      "reqId": "kbmv9pzws1",
+      "kelasId": "kct47qw9r",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5p8aw65a",
+      "reqId": "kbgpwwprfq",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp80emzct",
+      "reqId": "kb6spybnh7",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jk1034k1i",
+      "reqId": "kblhherm6j",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "g71pbi4mi",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jsuxc5rlv",
+      "reqId": "kbxs0jj1qk",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpophqdhd",
+      "reqId": "kbpq2wcs8o",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jpy3ibjb3",
+      "reqId": "kbnzr1wmib",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5h5qlzxx",
+      "reqId": "kbgvigcn4k",
+      "kelasId": "kct47qw9r",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j20dn5t09",
+      "reqId": "kboclu3m9e",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jfma2i5nz",
+      "reqId": "kbydfvbun7",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9y0qz48o",
+      "reqId": "kbvjitzo77",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mb9vx760t",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jwpu9zzc6",
+      "reqId": "kbrnt539pu",
+      "kelasId": "kct47qw9r",
+      "mapelId": "my5p86hsa",
+      "guruId": "giygmdli7",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjxip5zxd",
+      "reqId": "kbrom8cn32",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjztnybpk",
+      "reqId": "kb3cbjzazi",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jya9nr7br",
+      "reqId": "kbh1x8nrje",
+      "kelasId": "kct47qw9r",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgfc6ev02",
+      "reqId": "kbf4wlkg2u",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jno6521ao",
+      "reqId": "kbqbv2mz8s",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "ju8bvo5yn",
+      "reqId": "kb51cpen0x",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jnkeeazmi",
+      "reqId": "kbgge2wxsv",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhr2nscyq",
+      "reqId": "kbnoh4nymv",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jqk5dodl5",
+      "reqId": "kbj6s4sojk",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgxj6xh6w",
+      "reqId": "kbl1uhry8i",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jg7a5y4qb",
+      "reqId": "kbimcqfqxs",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j1fffzny2",
+      "reqId": "kbkfti5qwr",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7f5mfgfw",
+      "reqId": "kbdpth7w7s",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jaindtn64",
+      "reqId": "kbz12usacq",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mzue28dao",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5bryw034",
+      "reqId": "kb5u1mfz60",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "je9x8ofvi",
+      "reqId": "kb231ctp8g",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "memm8vo7f",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jjetypcuq",
+      "reqId": "kb09v59mbh",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gckm03otx",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcrzhrveh",
+      "reqId": "kbvw5ug69g",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jh9b8h5x0",
+      "reqId": "kbt733p93h",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j6v1q6oxt",
+      "reqId": "kb6kpvtqwg",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jap9z2bvs",
+      "reqId": "kb0i9rfdrn",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jp3u9pntj",
+      "reqId": "kb7ykme4jx",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jrw9s8vra",
+      "reqId": "kbyienppzn",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jv7kpo16g",
+      "reqId": "kbo1jnszft",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jym7p9y5g",
+      "reqId": "kb5v9o62d8",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jfso8pquo",
+      "reqId": "kb6xl1clut",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4k8y0rib",
+      "reqId": "kbkkn0z37v",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jht3pxdf3",
+      "reqId": "kbth2hvn2f",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jsckbvznh",
+      "reqId": "kbp58l7t9l",
+      "kelasId": "kkwhwy3vn",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5sfanjsg",
+      "reqId": "kbgze2ixjz",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jd2tv8knq",
+      "reqId": "kb6jywgv7r",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jifajvweu",
+      "reqId": "kbk2iyv7nu",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jhtirv6li",
+      "reqId": "kbp3qwfpom",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 0,
+      "periodeId": "p0_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jy8xq6g8y",
+      "reqId": "kb61ba996i",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jng0hn8j6",
+      "reqId": "kbjp5ebtsk",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mvvr5bhcy",
+      "guruId": "gbt20jwxz",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jyl699okb",
+      "reqId": "kbn8m1k311",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jo7m53jt1",
+      "reqId": "kbwuwqwbw0",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpxqmkh9h",
+      "guruId": "g6zl5kumj",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j78ttr1y4",
+      "reqId": "kbvxrk9f3g",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 1,
+      "periodeId": "p1_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j00d0jr4m",
+      "reqId": "kb3k086ipp",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j3px9bnbj",
+      "reqId": "kba70kruog",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jh7aqdcaf",
+      "reqId": "kbfw83nprv",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mg89r8rcl",
+      "guruId": "gckm03otx",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jua4uwgau",
+      "reqId": "kb8xl68021",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j4k4lq5m8",
+      "reqId": "kb99qdkze2",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "ma717p9ls",
+      "guruId": "gqdd4hx6k",
+      "ruangId": "",
+      "hari": 2,
+      "periodeId": "p2_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j7kjyn60x",
+      "reqId": "kbpmtf202g",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jtso3q2ow",
+      "reqId": "kbd3yqy5hc",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "msjkvkqja",
+      "guruId": "g0dvnhyv7",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jcv0i0vcb",
+      "reqId": "kbjh205i2q",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mlp4sc7h6",
+      "guruId": "gwd34fria",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jnu50jtyr",
+      "reqId": "kbohzeht2p",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mtesl40h2",
+      "guruId": "g9tqg7y4y",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j17wx0qwa",
+      "reqId": "kbd07s7etk",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "m0v0xmtzy",
+      "guruId": "gksf886qu",
+      "ruangId": "",
+      "hari": 3,
+      "periodeId": "p3_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jva9loipt",
+      "reqId": "kbewae26oc",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mb9vx760t",
+      "guruId": "gkcesw1ey",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j5c6il6jo",
+      "reqId": "kbf0ue6d1s",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jgzl48xau",
+      "reqId": "kbjmj8rviy",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 4,
+      "periodeId": "p4_5",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jj9loo636",
+      "reqId": "kb6j2y61yh",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mu62gaac2",
+      "guruId": "gh23hfmy2",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_2",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j3cp8e88e",
+      "reqId": "kbjdn25grf",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mpdhas1sm",
+      "guruId": "g0mgwkyxv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_3",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j9zbdsiow",
+      "reqId": "kb7jy03hps",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mzue28dao",
+      "guruId": "g10k7s0s9",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_4",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "jl9pghkq4",
+      "reqId": "kb8a4doacp",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mg4lljgri",
+      "guruId": "g5rbwdrtv",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_6",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    },
+    {
+      "id": "j71u6peg7",
+      "reqId": "kbu2ss3yc0",
+      "kelasId": "k4etz4tmi",
+      "mapelId": "mjy7kxo3w",
+      "guruId": "gc1e82mf6",
+      "ruangId": "",
+      "hari": 5,
+      "periodeId": "p5_7",
+      "tetap": false,
+      "catatan": "",
+      "blokId": ""
+    }
+  ],
+  "blokir": [],
+  "opsi": {
+    "percobaan": 8,
+    "rataHari": true,
+    "hindariUjung": true,
+    "wajibRuang": true
+  }
+}
