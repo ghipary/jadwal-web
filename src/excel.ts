@@ -1,27 +1,23 @@
 // Fitur Excel massal (library SheetJS `xlsx`):
-// 1. buatTemplateXlsx — meng-generate template .xlsx dengan 8 sheet terpisah
+// 1. buatTemplateXlsx — meng-generate template .xlsx dengan sheet terpisah
 // 2. bacaWorkbook     — membaca semua sheet & menyusun objek Project lengkap
 
 import * as XLSX from 'xlsx';
 import {
-  Block,
   DAYS,
   HARI_KONFIG_BAWAAN,
-  LABEL_TIPE_RUANG,
   LABEL_TIPE_WAKTU,
   PALET_GURU,
   parseSlotKey,
   Period,
   Project,
   Requirement,
-  Room,
   SchoolClass,
   slotKey,
   SlotKey,
   Student,
   Subject,
   Teacher,
-  TIPES_RUANG,
   TipeWaktu,
 } from './types';
 import type { HariKonfig } from './types';
@@ -35,10 +31,8 @@ export const NAMA_SHEET = {
   kelas: 'Kelas',
   siswa: 'Siswa',
   mapel: 'Mata Pelajaran',
-  ruang: 'Ruang',
   periode: 'Jam Pelajaran',
   kebutuhan: 'Kebutuhan Jam',
-  blokir: 'Batasan',
 } as const;
 
 /** Sheet berisi data — "Petunjuk" tidak dihitung saat mendeteksi berkas. */
@@ -48,10 +42,8 @@ const SHEET_DATA = [
   NAMA_SHEET.kelas,
   NAMA_SHEET.siswa,
   NAMA_SHEET.mapel,
-  NAMA_SHEET.ruang,
   NAMA_SHEET.periode,
   NAMA_SHEET.kebutuhan,
-  NAMA_SHEET.blokir,
 ] as const;
 
 type Sel = (string | number)[];
@@ -113,11 +105,9 @@ export const HEADER: Record<keyof typeof NAMA_SHEET, Sel> = {
   ],
   kelas: ['nama', 'tingkat', 'waliKelasId', 'jumlahSiswa'],
   siswa: ['nama', 'kelasId', 'pilihan'],
-  mapel: ['kode', 'nama', 'tipeRuang', 'pilihan'],
-  ruang: ['nama', 'tipe', 'kapasitas'],
+  mapel: ['kode', 'nama', 'pilihan'],
   periode: ['nama', 'mulai', 'selesai', 'tipe', 'tipeKet', 'hariAktif'],
-  kebutuhan: ['kelasId', 'mapelId', 'guruId', 'ruangId', 'jumlahJam', 'polaJP'],
-  blokir: ['jenis', 'refId', 'hari', 'periodeId', 'alasan'],
+  kebutuhan: ['kelasId', 'mapelId', 'guruId', 'jumlahJam', 'polaJP'],
 };
 
 /** Satu baris contoh untuk template kosong (dilewati otomatis saat dibaca). */
@@ -127,11 +117,9 @@ const CONTOH: Record<keyof typeof NAMA_SHEET, Sel> = {
   guru: ['MTH', 'Contoh Guru', '#4f46e5', 'Matematika', 24, 6, 'Senin Jam ke-1', '', '2;1', ''],
   kelas: ['X-1', 'X', 'Contoh Guru', 36],
   siswa: ['Contoh Siswa', 'X-1', ''],
-  mapel: ['MTK', 'Matematika', 'Ruang Reguler', 'Tidak'],
-  ruang: ['R-1', 'Ruang Reguler', 40],
+  mapel: ['MTK', 'Matematika', 'Tidak'],
   periode: ['Jam ke-1', '07:00', '07:40', 'Pelajaran', '', 'Senin; Selasa; Rabu; Kamis; Sabtu'],
-  kebutuhan: ['X-1', 'Matematika', 'Contoh Guru', 'Otomatis', 4, '2;1'],
-  blokir: ['Kelas', 'X-1', 'Senin', 'Jam ke-1', 'Contoh'],
+  kebutuhan: ['X-1', 'Matematika', 'Contoh Guru', 4, '2;1'],
 };
 
 // ---------------------------------------------------------------------------
@@ -172,11 +160,9 @@ export function buatTemplateXlsx(
           ['2. Guru', 'mapelIds diisi nama/kode mapel dipisah titik koma. polaJP = pola blok JP (bersifat KETAT).', 'polaJP: 2;1 berarti 3 JP dipecah 2+1'],
           ['3. Kelas', 'waliKelasId diisi nama/kode guru (opsional).', 'X-1, XI-2, XII-3'],
           ['4. Siswa', 'kelasId harus sudah ada di sheet Kelas.', 'pilihan diisi dipisah titik koma.'],
-          ['5. Mata Pelajaran', 'tipeRuang: Ruang Reguler / Lab Komputer / Lab Sains / Lapangan / Semua.', 'pilihan: Ya / Tidak'],
-          ['6. Ruang', 'Tipe mengikuti daftar tipe ruang. kapasitas diisi angka.', 'Kapasitas 40.'],
-          ['7. Jam Pelajaran', 'tipe: Pelajaran / Istirahat / Apel / Kustom. hariAktif: nama hari dipisah koma/titik-koma (kosong = semua hari).', 'hariAktif contoh: "Senin; Selasa; Rabu; Kamis; Sabtu"'],
-          ['8. Kebutuhan Jam', 'kelasId/mapelId/guruId harus sudah terdaftar. polaJP KETAT: jumlah jam harus pas dibagi pola.', 'ruangId "Otomatis" bila tidak ditentukan. Contoh: 3 JP → "3" atau "2;1"'],
-          ['9. Batasan', 'jenis: Kelas / Guru / Ruang. hari & periodeId harus valid.', 'Isi alasan bila perlu.'],
+          ['5. Mata Pelajaran', 'kode & nama wajib. pilihan menandai mapel pilihan (Ya / Tidak).', 'pilihan: Ya / Tidak'],
+          ['6. Jam Pelajaran', 'tipe: Pelajaran / Istirahat / Apel / Kustom. hariAktif: nama hari dipisah koma/titik-koma (kosong = semua hari).', 'hariAktif contoh: "Senin; Selasa; Rabu; Kamis; Sabtu"'],
+          ['7. Kebutuhan Jam', 'kelasId/mapelId/guruId harus sudah terdaftar. polaJP KETAT: jumlah jam harus pas dibagi pola.', 'Contoh: 3 JP → "3" atau "2;1"'],
           ['Catatan', `Baris pertama pada template kosong adalah contoh (ditandai "${PENANDA_CONTOH}") dan diabaikan otomatis.`, 'Jangan mengganti nama sheet atau judul kolom.'],
           ['Pola JP (blok)', 'Blok hanya dibuat seukuran pola dan ditempatkan utuh berurutan. Bila jumlah jam tidak pas dibagi pola (mis. 4 JP dengan pola "3"), sisa jam dilaporkan GAGAL — tidak diisi setengah-setengah.', '6 JP → "3" atau "3;3" atau "2;2;2"'],
         ]
@@ -196,8 +182,6 @@ export function buatTemplateXlsx(
   const namaMapel = new Map(project.mapel.map((m) => [m.id, m.nama]));
   const namaGuru = new Map(project.guru.map((g) => [g.id, g.nama]));
   const namaKelas = new Map(project.kelas.map((c) => [c.id, c.nama]));
-  const namaRuang = new Map(project.ruang.map((r) => [r.id, r.nama]));
-  const tipeTeks = (t: string) => LABEL_TIPE_RUANG[t] ?? t;
   const yaTidak = (b: boolean) => (b ? 'Ya' : 'Tidak');
 
   const konfigHariArr: HariKonfig[] = project.hari.map((_, i) => {
@@ -261,12 +245,7 @@ export function buatTemplateXlsx(
 
   add(
     'mapel',
-    data(project.mapel.map((m) => [m.kode, m.nama, tipeTeks(m.tipeRuang), yaTidak(m.pilihan)])),
-  );
-
-  add(
-    'ruang',
-    data(project.ruang.map((r) => [r.nama, tipeTeks(r.tipe), r.kapasitas])),
+    data(project.mapel.map((m) => [m.kode, m.nama, yaTidak(m.pilihan)])),
   );
 
   add(
@@ -296,26 +275,8 @@ export function buatTemplateXlsx(
         namaKelas.get(k.kelasId) ?? '',
         namaMapel.get(k.mapelId) ?? '',
         namaGuru.get(k.guruId) ?? '',
-        k.ruangId ? (namaRuang.get(k.ruangId) ?? '') : 'Otomatis',
         k.jumlahJam,
         polaTeks(k.polaJP),
-      ]),
-    ),
-  );
-
-  add(
-    'blokir',
-    data(
-      project.blokir.map((b) => [
-        b.jenis === 'kelas' ? 'Kelas' : b.jenis === 'guru' ? 'Guru' : 'Ruang',
-        b.jenis === 'kelas'
-          ? (namaKelas.get(b.refId) ?? '')
-          : b.jenis === 'guru'
-            ? (namaGuru.get(b.refId) ?? '')
-            : (namaRuang.get(b.refId) ?? ''),
-        project.hari[b.hari] ?? '',
-        periodeNama.get(b.periodeId) ?? '',
-        b.alasan,
       ]),
     ),
   );
@@ -334,10 +295,8 @@ export interface JumlahImpor {
   kelas: number;
   siswa: number;
   mapel: number;
-  ruang: number;
   periode: number;
   kebutuhan: number;
-  blokir: number;
 }
 
 export interface HasilImporExcel {
@@ -366,11 +325,9 @@ const ALIAS_HEADER: Record<string, Record<string, string>> = {
   [NAMA_SHEET.kelas]: { 'wali kelas': 'waliKelasId', 'jumlah siswa': 'jumlahSiswa' },
   [NAMA_SHEET.siswa]: { kelas: 'kelasId', 'pilihan mapel': 'pilihan' },
   [NAMA_SHEET.mapel]: {
-    'tipe ruang': 'tipeRuang',
     'mapel pilihan': 'pilihan',
     'mata pelajaran': 'nama',
   },
-  [NAMA_SHEET.ruang]: { tipe: 'tipe', kapasitas: 'kapasitas' },
   [NAMA_SHEET.periode]: {
     'tipe waktu': 'tipe',
     keterangan: 'tipeKet',
@@ -381,11 +338,9 @@ const ALIAS_HEADER: Record<string, Record<string, string>> = {
     kelas: 'kelasId',
     'mata pelajaran': 'mapelId',
     guru: 'guruId',
-    ruang: 'ruangId',
     'jam/minggu': 'jumlahJam',
     'pola jp': 'polaJP',
   },
-  [NAMA_SHEET.blokir]: { objek: 'refId', jam: 'periodeId' },
 };
 
 export async function bacaBerkasExcel(f: File): Promise<XLSX.WorkBook> {
@@ -520,23 +475,6 @@ function bacaTipeWaktu(r: Baris): { tipe: TipeWaktu; tipeKet: string } {
   // Fallback format lama.
   if (ya(r['istirahat'])) return { tipe: 'istirahat', tipeKet: '' };
   return { tipe: 'pelajaran', tipeKet: '' };
-}
-
-/** Peta tipe ruang: terima nilai mentah maupun label ("Lab Komputer" → lab-komputer). */
-const PETA_TIPE = new Map<string, string>();
-for (const t of [...TIPES_RUANG, 'semua']) PETA_TIPE.set(t, t);
-for (const [key, label] of Object.entries(LABEL_TIPE_RUANG)) {
-  PETA_TIPE.set(label.toLowerCase().replace(/\s+/g, '-'), key);
-}
-PETA_TIPE.set('lapangan', 'olahraga');
-
-function normalisasiTipe(v: unknown): string {
-  const s = str(v)
-    .toLowerCase()
-    .replace(/^ruang\s+/, '')
-    .replace(/\s+/g, '-');
-  if (!s) return 'reguler';
-  return PETA_TIPE.get(s) ?? 'reguler';
 }
 
 function hexValid(v: unknown): v is string {
@@ -675,7 +613,6 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       id: uid('m'),
       nama,
       kode: str(r['kode']),
-      tipeRuang: normalisasiTipe(r['tipeRuang'] ?? r['Tipe Ruang']),
       pilihan: ya(r['pilihan'] ?? r['Mapel Pilihan']),
     };
     mapel.push(m);
@@ -749,30 +686,7 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
     cariKelas.set(nama.toLowerCase(), c.id);
   }
 
-  // 5. Ruang.
-  const ruang: Room[] = [];
-  const cariRuang = new Map<string, string>();
-  for (const r of barisSheet(wb, NAMA_SHEET.ruang)) {
-    if (barisContoh(r)) continue;
-    const nama = str(r['nama']);
-    if (!nama) {
-      if (Object.values(r).some((v) => str(v))) {
-        dilewati++;
-        galat.push('Ruang: ada baris tanpa "nama".');
-      }
-      continue;
-    }
-    const x: Room = {
-      id: uid('r'),
-      nama,
-      kapasitas: numPositif(r['kapasitas'], 40),
-      tipe: normalisasiTipe(r['tipe']),
-    };
-    ruang.push(x);
-    cariRuang.set(nama.toLowerCase(), x.id);
-  }
-
-  // 6. Siswa.
+  // 5. Siswa.
   const siswa: Student[] = [];
   for (const r of barisSheet(wb, NAMA_SHEET.siswa)) {
     if (barisContoh(r)) continue;
@@ -794,7 +708,7 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
     });
   }
 
-  // 7. Kebutuhan Jam.
+  // 6. Kebutuhan Jam.
   const kebutuhan: Requirement[] = [];
   for (const r of barisSheet(wb, NAMA_SHEET.kebutuhan)) {
     if (barisContoh(r)) continue;
@@ -816,15 +730,10 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       galat.push(`Kebutuhan Jam: referensi ${kurang} tidak ditemukan pada baris "${str(r['mapelId'] ?? r['Mata Pelajaran']) || '?'}".`);
       continue;
     }
-    const teksRuang = str(r['ruangId'] ?? r['Ruang']);
-    const ruangId =
-      !teksRuang || /^otomatis$/i.test(teksRuang)
-        ? ''
-        : (cariRuang.get(teksRuang.toLowerCase()) ?? '');
     const jam = numPositif(r['jumlahJam'] ?? r['Jam/Minggu'], 0);
     if (!jam) {
       dilewati++;
-      galat.push(`Kebutuhan Jam: "jumlahJam" wajib diisi (angka ≥ 1) untuk ${teksRuang || 'baris tanpa nama'}.`);
+      galat.push(`Kebutuhan Jam: "jumlahJam" wajib diisi (angka ≥ 1) untuk ${str(r['mapelId'] ?? r['Mata Pelajaran']) || 'baris tanpa nama'}.`);
       continue;
     }
     kebutuhan.push({
@@ -832,53 +741,8 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       kelasId,
       mapelId,
       guruId,
-      ruangId,
       jumlahJam: jam,
       polaJP: parsePola(r['polaJP'] ?? r['Pola JP']),
-    });
-  }
-
-  // 8. Batasan.
-  const blokir: Block[] = [];
-  for (const r of barisSheet(wb, NAMA_SHEET.blokir)) {
-    if (barisContoh(r)) continue;
-    if (!Object.values(r).some((v) => str(v))) continue;
-    const jenisTeks = str(r['jenis'] ?? r['Jenis']).toLowerCase();
-    const jenis: Block['jenis'] = jenisTeks.startsWith('guru')
-      ? 'guru'
-      : jenisTeks.startsWith('ruang')
-        ? 'ruang'
-        : 'kelas';
-    const objekTeks = str(r['refId'] ?? r['Objek']).toLowerCase();
-    const refId =
-      jenis === 'kelas'
-        ? (cariKelas.get(objekTeks) ?? '')
-        : jenis === 'guru'
-          ? (cariGuru.get(objekTeks) ?? '')
-          : (cariRuang.get(objekTeks) ?? '');
-
-    const teksHari = str(r['hari'] ?? r['Hari']);
-    const hariIdx = /^\d+$/.test(teksHari)
-      ? Number(teksHari)
-      : hari.findIndex((d) => d.toLowerCase() === teksHari.toLowerCase());
-    const teksJam = str(r['periodeId'] ?? r['Jam']);
-    const periodeId =
-      periode.find((p) => p.nama.toLowerCase() === teksJam.toLowerCase())?.id ?? '';
-
-    if (!refId || hariIdx < 0 || hariIdx >= hari.length || !periodeId) {
-      dilewati++;
-      galat.push(
-        `Batasan: baris untuk ${jenisTeks || '?'} "${str(r['refId'] ?? r['Objek']) || '?'}" tidak lengkap (objek/hari/jam tidak valid).`,
-      );
-      continue;
-    }
-    blokir.push({
-      id: uid('b'),
-      jenis,
-      refId,
-      hari: hariIdx,
-      periodeId,
-      alasan: str(r['alasan']),
     });
   }
 
@@ -891,10 +755,8 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
     kelas,
     siswa,
     mapel,
-    ruang,
     kebutuhan,
     jadwal: [],
-    blokir,
   };
 
   return {
@@ -905,10 +767,8 @@ export function bacaWorkbook(wb: XLSX.WorkBook, dasar: Project): HasilImporExcel
       kelas: kelas.length,
       siswa: siswa.length,
       mapel: mapel.length,
-      ruang: ruang.length,
       periode: periode.length,
       kebutuhan: kebutuhan.length,
-      blokir: blokir.length,
     },
     dilewati,
     galat,
@@ -927,7 +787,6 @@ export const HEADER_JADWAL = [
   'Kelas',
   'Mapel',
   'Guru',
-  'Ruang',
 ] as const;
 
 /**
@@ -936,14 +795,13 @@ export const HEADER_JADWAL = [
  *
  * Di baris paling atas disisipkan KOP SEKOLAH (nama sekolah + tahun ajaran),
  * lalu satu baris kosong, baru header tabel jadwal. Baris kop di-merge dari
- * kolom A sampai G agar tampil rapi di tengah. Logo tidak disertakan di Excel
+ * kolom A sampai F agar tampil rapi di tengah. Logo tidak disertakan di Excel
  * (cukup teks identitas) supaya berkas tetap ringan.
  */
 export function jadwalKeXlsx(project: Project): Uint8Array {
   const namaMapel = new Map(project.mapel.map((m) => [m.id, m.nama]));
   const namaGuru = new Map(project.guru.map((g) => [g.id, g.nama]));
   const namaKelas = new Map(project.kelas.map((c) => [c.id, c.nama]));
-  const namaRuang = new Map(project.ruang.map((r) => [r.id, r.nama]));
   const perM = new Map(project.periode.map((p) => [p.id, p]));
   const urutPer = new Map(project.periode.map((p, i) => [p.id, i]));
 
@@ -954,8 +812,8 @@ export function jadwalKeXlsx(project: Project): Uint8Array {
       (namaKelas.get(a.kelasId) ?? '').localeCompare(namaKelas.get(b.kelasId) ?? ''),
   );
 
-  const kolom = HEADER_JADWAL.length; // 7 (A..G)
-  const kolomAkhir = String.fromCharCode('A'.charCodeAt(0) + kolom - 1); // 'G'
+  const kolom = HEADER_JADWAL.length; // 6 (A..F)
+  const kolomAkhir = String.fromCharCode('A'.charCodeAt(0) + kolom - 1); // 'F'
 
   // Baris 1: nama sekolah · baris 2: alamat (opsional) · baris 3: tahun ajaran
   const namaSekolah = project.info.nama || 'NAMA SEKOLAH';
@@ -977,7 +835,6 @@ export function jadwalKeXlsx(project: Project): Uint8Array {
         namaKelas.get(j.kelasId) ?? '',
         namaMapel.get(j.mapelId) ?? '',
         namaGuru.get(j.guruId) ?? '',
-        j.ruangId ? (namaRuang.get(j.ruangId) ?? '') : 'Otomatis',
       ];
     }),
   ];

@@ -1,7 +1,7 @@
 # 🗓️ Jadwal Sekolah — Perencana Jadwal Pelajaran (Web)
 
 Aplikasi web untuk menyusun jadwal pelajaran sekolah secara otomatis: kelola data guru,
-kelas, siswa, mata pelajaran, ruang & jam pelajaran; generate jadwal dengan constraint
+kelas, siswa, mata pelajaran & jam pelajaran; generate jadwal dengan constraint
 solver; periksa konflik; edit manual seret-and-lepas; ekspor/cetak; dan bagikan jadwal
 lewat tautan baca-saja.
 
@@ -14,44 +14,40 @@ lewat tautan baca-saja.
 ### Data sekolah
 - **Guru** — kode, mata pelajaran yang diampu, batas jam/minggu & jam/hari,
   slot yang disukai/dilarang (pemilih grid hari × jam), catatan.
-- **Kelas** — nama, tingkat, wali kelas, jumlah siswa (dipakai untuk kapasitas ruang).
+- **Kelas** — nama, tingkat, wali kelas, jumlah siswa.
 - **Siswa** — per kelas + pilihan mapel (untuk kelas berpeminatan).
-- **Mata Pelajaran** — warna kartu, tipe ruang yang disyaratkan (reguler / lab komputer /
-  lab sains / lapangan), penanda mapel pilihan.
-- **Ruang** — tipe & kapasitas.
+- **Mata Pelajaran** — warna kartu, penanda mapel pilihan.
 - **Jam Pelajaran** — urutan jam per hari (Senin–Sabtu), penanda istirahat,
   bisa diurutkan naik/turun.
 - **Kebutuhan Jam** — berapa jam/minggu tiap kelas × mapel × guru, lengkap dengan
   status terpenuhi/kurang.
-- **Batasan & Slot Terblokir** — mis. "kelas XI-1 tidak boleh Senin jam ke-1",
-  "guru X dilarang jam terakhir", "ruang dipakai acara".
 
 ### Generator jadwal otomatis
-- Constraint solver: kelas/guru/ruang tidak pernah bentrok, jumlah jam terpenuhi,
-  batas jam guru (minggu & hari), kapasitas & tipe ruang, preferensi jam guru,
-  slot terblokir, sebaran mapel antar hari, hindari jam ujung hari.
+- Constraint solver: kelas/guru tidak pernah bentrok, jumlah jam terpenuhi,
+  batas jam guru (minggu & hari), preferensi jam guru, pola blok JP,
+  sebaran mapel antar hari, hindari jam ujung hari.
 - **Jadwal tetap dipertahankan** — hanya pelajaran non-tetap yang diganti.
 - Beberapa percobaan acak → hasil terbaik dipilih, lengkap dengan **laporan**
   (berhasil/gagal, alasan tiap kegagalan, durasi).
 
 ### Grid jadwal
-- Tampilan per **Kelas / Guru / Ruang / Siswa** (pilihan mapel siswa direduksi bila tidak diambil).
+- Tampilan per **Kelas / Guru / Siswa** (pilihan mapel siswa direduksi bila tidak diambil).
 - **Edit manual**: seret kartu untuk memindah jam (dengan peringatan bentrok),
-  klik kartu untuk ubah ruang/guru/menandai tetap/menghapus, klik **+** di sel kosong
+  klik kartu untuk ubah guru/menandai tetap/menghapus, klik **+** di sel kosong
   untuk menambah pelajaran.
 - Kartu yang bermasalah ditandai **outline merah**, jadwal tetap outline hijau.
 - Ekspor CSV tampilan aktif & cetak (CSS cetak khusus).
 
 ### Pemeriksa konflik
-Bentrok kelas/guru/ruang · kurang/lebih jam · beban guru berlebih · kapasitas ruang ·
-slot terblokir dilanggar · jadwal di luar jam pelajaran · data terhapus — lengkap dengan
+Bentrok kelas/guru · kurang/lebih jam · beban guru berlebih ·
+jadwal di luar jam pelajaran · data terhapus — lengkap dengan
 tautan "Lihat di Jadwal".
 
 ### Berkas, backup & publikasi
 - **Simpan/muat proyek (JSON)**, ekspor **CSV** dikelompokkan rapi jadi dua panel grid:
-  **Data Master** (Guru, Kelas, Siswa, Mapel, Ruang) dan **Data Jadwal** (Kebutuhan Jam,
+  **Data Master** (Guru, Kelas, Siswa, Mapel) dan **Data Jadwal** (Kebutuhan Jam,
   Jadwal Lengkap) — masing-masing tombol berikon.
-- Reset data contoh, kosongkan semua, impor massal via template Excel (8 sheet).
+- Reset data contoh, kosongkan semua, impor massal via template Excel (7 sheet).
 - Data tersimpan otomatis di **localStorage** (per akun).
 - **Publikasi**: buat tautan `#/publikasi?d=…` berisi salinan data terkompresi
   (deflate + base64url) → penerima melihat jadwal baca-saja **tanpa login**.
@@ -128,7 +124,7 @@ output directory `dist`). Perubahan di branch `main` akan di-deploy ulang.
 ## 🧪 Data contoh
 
 Saat pertama dibuka, aplikasi terisi data contoh **SMA Nusantara**: 16 guru,
-6 kelas, 14 mata pelajaran, 10 ruang, 10 slot jam (2 istirahat), dan 206 jam
+6 kelas, 14 mata pelajaran, 10 slot jam (2 istirahat), dan 206 jam
 kebutuhan/minggu. Tekan **Generate Jadwal** untuk melihat solver bekerja
 (~100–200 ms), lalu cek halaman **Pemeriksa Konflik**.
 

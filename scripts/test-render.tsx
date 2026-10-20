@@ -20,10 +20,8 @@ const rutePrivat = [
   '/kelas',
   '/siswa',
   '/mapel',
-  '/ruang',
   '/jam',
   '/kebutuhan',
-  '/batasan',
   '/generate',
   '/jadwal',
   '/jadwal-matriks',
@@ -93,9 +91,10 @@ try {
     if (!syarat) throw new Error(`tidak terpenuhi: ${nama}`);
     console.log(`OK   grid         ${nama}`);
   };
-  cek('memakai <table class="tt">', html.includes('<table class="tt">'));
-  cek('memakai <th class="jam-cell">', html.includes('class="jam-cell"'));
-  cek('sel pakai class "cell"', /class="cell[ "]/i.test(html));
+  cek('memakai <table class="mx mx-sekolah">', html.includes('<table class="mx mx-sekolah">'));
+  cek('memakai <th class="c-jam">', html.includes('<th class="c-jam">'));
+  cek('sel pakai class "c-isi"', /class="c-isi[ "]/i.test(html));
+  cek('sel tambah pakai class "c-tambah"', /class="[^"]*c-tambah/i.test(html));
   cek('tanpa tombol les-tambah', !html.includes('les-tambah'));
   cek('tanpa placeholder libur-tanda', !html.includes('libur-tanda'));
   cek('kartu les bukan <button>', !/<button[^>]*class="[^"]*\bles\b/i.test(html));

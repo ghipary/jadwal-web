@@ -12,7 +12,7 @@ import {
 import { buatMatriks, buatMatriksEntitas, kunciSel, MatriksEntitas } from './matrix';
 import { hexA } from './utils';
 
-export type Scope = 'kelas' | 'guru' | 'ruang' | 'siswa' | 'sekolah';
+export type Scope = 'kelas' | 'guru' | 'siswa' | 'sekolah';
 
 export function TimetableGrid({
   project,
@@ -54,7 +54,6 @@ export function TimetableGrid({
   const mapelM = new Map(project.mapel.map((m) => [m.id, m]));
   const guruM = new Map(project.guru.map((g) => [g.id, g]));
   const kelasM = new Map(project.kelas.map((c) => [c.id, c]));
-  const ruangM = new Map(project.ruang.map((r) => [r.id, r]));
 
   const cells = new Map<string, Assignment[]>();
   for (const a of items) {
@@ -147,11 +146,8 @@ export function TimetableGrid({
   };
 
   const metaFor = (a: Assignment) => {
-    if (scope === 'guru')
-      return `${kelasM.get(a.kelasId)?.nama ?? '?'} · ${ruangM.get(a.ruangId)?.nama ?? 'tanpa ruang'}`;
-    if (scope === 'ruang')
-      return `${kelasM.get(a.kelasId)?.nama ?? '?'} · ${namaSingkatGuru(a.guruId)}`;
-    return `${namaSingkatGuru(a.guruId)} · ${ruangM.get(a.ruangId)?.nama ?? 'tanpa ruang'}`;
+    if (scope === 'guru') return kelasM.get(a.kelasId)?.nama ?? '?';
+    return namaSingkatGuru(a.guruId);
   };
 
   const onDragStart = (e: DragEvent, a: Assignment) => {
@@ -189,7 +185,7 @@ export function TimetableGrid({
           e.stopPropagation();
           onOpen?.(a);
         }}
-        title={`${m?.nama ?? '?'} — ${kelasM.get(a.kelasId)?.nama ?? ''} / ${guruM.get(a.guruId)?.nama ?? ''} / ${ruangM.get(a.ruangId)?.nama ?? 'tanpa ruang'}${a.blokId ? ' · bagian blok JP (pola berurutan)' : ''}`}
+        title={`${m?.nama ?? '?'} — ${kelasM.get(a.kelasId)?.nama ?? ''} / ${guruM.get(a.guruId)?.nama ?? ''}${a.blokId ? ' · bagian blok JP (pola berurutan)' : ''}`}
       >
         <span className="nama">{m?.nama ?? '(mapel terhapus)'}</span>
         <span className="meta">{metaFor(a)}</span>
@@ -508,7 +504,7 @@ export function SekolahMatrix({
 }
 
 /**
- * Matriks untuk SATU entitas (Kelas/Guru/Ruang/Siswa) — struktur identik
+ * Matriks untuk SATU entitas (Kelas/Guru/Siswa) — struktur identik
  * dengan `SekolahMatrix` (HARI & PUKUL di baris, entitas di kolom tunggal).
  * Bedanya: hanya 1 kolom entitas, dan filter jadwal sudah dilakukan di `buatMatriksEntitas`.
  */
@@ -524,7 +520,7 @@ export function EntityMatrix({
   onMove,
 }: {
   project: Project;
-  scope: 'kelas' | 'guru' | 'ruang' | 'siswa';
+  scope: 'kelas' | 'guru' | 'siswa';
   entitasId: string;
   editable?: boolean;
   konflik?: Set<string>;

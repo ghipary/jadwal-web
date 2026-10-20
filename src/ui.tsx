@@ -784,7 +784,7 @@ function PolaJPInput({
   );
 }
 
-/** Pemilih slot hari × jam (untuk preferensi/blokir). */
+/** Pemilih slot hari × jam (untuk preferensi jam guru). */
 export function SlotPicker({
   value,
   onChange,

@@ -2,7 +2,7 @@
 //
 // Pendekatan: pencarian lokal dengan heuristik MRV (Minimum Remaining Values),
 // skor penalti untuk batasan lunak (sebaran hari, beban guru, preferensi,
-// ruang, jam ujung hari), dan beberapa kali percobaan acak untuk hasil terbaik.
+// jam ujung hari), dan beberapa kali percobaan acak untuk hasil terbaik.
 //
 // Sejak dukungan JP berbeda per hari & block scheduling:
 // - Slot yang dipakai selalu diambil dari `periodeAktifHari` (bukan seluruh JP).
@@ -75,7 +75,6 @@ interface Task {
 interface Cand {
   hari: number;
   slots: string[];
-  ruangId: string;
   penalti: number;
 }
 
@@ -147,16 +146,10 @@ export async function generate(
   const guruM = new Map(p.guru.map((g) => [g.id, g]));
   const kelasM = new Map(p.kelas.map((c) => [c.id, c]));
   const mapelM = new Map(p.mapel.map((m) => [m.id, m]));
-  const ruangM = new Map(p.ruang.map((r) => [r.id, r]));
 
   // Slot aktif berbeda per hari (batas maks. JP & JP yang dimatikan).
   const aktifHari = p.hari.map((_, h) => periodeAktifHari(p, h));
   const idxAll = new Map(p.periode.map((per, i) => [per.id, i]));
-
-  const blokir = new Set<string>();
-  for (const b of p.blokir) blokir.add(`${b.jenis}|${b.refId}|${slotKey(b.hari, b.periodeId)}`);
-  const isBlocked = (jenis: string, refId: string, sk: SlotKey) =>
-    blokir.has(`${jenis}|${refId}|${sk}`);
 
   const tetap = p.jadwal.filter((j) => j.tetap);
   const totalKebutuhan = p.kebutuhan.reduce((a, r) => a + r.jumlahJam, 0);
@@ -184,7 +177,6 @@ export async function generate(
       const sk = slotKey(j.hari, j.periodeId);
       occGet(occ, `k|${j.kelasId}`).add(sk);
       occGet(occ, `g|${j.guruId}`).add(sk);
-      if (j.ruangId) occGet(occ, `r|${j.ruangId}`).add(sk);
     };
     const bumpLoad = (j: Assignment) => {
       const wk = teacherWeek.get(j.guruId) ?? 0;
@@ -233,32 +225,6 @@ export async function generate(
       }
     }
 
-    const pickRoom = (
-      req: Requirement,
-      mapel: Subject,
-      kelas: SchoolClass,
-      hari: number,
-      slots: string[],
-    ) => {
-      const bebasDi = (ruangId: string) =>
-        slots.every((pid) => !occGet(occ, `r|${ruangId}`).has(slotKey(hari, pid)));
-      if (req.ruangId) {
-        const r = ruangM.get(req.ruangId);
-        if (!r || !bebasDi(r.id)) return undefined;
-        return r;
-      }
-      const tipe = mapel.tipeRuang;
-      const cand = p.ruang.filter(
-        (r) =>
-          (tipe === 'semua' || r.tipe === tipe) &&
-          bebasDi(r.id) &&
-          (!opsi.wajibRuang || r.kapasitas >= kelas.jumlahSiswa),
-      );
-      if (!cand.length) return undefined;
-      cand.sort((a, b) => b.kapasitas - a.kapasitas);
-      return Math.random() < 0.7 ? cand[0] : cand[Math.floor(Math.random() * cand.length)];
-    };
-
     const evalTask = (task: Task): Cand[] => {
       const req = task.req;
       const g = guruM.get(req.guruId);
@@ -294,20 +260,10 @@ export async function generate(
             const sk = slotKey(hari, per.id);
             if (occGet(occ, `k|${kelas.id}`).has(sk)) ok = false;
             else if (occGet(occ, `g|${g.id}`).has(sk)) ok = false;
-            else if (isBlocked('kelas', kelas.id, sk) || isBlocked('guru', g.id, sk)) ok = false;
             else if (dilarangGuru.has(sk)) ok = false;
             if (!ok) break;
           }
           if (!ok) continue;
-
-          const room = pickRoom(
-            req,
-            mapel,
-            kelas,
-            hari,
-            run.map((x) => x.id),
-          );
-          if (!room) continue;
 
           let pen = 0;
           const subjDay = classSubjDay.get(`${kelas.id}|${mapel.id}|${hari}`) ?? 0;
@@ -335,7 +291,6 @@ export async function generate(
           res.push({
             hari,
             slots: run.map((x) => x.id),
-            ruangId: room.id,
             penalti: pen,
           });
         }
@@ -363,11 +318,7 @@ export async function generate(
           const sk = slotKey(hari, per.id);
           if (occGet(occ, `k|${kelas.id}`).has(sk)) bump('kelas sudah terisi');
           else if (occGet(occ, `g|${g.id}`).has(sk)) bump('guru bentrok');
-          else if (isBlocked('kelas', kelas.id, sk) || isBlocked('guru', g.id, sk))
-            bump('diblokir lewat halaman Batasan');
           else if (g.slotDilarang.includes(sk)) bump('di luar preferensi guru');
-          else if (req.ruangId && !ruangM.has(req.ruangId)) bump('ruang tetap tidak ditemukan');
-          else if (!p.ruang.length) bump('belum ada data ruang');
         }
       }
       const top = Object.entries(counts)
@@ -391,15 +342,13 @@ export async function generate(
     let penaltiTotal = 0;
 
     // Urutkan task: yang paling sulit dulu — guru dengan sisa jam paling sempit,
-    // blok terbesar lebih dulu, mapel dengan ruang paling terbatas.
+    // lalu blok terbesar.
     const butuhGuru = new Map<string, number>();
     for (const it of items)
       butuhGuru.set(it.req.guruId, (butuhGuru.get(it.req.guruId) ?? 0) + it.ukuran);
     const butuhKelas = new Map<string, number>();
     for (const it of items)
       butuhKelas.set(it.req.kelasId, (butuhKelas.get(it.req.kelasId) ?? 0) + it.ukuran);
-    const jumlahRuangTipe = new Map<string, number>();
-    for (const r of p.ruang) jumlahRuangTipe.set(r.tipe, (jumlahRuangTipe.get(r.tipe) ?? 0) + 1);
 
     const urut = [...items].sort((a, b) => {
       const ga = guruM.get(a.req.guruId);
@@ -408,11 +357,6 @@ export async function generate(
       const slackB = (gb?.maxJam ?? 24) - (butuhGuru.get(b.req.guruId) ?? 0);
       if (slackA !== slackB) return slackA - slackB;
       if (a.ukuran !== b.ukuran) return b.ukuran - a.ukuran;
-      const ma = mapelM.get(a.req.mapelId);
-      const mb = mapelM.get(b.req.mapelId);
-      const ruangA = jumlahRuangTipe.get(ma?.tipeRuang ?? 'reguler') ?? 99;
-      const ruangB = jumlahRuangTipe.get(mb?.tipeRuang ?? 'reguler') ?? 99;
-      if (ruangA !== ruangB) return ruangA - ruangB;
       const kelasA = butuhKelas.get(a.req.kelasId) ?? 0;
       const kelasB = butuhKelas.get(b.req.kelasId) ?? 0;
       if (kelasA !== kelasB) return kelasB - kelasA;
@@ -449,7 +393,6 @@ export async function generate(
           kelasId: task.req.kelasId,
           mapelId: task.req.mapelId,
           guruId: task.req.guruId,
-          ruangId: chosen.ruangId,
           hari: chosen.hari,
           periodeId,
           tetap: false,
@@ -499,7 +442,7 @@ export async function generate(
       if (!sasaran.size) return false;
 
       // Keluarkan assignment yang menempati slot sasaran & menyumbat task ini:
-      // kelas sama, atau guru sama (ruang diabaikan — bisa ganti ruang).
+      // kelas sama, atau guru sama.
       const korban = placed.filter(
         (j) => sasaran.has(slotKey(j.hari, j.periodeId)) && (j.kelasId === kelas.id || j.guruId === g.id),
       );
@@ -509,7 +452,6 @@ export async function generate(
         const sk = slotKey(j.hari, j.periodeId);
         occGet(occ, `k|${j.kelasId}`).delete(sk);
         occGet(occ, `g|${j.guruId}`).delete(sk);
-        if (j.ruangId) occGet(occ, `r|${j.ruangId}`).delete(sk);
         penaltiTotal -= 0; // penalti dihitung ulang saat penempatan berikutnya
       }
       // Hapus dari `placed` & kurangi beban.
@@ -599,7 +541,7 @@ export async function generate(
       `${l.ditempatkan} dari ${l.totalKebutuhan} jam pelajaran berhasil dijadwalkan, ${l.totalGagal} gagal.`,
     );
     l.pesan.push(
-      'Coba tambah jumlah percobaan, kurangi jam, atau periksa batasan pada halaman Batasan.',
+      'Coba tambah jumlah percobaan, kurangi jam, atau periksa preferensi jam guru.',
     );
   }
   l.pesan.push(`Selesai dalam ${durasiMs} ms setelah ${l.percobaan} percobaan.`);
@@ -615,15 +557,13 @@ export function checkConflicts(p: Project): Conflict[] {
   const guruM = new Map(p.guru.map((g) => [g.id, g]));
   const kelasM = new Map(p.kelas.map((c) => [c.id, c]));
   const mapelM = new Map(p.mapel.map((m) => [m.id, m]));
-  const ruangM = new Map(p.ruang.map((r) => [r.id, r]));
   const perM = new Map(p.periode.map((x) => [x.id, x]));
   const namaMapel = (id: string) => mapelM.get(id)?.nama ?? '(mapel terhapus)';
 
-  // 1. Bentrok kelas / guru / ruang pada slot yang sama.
+  // 1. Bentrok kelas / guru pada slot yang sama.
   const groups: { tipe: Conflict['tipe']; label: string; map: Map<string, Assignment[]> }[] = [
     { tipe: 'kelas-bentrok', label: 'Kelas', map: new Map() },
     { tipe: 'guru-bentrok', label: 'Guru', map: new Map() },
-    { tipe: 'ruang-bentrok', label: 'Ruang', map: new Map() },
   ];
   for (const j of p.jadwal) {
     const sk = slotKey(j.hari, j.periodeId);
@@ -634,7 +574,6 @@ export function checkConflicts(p: Project): Conflict[] {
     };
     push(groups[0].map, `${j.kelasId}|${sk}`);
     push(groups[1].map, `${j.guruId}|${sk}`);
-    if (j.ruangId) push(groups[2].map, `${j.ruangId}|${sk}`);
   }
   for (const g of groups) {
     for (const [key, arr] of g.map) {
@@ -643,8 +582,7 @@ export function checkConflicts(p: Project): Conflict[] {
       const first = arr[0];
       let subjek = '';
       if (g.tipe === 'kelas-bentrok') subjek = kelasM.get(ref)?.nama ?? '(kelas terhapus)';
-      else if (g.tipe === 'guru-bentrok') subjek = guruM.get(ref)?.nama ?? '(guru terhapus)';
-      else subjek = ruangM.get(ref)?.nama ?? '(ruang terhapus)';
+      else subjek = guruM.get(ref)?.nama ?? '(guru terhapus)';
       out.push({
         id: `${g.tipe}|${key}`,
         tipe: g.tipe,
@@ -684,44 +622,9 @@ export function checkConflicts(p: Project): Conflict[] {
         refJadwal: [j.id],
       });
     }
-    // 3. Batasan blokir.
-    for (const b of p.blokir) {
-      if (b.hari !== j.hari || b.periodeId !== j.periodeId) continue;
-      const cocok =
-        (b.jenis === 'kelas' && b.refId === j.kelasId) ||
-        (b.jenis === 'guru' && b.refId === j.guruId) ||
-        (b.jenis === 'ruang' && b.refId === j.ruangId);
-      if (cocok) {
-        const subjek =
-          b.jenis === 'kelas'
-            ? kelasM.get(b.refId)?.nama
-            : b.jenis === 'guru'
-              ? guruM.get(b.refId)?.nama
-              : ruangM.get(b.refId)?.nama;
-        out.push({
-          id: `blokir|${j.id}|${b.id}`,
-          tipe: 'blokir',
-          tingkat: 'error',
-          pesan: `${namaMapel(j.mapelId)} menempati slot ${b.jenis} ${subjek} yang diblokir${b.alasan ? ` (${b.alasan})` : ''} — ${slotLabel(p, j.hari, j.periodeId)}.`,
-          refJadwal: [j.id],
-        });
-      }
-    }
-    // 4. Kapasitas ruang.
-    const kelas = kelasM.get(j.kelasId);
-    const ruang = ruangM.get(j.ruangId);
-    if (kelas && ruang && ruang.kapasitas < kelas.jumlahSiswa) {
-      out.push({
-        id: `kapasitas|${j.id}`,
-        tipe: 'kapasitas',
-        tingkat: 'peringatan',
-        pesan: `${kelas.nama} (${kelas.jumlahSiswa} siswa) berada di ${ruang.nama} (kapasitas ${ruang.kapasitas}) — ${slotLabel(p, j.hari, j.periodeId)}.`,
-        refJadwal: [j.id],
-      });
-    }
   }
 
-  // 5. Pemenuhan kebutuhan jam.
+  // 3. Pemenuhan kebutuhan jam.
   const hitung = (kelasId: string, mapelId: string, guruId: string) =>
     p.jadwal.filter(
       (j) => j.kelasId === kelasId && j.mapelId === mapelId && j.guruId === guruId,
@@ -751,7 +654,7 @@ export function checkConflicts(p: Project): Conflict[] {
     });
   }
 
-  // 6. Jam berlebih per kelas+mapel.
+  // 4. Jam berlebih per kelas+mapel.
   const expected = new Map<string, number>();
   for (const r of p.kebutuhan) {
     const k = `${r.kelasId}|${r.mapelId}`;
@@ -776,7 +679,7 @@ export function checkConflicts(p: Project): Conflict[] {
     }
   }
 
-  // 7. Beban guru melebihi maksimum.
+  // 5. Beban guru melebihi maksimum.
   for (const g of p.guru) {
     const cnt = p.jadwal.filter((j) => j.guruId === g.id).length;
     if (cnt > g.maxJam) {
@@ -831,8 +734,6 @@ export interface HasilAutoFix {
 const TIPE_OTOMATIS = new Set([
   'kelas-bentrok',
   'guru-bentrok',
-  'ruang-bentrok',
-  'blokir',
   'istirahat',
   'nonaktif',
 ]);
@@ -857,23 +758,12 @@ function slotAman(
   abaikan: Set<string>,
 ): boolean {
   if (!slotHariAktif(p, hari, periodeId)) return false;
-  // Blokir kelas/guru pada slot tujuan (ruang tujuan menyesuaikan: ruang
-  // terblokir pada slot itu ditolak lewat pemeriksaan bentrok di bawah).
-  for (const b of p.blokir) {
-    if (b.hari !== hari || b.periodeId !== periodeId) continue;
-    if (
-      (b.jenis === 'kelas' && b.refId === a.kelasId) ||
-      (b.jenis === 'guru' && b.refId === a.guruId)
-    )
-      return false;
-  }
   for (const j of jadwal) {
     if (abaikan.has(j.id)) continue;
     if (j.hari !== hari || j.periodeId !== periodeId) continue;
     if (
       j.kelasId === a.kelasId ||
-      j.guruId === a.guruId ||
-      (a.ruangId && j.ruangId === a.ruangId)
+      j.guruId === a.guruId
     )
       return false;
   }

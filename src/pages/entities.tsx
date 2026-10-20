@@ -1,21 +1,17 @@
-// Halaman-halaman data: Guru, Kelas, Siswa, Mapel, Ruang, Jam, Batasan.
+// Halaman-halaman data: Guru, Kelas, Siswa, Mapel, Jam.
 
 import { useState } from 'react';
 import {
   HARI_KONFIG_BAWAAN,
-  LABEL_TIPE_RUANG,
   PALET_GURU,
   konfigHari,
   parseSlotKey,
   periodeAktifHari,
   slotKey,
-  TIPE_RUANG_KEBUTUHAN,
-  TIPE_RUANG_OPTIONS,
   TIPE_WAKTU_OPTIONS,
   labelTipeWaktu,
 } from '../types';
 import type {
-  Block,
   HariKonfig,
   Period,
   Project,
@@ -177,7 +173,7 @@ export function HalKelas() {
   const cfg: EntityConfig<SchoolClass> = {
     collection: 'kelas',
     judul: 'Kelas',
-    desc: 'Rombongan belajar: nama kelas, tingkat, wali kelas, dan jumlah siswa (dipakai untuk kapasitas ruang).',
+    desc: 'Rombongan belajar: nama kelas, tingkat, wali kelas, dan jumlah siswa.',
     ikon: 'kelas',
     placeholderCari: 'Cari kelas…',
     labelHapus: (r) => r.nama,
@@ -232,7 +228,6 @@ export function HalKelas() {
         type: 'number',
         min: 1,
         max: 80,
-        hint: 'Dipakai untuk mengecek kapasitas ruang saat generate.',
       },
     ],
   };
@@ -312,7 +307,7 @@ export function HalMapel() {
   const cfg: EntityConfig<Subject> = {
     collection: 'mapel',
     judul: 'Mata Pelajaran',
-    desc: 'Mapel beserta tipe ruang yang disyaratkan (reguler/lab/lapangan), dan tanda mapel pilihan.',
+    desc: 'Daftar mata pelajaran beserta kode dan tanda mapel pilihan.',
     ikon: 'mapel',
     placeholderCari: 'Cari nama / kode mapel…',
     labelHapus: (r) => r.nama,
@@ -321,7 +316,6 @@ export function HalMapel() {
       id: uid('m'),
       nama: '',
       kode: '',
-      tipeRuang: 'reguler',
       pilihan: false,
     }),
     kolom: [
@@ -329,10 +323,6 @@ export function HalMapel() {
       {
         label: 'Nama Mapel',
         render: (r) => <b>{r.nama}</b>,
-      },
-      {
-        label: 'Tipe Ruang',
-        render: (r) => <span className="badge badge-abu">{LABEL_TIPE_RUANG[r.tipeRuang] ?? r.tipeRuang}</span>,
       },
       {
         label: 'Pilihan',
@@ -354,55 +344,11 @@ export function HalMapel() {
       { key: 'nama', label: 'Nama Mapel', type: 'text', placeholder: 'Contoh: Matematika' },
       { key: 'kode', label: 'Kode', type: 'text', placeholder: 'Contoh: MTK' },
       {
-        key: 'tipeRuang',
-        label: 'Tipe Ruang yang Disyaratkan',
-        type: 'select',
-        options: TIPE_RUANG_KEBUTUHAN,
-        hint: 'Generator hanya akan menempatkan mapel ini di ruang dengan tipe tersebut.',
-      },
-      {
         key: 'pilihan',
         label: 'Mapel Pilihan',
         type: 'check',
         hint: 'Tandai sebagai mapel pilihan (siswa boleh memilih tidak mengambilnya).',
       },
-    ],
-  };
-  return <DataPage cfg={cfg} />;
-}
-
-// ---------------------------------------------------------------------------
-// Ruang
-// ---------------------------------------------------------------------------
-
-export function HalRuang() {
-  const { project } = useProject();
-
-  const cfg: EntityConfig<(typeof project.ruang)[number]> = {
-    collection: 'ruang',
-    judul: 'Ruang',
-    desc: 'Ruang kelas dan laboratorium beserta kapasitas serta tipenya.',
-    ikon: 'ruang',
-    placeholderCari: 'Cari ruang…',
-    labelHapus: (r) => r.nama,
-    judulForm: (r) => (r?.id ? 'Ubah Ruang' : 'Tambah Ruang'),
-    blank: () => ({ id: uid('r'), nama: '', kapasitas: 40, tipe: 'reguler' }),
-    kolom: [
-      { label: 'Nama Ruang', render: (r) => <b>{r.nama}</b> },
-      {
-        label: 'Tipe',
-        render: (r) => <span className="badge badge-biru">{LABEL_TIPE_RUANG[r.tipe] ?? r.tipe}</span>,
-      },
-      { label: 'Kapasitas', render: (r) => `${r.kapasitas} kursi` },
-      {
-        label: 'Terpakai',
-        render: (r) => `${project.jadwal.filter((j) => j.ruangId === r.id).length} jam/minggu`,
-      },
-    ],
-    fields: [
-      { key: 'nama', label: 'Nama Ruang', type: 'text', placeholder: 'Contoh: R-6 / Lab Komputer' },
-      { key: 'tipe', label: 'Tipe Ruang', type: 'select', options: [...TIPE_RUANG_OPTIONS] },
-      { key: 'kapasitas', label: 'Kapasitas', type: 'number', min: 1, max: 200 },
     ],
   };
   return <DataPage cfg={cfg} />;
@@ -463,8 +409,6 @@ function HariAktifCard() {
 
   const jumlahJadwal = (idx: number) =>
     project.jadwal.filter((j) => j.hari === idx).length;
-  const jumlahBlokir = (idx: number) =>
-    project.blokir.filter((b) => b.hari === idx).length;
 
   const jpBaris = project.periode.filter((p) => p.tipe === 'pelajaran');
 
@@ -539,7 +483,6 @@ function HariAktifCard() {
       hari,
       hariKonfig: konfig,
       jadwal: project.jadwal.map((j) => ({ ...j, hari: peta(j.hari) })),
-      blokir: project.blokir.map((b) => ({ ...b, hari: peta(b.hari) })),
       periode: petaHariPeriode(project.periode, peta),
       guru: project.guru.map((g) => ({
         ...g,
@@ -556,11 +499,7 @@ function HariAktifCard() {
     }
     const nama = project.hari[idx];
     const jmlJadwal = jumlahJadwal(idx);
-    const jmlBlokir = jumlahBlokir(idx);
-    const rincian = [
-      jmlJadwal ? `${jmlJadwal} jadwal` : '',
-      jmlBlokir ? `${jmlBlokir} batasan` : '',
-    ]
+    const rincian = [jmlJadwal ? `${jmlJadwal} jadwal` : '']
       .filter(Boolean)
       .join(' dan ');
     if (
@@ -579,9 +518,6 @@ function HariAktifCard() {
       jadwal: project.jadwal
         .filter((j) => j.hari !== idx)
         .map((j) => ({ ...j, hari: peta(j.hari) as number })),
-      blokir: project.blokir
-        .filter((b) => b.hari !== idx)
-        .map((b) => ({ ...b, hari: peta(b.hari) as number })),
       periode: petaHariPeriode(project.periode, peta),
       guru: project.guru.map((g) => ({
         ...g,
@@ -609,7 +545,6 @@ function HariAktifCard() {
               <b className="hari-nama">{nama}</b>
               <span className="hint">
                 {jumlahJadwal(i)} jadwal
-                {jumlahBlokir(i) ? ` · ${jumlahBlokir(i)} batasan` : ''}
               </span>
               <span className={`badge ${jpAktif < jpBaris.length ? 'badge-kuning' : 'badge-abu'}`}>
                 {jpAktif} JP aktif
@@ -884,97 +819,4 @@ export function HalJam() {
   return <DataPage cfg={cfg} atas={<HariAktifCard />} />;
 }
 
-// ---------------------------------------------------------------------------
-// Batasan (slot terblokir)
-// ---------------------------------------------------------------------------
 
-export function HalBlokir() {
-  const { project } = useProject();
-
-  const namaRef = (b: Block) =>
-    b.jenis === 'kelas'
-      ? project.kelas.find((x) => x.id === b.refId)?.nama ?? '(terhapus)'
-      : b.jenis === 'guru'
-        ? project.guru.find((x) => x.id === b.refId)?.nama ?? '(terhapus)'
-        : project.ruang.find((x) => x.id === b.refId)?.nama ?? '(terhapus)';
-
-  const refOptions = (jenis: Block['jenis']) => {
-    const list =
-      jenis === 'kelas' ? project.kelas : jenis === 'guru' ? project.guru : project.ruang;
-    return list.map((x) => ({ value: x.id, label: x.nama }));
-  };
-
-  const cfg: EntityConfig<Block> = {
-    collection: 'blokir',
-    judul: 'Batasan & Slot Terblokir',
-    desc: 'Slot yang tidak boleh dipakai kelas/guru/ruang tertentu — misal rapat guru, kelas libur, atau ruang dipakai acara. Generator akan menghormati daftar ini.',
-    ikon: 'blokir',
-    placeholderCari: 'Cari batasan…',
-    labelHapus: (r) => `${r.jenis} ${namaRef(r)}`,
-    judulForm: (r) => (r?.id ? 'Ubah Batasan' : 'Tambah Batasan'),
-    blank: () => ({
-      id: uid('b'),
-      jenis: 'kelas',
-      refId: project.kelas[0]?.id ?? '',
-      hari: 0,
-      periodeId: project.periode.find((p) => p.tipe === 'pelajaran')?.id ?? '',
-      alasan: '',
-    }),
-    kolom: [
-      {
-        label: 'Jenis',
-        render: (r) => (
-          <span className="badge badge-abu">
-            {r.jenis === 'kelas' ? 'Kelas' : r.jenis === 'guru' ? 'Guru' : 'Ruang'}
-          </span>
-        ),
-      },
-      { label: 'Objek', render: (r) => <b>{namaRef(r)}</b> },
-      { label: 'Hari', render: (r) => project.hari[r.hari] ?? '?' },
-      {
-        label: 'Jam',
-        render: (r) => {
-          const p = project.periode.find((x) => x.id === r.periodeId);
-          return p ? `${p.nama} (${p.mulai}–${p.selesai})` : '—';
-        },
-      },
-      { label: 'Alasan', render: (r) => r.alasan || <span className="hint">—</span> },
-    ],
-    fields: (form) => [
-      {
-        key: 'jenis',
-        label: 'Batasan untuk',
-        type: 'select',
-        options: [
-          { value: 'kelas', label: 'Kelas' },
-          { value: 'guru', label: 'Guru' },
-          { value: 'ruang', label: 'Ruang' },
-        ],
-      },
-      {
-        key: 'refId',
-        label: 'Objek',
-        type: 'select',
-        options: refOptions(form.jenis),
-      },
-      {
-        key: 'hari',
-        label: 'Hari',
-        type: 'select',
-        numeric: true,
-        options: project.hari.map((d, i) => ({ value: String(i), label: d })),
-      },
-      {
-        key: 'periodeId',
-        label: 'Jam ke-',
-        type: 'select',
-        options: project.periode.map((p) => ({
-          value: p.id,
-          label: `${p.nama} (${p.mulai}–${p.selesai})${p.tipe === 'pelajaran' ? '' : ` · ${labelTipeWaktu(p).toLowerCase()}`}`,
-        })),
-      },
-      { key: 'alasan', label: 'Alasan (opsional)', type: 'text', placeholder: 'Contoh: Rapat guru' },
-    ],
-  };
-  return <DataPage cfg={cfg} />;
-}

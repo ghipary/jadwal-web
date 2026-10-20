@@ -36,7 +36,7 @@ export function HalGenerate() {
     setJalan(false);
   };
 
-  const opsiRows: { key: 'rataHari' | 'hindariUjung' | 'wajibRuang'; title: string; desc: string }[] = [
+  const opsiRows: { key: 'rataHari' | 'hindariUjung'; title: string; desc: string }[] = [
     {
       key: 'rataHari',
       title: 'Sebar rata pada hari',
@@ -47,18 +47,13 @@ export function HalGenerate() {
       title: 'Hindari jam pertama & terakhir',
       desc: 'Pelajaran guru tidak ditempatkan di jam ujung hari bila masih ada pilihan lain.',
     },
-    {
-      key: 'wajibRuang',
-      title: 'Wajib ruang sesuai tipe & kapasitas',
-      desc: 'Kelas hanya ditempatkan di ruang berkapasitas cukup dan bertipe sesuai mapel (lab, lapangan, dll).',
-    },
   ];
 
   return (
     <>
       <PageHead
         title="Generator Jadwal Otomatis"
-        desc="Susun jadwal seluruh kelas dari daftar kebutuhan jam, dengan penghormatan pada jadwal tetap, batasan jam guru, preferensi, dan ketersediaan ruang."
+        desc="Susun jadwal seluruh kelas dari daftar kebutuhan jam, dengan penghormatan pada jadwal tetap, batasan jam guru, dan preferensi jam."
       />
 
       <div className="generate-hero">
@@ -160,10 +155,6 @@ export function HalGenerate() {
                 menjumlahkan JP aktif tiap hari (batas maks. JP &amp; slot non-aktif diikuti)
               </span>
             </span>
-          </div>
-          <div className="kv">
-            <span className="k">Batasan slot terblokir</span>
-            <span className="v">{project.blokir.length} slot</span>
           </div>
           <div className="kv">
             <span className="k">Konflik saat ini</span>

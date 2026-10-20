@@ -8,7 +8,6 @@ const p = demoProject();
 const kelas = p.kelas[0];
 const mapel = p.mapel[0];
 const guru = p.guru[0];
-const ruang = p.ruang[0];
 // Dua pelajaran: satu tunggal, satu blok 2 JP berurutan + satu sel dengan 2 kartu.
 p.jadwal = [
   {
@@ -17,7 +16,6 @@ p.jadwal = [
     kelasId: kelas.id,
     mapelId: mapel.id,
     guruId: guru.id,
-    ruangId: ruang.id,
     hari: 0,
     periodeId: 'p1',
     tetap: false,
@@ -29,7 +27,6 @@ p.jadwal = [
     kelasId: kelas.id,
     mapelId: mapel.id,
     guruId: guru.id,
-    ruangId: ruang.id,
     hari: 0,
     periodeId: 'p2',
     tetap: false,
@@ -42,7 +39,6 @@ p.jadwal = [
     kelasId: kelas.id,
     mapelId: mapel.id,
     guruId: guru.id,
-    ruangId: ruang.id,
     hari: 0,
     periodeId: 'p3',
     tetap: false,
@@ -56,7 +52,6 @@ p.jadwal = [
     kelasId: kelas.id,
     mapelId: p.mapel[1].id,
     guruId: p.guru[1].id,
-    ruangId: ruang.id,
     hari: 1,
     periodeId: 'p1',
     tetap: false,
@@ -68,7 +63,6 @@ p.jadwal = [
     kelasId: kelas.id,
     mapelId: p.mapel[2].id,
     guruId: p.guru[2].id,
-    ruangId: ruang.id,
     hari: 1,
     periodeId: 'p1',
     tetap: false,
@@ -110,7 +104,7 @@ cek2('blok mapel bukan <button>', !/<button[^>]*les-mx/i.test(mx));
 cek2('tanpa .les generik', !/<div class="les[ "]/i.test(mx));
 cek2('tanpa judul per kelas (tt-titel)', !mx.includes('tt-titel'));
 
-// --- Matriks "Per Entitas" (Kelas/Guru/Ruang/Siswa): struktur identik SekolahMatrix tapi 1 kolom ---
+// --- Matriks "Per Entitas" (Kelas/Guru/Siswa): struktur identik SekolahMatrix tapi 1 kolom ---
 const me = renderToStaticMarkup(
   <EntityMatrix project={p} scope="kelas" entitasId={kelas.id} editable={false} />,
 );

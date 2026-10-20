@@ -78,13 +78,13 @@ export function kodePasangan(nomorGuru: number, namaMapel: string, kodeMapel: st
   return `${nomorGuru}${kodeMapelSingkat(namaMapel, kodeMapel)}`;
 }
 
-/** Entitas generik untuk matriks (kelas/guru/ruang/siswa). */
+/** Entitas generik untuk matriks (kelas/guru/siswa). */
 export interface EntitasMatriks {
   id: string;
   nama: string;
 }
 
-/** Matriks untuk satu entitas (kelas/guru/ruang/siswa). */
+/** Matriks untuk satu entitas (kelas/guru/siswa). */
 export interface MatriksEntitas {
   entitas: EntitasMatriks;
   baris: BarisMatriks[];
@@ -97,19 +97,18 @@ export interface MatriksEntitas {
 }
 
 /**
- * Buat matriks jadwal untuk SATU entitas (kelas/guru/ruang/siswa).
+ * Buat matriks jadwal untuk SATU entitas (kelas/guru/siswa).
  * Struktur identik dengan `buatMatriks` tapi hanya untuk satu kolom entitas.
  */
 export function buatMatriksEntitas(
   project: Project,
-  scope: 'kelas' | 'guru' | 'ruang' | 'siswa',
+  scope: 'kelas' | 'guru' | 'siswa',
   entitasId: string,
 ): MatriksEntitas {
   const nomorGuru = new Map(project.guru.map((g, i) => [g.id, i + 1]));
   const guruM = new Map(project.guru.map((g) => [g.id, g]));
   const mapelM = new Map(project.mapel.map((m) => [m.id, m]));
   const kelasM = new Map(project.kelas.map((c) => [c.id, c]));
-  const ruangM = new Map(project.ruang.map((r) => [r.id, r]));
   const siswaM = new Map(project.siswa.map((s) => [s.id, s]));
 
   // Tentukan entitas yang dipilih
@@ -124,10 +123,6 @@ export function buatMatriksEntitas(
     const g = guruM.get(entitasId);
     entitas = { id: entitasId, nama: g?.nama ?? '(guru terhapus)' };
     filterJadwal = project.jadwal.filter((j) => j.guruId === entitasId);
-  } else if (scope === 'ruang') {
-    const r = ruangM.get(entitasId);
-    entitas = { id: entitasId, nama: r?.nama ?? '(ruang terhapus)' };
-    filterJadwal = project.jadwal.filter((j) => j.ruangId === entitasId);
   } else {
     // scope === 'siswa'
     const s = siswaM.get(entitasId);

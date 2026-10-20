@@ -9,12 +9,12 @@ const FITUR = [
   {
     ikon: 'guru',
     judul: 'Data sekolah lengkap',
-    teks: 'Guru, kelas, siswa, mata pelajaran, ruang, jam pelajaran, kebutuhan jam, dan batasan — semuanya terkelola rapi.',
+    teks: 'Guru, kelas, siswa, mata pelajaran, jam pelajaran, dan kebutuhan jam — semuanya terkelola rapi.',
   },
   {
     ikon: 'generate',
     judul: 'Generate otomatis',
-    teks: 'Constraint solver menyusun jadwal: kelas, guru, dan ruang tidak pernah bentrok, jam guru tetap dalam batas.',
+    teks: 'Constraint solver menyusun jadwal: kelas dan guru tidak pernah bentrok, jam guru tetap dalam batas.',
   },
   {
     ikon: 'konflik',
@@ -42,7 +42,7 @@ const LANGKAH = [
   {
     n: '1',
     judul: 'Isi data sekolah',
-    teks: 'Masukkan guru, kelas, mata pelajaran, ruang, dan kebutuhan jam per minggu — bisa lewat form atau impor Excel massal.',
+    teks: 'Masukkan guru, kelas, mata pelajaran, dan kebutuhan jam per minggu — bisa lewat form atau impor Excel massal.',
   },
   {
     n: '2',
@@ -101,7 +101,7 @@ export function Landing() {
             </h1>
             <p>
               Aplikasi perencana jadwal yang cepat dan terstruktur: kelola data guru, kelas, siswa,
-              mata pelajaran, dan ruang; jalankan generator; periksa konflik; lalu bagikan hasilnya —
+              dan mata pelajaran; jalankan generator; periksa konflik; lalu bagikan hasilnya —
               seluruh data terikat pada akun Anda sendiri (multi-tenant).
             </p>
             <div className="landing-cta">

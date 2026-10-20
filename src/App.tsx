@@ -6,7 +6,7 @@ import { useProject } from './store';
 import { checkConflicts } from './scheduler';
 import { Icon, Btn } from './ui';
 import { Dashboard } from './pages/Dashboard';
-import { HalBlokir, HalGuru, HalJam, HalKelas, HalMapel, HalRuang, HalSiswa } from './pages/entities';
+import { HalGuru, HalJam, HalKelas, HalMapel, HalSiswa } from './pages/entities';
 import { HalSekolah } from './pages/Sekolah';
 import { HalKebutuhan } from './pages/Kebutuhan';
 import { HalGenerate } from './pages/Generate';
@@ -45,10 +45,8 @@ const NAV: { grup: string; items: NavItem[] }[] = [
       { to: '/kelas', label: 'Kelas', ikon: 'kelas' },
       { to: '/siswa', label: 'Siswa', ikon: 'siswa' },
       { to: '/mapel', label: 'Mata Pelajaran', ikon: 'mapel' },
-      { to: '/ruang', label: 'Ruang', ikon: 'ruang' },
       { to: '/jam', label: 'Jam Pelajaran', ikon: 'jam' },
       { to: '/kebutuhan', label: 'Kebutuhan Jam', ikon: 'daftar' },
-      { to: '/batasan', label: 'Batasan & Blokir', ikon: 'blokir' },
     ],
   },
   {
@@ -178,10 +176,8 @@ export default function App() {
         <Route path="/kelas" element={<HalKelas />} />
         <Route path="/siswa" element={<HalSiswa />} />
         <Route path="/mapel" element={<HalMapel />} />
-        <Route path="/ruang" element={<HalRuang />} />
         <Route path="/jam" element={<HalJam />} />
         <Route path="/kebutuhan" element={<HalKebutuhan />} />
-        <Route path="/batasan" element={<HalBlokir />} />
         <Route path="/generate" element={<HalGenerate />} />
         <Route path="/jadwal" element={<HalJadwal />} />
         <Route path="/jadwal-matriks" element={<HalMatriks />} />

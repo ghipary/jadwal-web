@@ -82,24 +82,17 @@ export function HalBerkas() {
 
   const eksporMapel = () =>
     downloadCSV('data-mapel.csv', [
-      ['Kode', 'Nama', 'Tipe Ruang', 'Mapel Pilihan'],
-      ...project.mapel.map((m) => [m.kode, m.nama, m.tipeRuang, m.pilihan ? 'Ya' : 'Tidak']),
-    ]);
-
-  const eksporRuang = () =>
-    downloadCSV('data-ruang.csv', [
-      ['Nama', 'Tipe', 'Kapasitas'],
-      ...project.ruang.map((r) => [r.nama, r.tipe, r.kapasitas]),
+      ['Kode', 'Nama', 'Mapel Pilihan'],
+      ...project.mapel.map((m) => [m.kode, m.nama, m.pilihan ? 'Ya' : 'Tidak']),
     ]);
 
   const eksporKebutuhan = () =>
     downloadCSV('kebutuhan-jam.csv', [
-      ['Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Jam/Minggu'],
+      ['Kelas', 'Mata Pelajaran', 'Guru', 'Jam/Minggu'],
       ...project.kebutuhan.map((k) => [
         project.kelas.find((c) => c.id === k.kelasId)?.nama ?? '',
         project.mapel.find((m) => m.id === k.mapelId)?.nama ?? '',
         project.guru.find((g) => g.id === k.guruId)?.nama ?? '',
-        project.ruang.find((r) => r.id === k.ruangId)?.nama ?? 'Otomatis',
         k.jumlahJam,
       ]),
     ]);
@@ -118,7 +111,7 @@ export function HalBerkas() {
       ...(project.info.alamat ? [[project.info.alamat]] : []),
       [`Tahun Ajaran: ${project.info.tahunAjaran || '—'}`],
       [],
-      ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Tetap'],
+      ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Tetap'],
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);
         return [
@@ -128,7 +121,6 @@ export function HalBerkas() {
           project.kelas.find((c) => c.id === j.kelasId)?.nama ?? '',
           project.mapel.find((m) => m.id === j.mapelId)?.nama ?? '',
           project.guru.find((g) => g.id === j.guruId)?.nama ?? '',
-          project.ruang.find((r) => r.id === j.ruangId)?.nama ?? '',
           j.tetap ? 'Ya' : 'Tidak',
         ];
       }),
@@ -144,7 +136,7 @@ export function HalBerkas() {
     );
     setPesan({
       tone: 'sukses',
-      teks: 'Template kosong diunduh — 9 sheet data + sheet Petunjuk. Urutan hari diambil dari sheet Hari; isi datanya lalu unggah kembali ke sini.',
+      teks: 'Template kosong diunduh — 7 sheet data + sheet Petunjuk. Urutan hari diambil dari sheet Hari; isi datanya lalu unggah kembali ke sini.',
     });
   };
 
@@ -167,7 +159,7 @@ export function HalBerkas() {
     downloadXlsx(`jadwal-tabel-${slug}-${tgl}.xlsx`, jadwalKeXlsx(project));
     setPesan({
       tone: 'sukses',
-      teks: 'Jadwal diekspor sebagai tabel rapi di lembar “Jadwal” dengan urutan kolom: Hari, Jam Mulai, Jam Selesai, Kelas, Mapel, Guru, Ruang.',
+      teks: 'Jadwal diekspor sebagai tabel rapi di lembar “Jadwal” dengan urutan kolom: Hari, Jam Mulai, Jam Selesai, Kelas, Mapel, Guru.',
     });
   };
 
@@ -198,7 +190,7 @@ export function HalBerkas() {
         return;
       }
       const j = hasil.jumlah;
-      const ringkas = `Hari ${j.hari} · Guru ${j.guru} · Kelas ${j.kelas} · Siswa ${j.siswa} · Mapel ${j.mapel} · Ruang ${j.ruang} · Jam ${j.periode} · Kebutuhan ${j.kebutuhan} · Batasan ${j.blokir}`;
+      const ringkas = `Hari ${j.hari} · Guru ${j.guru} · Kelas ${j.kelas} · Siswa ${j.siswa} · Mapel ${j.mapel} · Jam ${j.periode} · Kebutuhan ${j.kebutuhan}`;
       const konfirmasi =
         `Impor data dari “${f.name}”?\n\n` +
         ringkas +
@@ -227,10 +219,8 @@ export function HalBerkas() {
       kelas: [],
       siswa: [],
       mapel: [],
-      ruang: [],
       kebutuhan: [],
       jadwal: [],
-      blokir: [],
     });
     setBukaHapus(false);
     setKunciHapus('');
@@ -245,7 +235,6 @@ export function HalBerkas() {
     { label: 'Kelas', icon: 'kelas', fn: eksporKelas },
     { label: 'Siswa', icon: 'siswa', fn: eksporSiswa },
     { label: 'Mapel', icon: 'mapel', fn: eksporMapel },
-    { label: 'Ruang', icon: 'ruang', fn: eksporRuang },
   ];
   const tombolEksporJadwal = [
     { label: 'Kebutuhan Jam', icon: 'daftar', fn: eksporKebutuhan },
@@ -347,8 +336,8 @@ export function HalBerkas() {
         <div className="card-title">Excel Massal (Template & Impor)</div>
         <div className="card-sub">
           Template kosong berisi sheet <b>Petunjuk</b>, <b>Hari</b>, <b>Guru</b>, <b>Kelas</b>,{' '}
-          <b>Siswa</b>, <b>Mata Pelajaran</b>, <b>Ruang</b>, <b>Jam Pelajaran</b>,{' '}
-          <b>Kebutuhan Jam</b>, dan <b>Batasan</b>. Isi datanya di Excel, lalu seret berkasnya ke
+          <b>Siswa</b>, <b>Mata Pelajaran</b>, <b>Jam Pelajaran</b>, dan{' '}
+          <b>Kebutuhan Jam</b>. Isi datanya di Excel, lalu seret berkasnya ke
           kotak berikut untuk mengimpor seluruh data sekaligus. Gunakan tombol ekspor bila ingin
           mengunduh data yang sudah ada.
         </div>
@@ -435,7 +424,7 @@ export function HalBerkas() {
       <Card>
         <div className="card-title">Cetak Jadwal</div>
         <div className="card-sub">
-          Buka halaman <b>Jadwal</b>, pilih kelas/guru/ruang yang ingin dicetak, lalu tekan tombol{' '}
+          Buka halaman <b>Jadwal</b>, pilih kelas/guru yang ingin dicetak, lalu tekan tombol{' '}
           <b>Cetak</b> — navigasi akan disembunyikan otomatis saat dicetak.
         </div>
         <Btn
@@ -473,8 +462,8 @@ export function HalBerkas() {
         }
       >
         <Banner tone="bahaya" icon="konflik">
-          Seluruh data akan dihapus permanen: guru, kelas, siswa, mata pelajaran, ruang, jam
-          pelajaran, kebutuhan jam, jadwal, dan batasan. Tindakan ini tidak bisa dibatalkan.
+          Seluruh data akan dihapus permanen: guru, kelas, siswa, mata pelajaran, jam
+          pelajaran, kebutuhan jam, dan jadwal. Tindakan ini tidak bisa dibatalkan.
         </Banner>
         <div className="field">
           <label htmlFor="kunci-hapus">

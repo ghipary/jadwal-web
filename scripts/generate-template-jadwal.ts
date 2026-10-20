@@ -77,10 +77,8 @@ const SHEET = {
   kelas: 'Kelas',
   siswa: 'Siswa',
   mapel: 'Mata Pelajaran',
-  ruang: 'Ruang',
   periode: 'Jam Pelajaran',
   kebutuhan: 'Kebutuhan Jam',
-  blokir: 'Batasan',
   log: 'Log',
 } as const;
 
@@ -100,10 +98,9 @@ const HEADER = {
     'catatan',
   ],
   kelas: ['nama', 'tingkat', 'waliKelasId', 'jumlahSiswa'],
-  ruang: ['nama', 'tipe', 'kapasitas'],
-  mapel: ['kode', 'nama', 'tipeRuang', 'pilihan'],
+  mapel: ['kode', 'nama', 'pilihan'],
   periode: ['nama', 'mulai', 'selesai', 'tipe', 'tipeKet', 'hariAktif'],
-  kebutuhan: ['kelasId', 'mapelId', 'guruId', 'ruangId', 'jumlahJam', 'polaJP'],
+  kebutuhan: ['kelasId', 'mapelId', 'guruId', 'jumlahJam', 'polaJP'],
   log: ['jenis', 'pesan'],
 } as const;
 
@@ -150,7 +147,7 @@ function mirip(a: string, b: string): number {
 }
 
 // ---------------------------------------------------------------------------
-// 1. Peta kode mapel (singkatan) + tipe ruang
+// 1. Peta kode mapel (singkatan)
 // ---------------------------------------------------------------------------
 
 /** Nama mapel pada matriks → kode ringkas yang dipakai sheet Guru & Kebutuhan. */
@@ -180,15 +177,6 @@ const KODE_MAPEL: { cocok: string; kode: string }[] = [
   { cocok: 'BAHASA ARAB', kode: 'BAR' },
   { cocok: 'PEND. WAHIDIYAH', kode: 'PW' },
 ];
-
-/** Tipe ruang per kode mapel (label yang dikenali pembaca). */
-const TIPE_RUANG: Record<string, string> = {
-  FIS: 'Lab Sains',
-  KIM: 'Lab Sains',
-  BIO: 'Lab Sains',
-  INF: 'Lab Komputer',
-  PJOK: 'Lapangan',
-};
 
 /** Kode ringkas bila nama mapel tak ada di daftar: inisial kata, maks 4 huruf. */
 function kodeFallback(nama: string): string {
@@ -830,27 +818,13 @@ function bangunWorkbook() {
     kelas.map((nama) => [nama, nama.split('-')[0], '', 36]),
   );
 
-  // --- Ruang (WAJIB: setiap JP harus dapat ruang pada jam & hari yang sama) -
-  // Karena 12 kelas berjalan paralel, sediakan ruang reguler ≥ jumlah kelas
-  // agar mapel reguler tidak pernah kehabisan ruang.
-  const jmlReguler = Math.max(12, kelas.length);
-  const ruang: Sel[] = [
-    ...Array.from({ length: jmlReguler }, (_, i) => [`R-${i + 1}`, 'Ruang Reguler', 36]),
-    ['Lab Komputer', 'Lab Komputer', 36],
-    ['Lab Fisika', 'Lab Sains', 36],
-    ['Lab Kimia', 'Lab Sains', 36],
-    ['Lab Biologi', 'Lab Sains', 36],
-    ['Lapangan Utama', 'Lapangan', 60],
-  ];
-  tulisSheet(wb, SHEET.ruang, [...HEADER.ruang], ruang);
-
   // --- Mata Pelajaran ------------------------------------------------------
   const mapelUrut = [...mapelMuncul.entries()].sort((a, b) => a[1].localeCompare(b[1]));
   tulisSheet(
     wb,
     SHEET.mapel,
     [...HEADER.mapel],
-    mapelUrut.map(([kode, nama]) => [kode, nama, TIPE_RUANG[kode] ?? 'Ruang Reguler', 'Tidak']),
+    mapelUrut.map(([kode, nama]) => [kode, nama, 'Tidak']),
   );
 
   // --- Jam Pelajaran (dibaca dari berkas acuan "Jadwal SMA.xlsx") ----------
@@ -894,7 +868,6 @@ function bangunWorkbook() {
       k.kelasId,
       k.mapelKode,
       k.guruId,
-      'Otomatis',
       k.jumlahJam,
       TANPA_POLA ? '' : k.jumlahJam, // polaJP (lihat catatan --no-pola)
     ]),
@@ -1004,9 +977,6 @@ function verifikasi(wb: XLSX.WorkBook) {
   const peri = barisSheet(SHEET.periode).filter((r) => str(r['nama']));
   const adaPelajaran = peri.some((r) => /^(pelajaran|kbm|pbm)/i.test(str(r['tipe'])));
 
-  const ruang = barisSheet(SHEET.ruang).filter((r) => str(r['nama']));
-  if (!ruang.length) galat.push('Ruang: kosong — generator jadwal akan gagal total ("belum ada data ruang").');
-
   return {
     galat,
     nKebutuhan,
@@ -1015,7 +985,6 @@ function verifikasi(wb: XLSX.WorkBook) {
     nKelas: kelas.size,
     nMapel: barisSheet(SHEET.mapel).length,
     nPeriode: peri.length,
-    nRuang: ruang.length,
     adaPelajaran,
   };
 }
@@ -1058,7 +1027,6 @@ function main() {
   console.log('guru          :', v.nGuru);
   console.log('kelas         :', v.nKelas);
   console.log('mata pelajaran:', v.nMapel);
-  console.log('ruang         :', v.nRuang);
   console.log('jam pelajaran :', v.nPeriode, v.adaPelajaran ? '(ada tipe Pelajaran)' : '❌ TIDAK ADA "Pelajaran"');
   console.log('kebutuhan jam :', v.nKebutuhan, 'baris ·', v.totalJam, 'JP');
   console.log('kolom polaJP  :', TANPA_POLA ? 'DIKOSONGKAN (--no-pola)' : 'diisi = jumlahJam');

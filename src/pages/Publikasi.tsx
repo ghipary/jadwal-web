@@ -17,9 +17,7 @@ function IsiPublikasi({ data }: { data: Project }) {
       ? []
       : scope === 'kelas'
         ? data.kelas.map((x) => ({ id: x.id, label: x.nama }))
-        : scope === 'guru'
-          ? data.guru.map((x) => ({ id: x.id, label: x.nama }))
-          : data.ruang.map((x) => ({ id: x.id, label: x.nama }));
+        : data.guru.map((x) => ({ id: x.id, label: x.nama }));
 
   useEffect(() => {
     if (scope === 'sekolah') return;
@@ -29,8 +27,7 @@ function IsiPublikasi({ data }: { data: Project }) {
   const items = data.jadwal.filter((j) => {
     if (scope === 'sekolah') return true;
     if (scope === 'kelas') return j.kelasId === refId;
-    if (scope === 'guru') return j.guruId === refId;
-    return j.ruangId === refId;
+    return j.guruId === refId;
   });
 
   if (data.jadwal.length === 0) {
@@ -53,7 +50,6 @@ function IsiPublikasi({ data }: { data: Project }) {
             { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
             { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
-            { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
           ]}
           value={scope}
           onChange={(id) => {
@@ -107,8 +103,8 @@ export function HalPublikasi() {
     try {
       // Tautan publik bersifat baca-saja dan bisa dibuka siapa pun yang memilikinya,
       // maka data pribadi yang tidak diperlukan untuk menampilkan jadwal
-      // (daftar siswa & blokir guru) TIDAK ikut ditanam di dalamnya.
-      const publik = { ...project, siswa: [], blokir: [] };
+      // (daftar siswa) TIDAK ikut ditanam di dalamnya.
+      const publik = { ...project, siswa: [] };
       const payload = await encodePayload(publik);
       const url = `${window.location.origin}${window.location.pathname}#/publikasi?d=${payload}`;
       setTautan(url);

@@ -10,12 +10,9 @@ import { HasilAutoFix, autoFixConflicts, checkConflicts, isClean } from '../sche
 const LABEL_TIPE: Record<ConflictTipe, string> = {
   'kelas-bentrok': 'Kelas Bentrok',
   'guru-bentrok': 'Guru Bentrok',
-  'ruang-bentrok': 'Ruang Bentrok',
   'kurang-jam': 'Kurang Jam',
   'lebih-jam': 'Lebih Jam',
   'guru-lebih-jam': 'Beban Guru Berlebih',
-  kapasitas: 'Kapasitas Ruang',
-  blokir: 'Slot Terblokir Dilanggar',
   istirahat: 'Di Luar Jam Pelajaran',
   nonaktif: 'JP Non-Aktif pada Hari Itu',
   data: 'Masalah Data',
@@ -24,12 +21,9 @@ const LABEL_TIPE: Record<ConflictTipe, string> = {
 const IKON_TIPE: Record<ConflictTipe, string> = {
   'kelas-bentrok': 'kelas',
   'guru-bentrok': 'guru',
-  'ruang-bentrok': 'ruang',
   'kurang-jam': 'daftar',
   'lebih-jam': 'daftar',
   'guru-lebih-jam': 'guru',
-  kapasitas: 'ruang',
-  blokir: 'blokir',
   istirahat: 'jam',
   nonaktif: 'jam',
   data: 'info',
@@ -106,7 +100,7 @@ export function HalKonflik() {
     <>
       <PageHead
         title="Pemeriksa Konflik"
-        desc="Periksa ulang seluruh jadwal: bentrok kelas/guru/ruang, kebutuhan jam yang belum terpenuhi, batasan yang dilanggar, dan kapasitas ruang. Klik salah satu kartu di bawah untuk melihat rinciannya."
+        desc="Periksa ulang seluruh jadwal: bentrok kelas/guru, kebutuhan jam yang belum terpenuhi, dan pelanggaran lainnya. Klik salah satu kartu di bawah untuk melihat rinciannya."
         actions={
           <>
             <Btn variant="ghost" icon="generate" onClick={() => navigate('/generate')}>
@@ -195,7 +189,7 @@ export function HalKonflik() {
               ) : (
                 <>
                   Berhasil menyelesaikan <b>{hasil.berhasil}</b> konflik, <b>{hasil.tersisa}</b>{' '}
-                  tersisa. Sisa konflik umumnya butuh penambahan slot/ruang atau penyesuaian manual.
+                  tersisa. Sisa konflik umumnya butuh penambahan slot atau penyesuaian manual.
                 </>
               )}
             </p>
@@ -223,7 +217,7 @@ export function HalKonflik() {
           <EmptyState
             icon="cek"
             title="Jadwal bersih dari konflik"
-            desc="Tidak ada bentrok, kebutuhan jam terpenuhi, dan seluruh batasan dihormati. Tinggal disempurnakan secara manual bila perlu."
+            desc="Tidak ada bentrok dan kebutuhan jam terpenuhi. Tinggal disempurnakan secara manual bila perlu."
             action={
               <Btn icon="jadwal" onClick={() => navigate('/jadwal')}>
                 Lihat Jadwal

@@ -36,7 +36,6 @@ export function Dashboard() {
     { label: 'Kelas', val: project.kelas.length, ic: 'kelas', cls: 'i-biru' },
     { label: 'Siswa', val: project.siswa.length, ic: 'siswa', cls: 'i-pink' },
     { label: 'Mata Pelajaran', val: project.mapel.length, ic: 'mapel', cls: 'i-sukses' },
-    { label: 'Ruang', val: project.ruang.length, ic: 'ruang', cls: 'i-oring' },
     { label: 'Jam/Minggu Dibutuhkan', val: totalKebutuhan, ic: 'daftar', cls: 'i-brand' },
   ];
 
@@ -142,10 +141,6 @@ export function Dashboard() {
               <span className={`badge ${jumlahError ? 'badge-merah' : 'badge-hijau'}`}>{jumlahError}</span>{' '}
               <span className={`badge ${jumlahWarning ? 'badge-kuning' : 'badge-hijau'}`}>{jumlahWarning}</span>
             </span>
-          </div>
-          <div className="kv">
-            <span className="k">Slot terblokir (Batasan)</span>
-            <span className="v">{project.blokir.length}</span>
           </div>
         </Card>
 

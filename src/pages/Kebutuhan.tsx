@@ -37,7 +37,6 @@ export function HalKebutuhan() {
     mapelId: project.mapel[0]?.id ?? '',
     guruId: project.guru[0]?.id ?? '',
     jumlahJam: 2,
-    ruangId: '',
     polaJP: [],
   });
 
@@ -148,7 +147,6 @@ export function HalKebutuhan() {
                   <th>Kelas</th>
                   <th>Mata Pelajaran</th>
                   <th>Guru</th>
-                  <th>Ruang</th>
                   <th>Jam/Minggu</th>
                   <th>Pola JP</th>
                   <th>Terjadwal</th>
@@ -162,7 +160,6 @@ export function HalKebutuhan() {
                   const mapel = project.mapel.find((m) => m.id === r.mapelId);
                   const kelas = project.kelas.find((x) => x.id === r.kelasId);
                   const guru = project.guru.find((x) => x.id === r.guruId);
-                  const ruang = project.ruang.find((x) => x.id === r.ruangId);
                   return (
                     <tr key={r.id}>
                       <td>
@@ -175,7 +172,6 @@ export function HalKebutuhan() {
                         </b>
                       </td>
                       <td>{guru?.nama ?? '(terhapus)'}</td>
-                      <td>{ruang?.nama ?? <span className="hint">Otomatis</span>}</td>
                       <td>{r.jumlahJam}</td>
                       <td>
                         {r.polaJP.length ? (
@@ -220,7 +216,7 @@ export function HalKebutuhan() {
                 })}
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={9}>
+                    <td colSpan={8}>
                       <div className="empty" style={{ padding: '26px' }}>
                         <p>Tidak ada baris yang cocok.</p>
                       </div>
@@ -281,19 +277,6 @@ export function HalKebutuhan() {
               }}
               value={form.guruId}
               onChange={(v) => setForm({ ...form, guruId: String(v) })}
-            />
-            <FormField
-              def={{
-                key: 'ruangId',
-                label: 'Ruang Tetap (opsional)',
-                type: 'select',
-                options: [
-                  { value: '', label: 'Otomatis (sesuai tipe mapel)' },
-                  ...project.ruang.map((r) => ({ value: r.id, label: `${r.nama} (${r.kapasitas})` })),
-                ],
-              }}
-              value={form.ruangId}
-              onChange={(v) => setForm({ ...form, ruangId: String(v) })}
             />
             <FormField
               def={{

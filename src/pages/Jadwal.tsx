@@ -1,9 +1,9 @@
-// Halaman grid jadwal: lihat per kelas/guru/ruang/siswa, edit manual
+// Halaman grid jadwal: lihat per kelas/guru/siswa, edit manual
 // (seret-pindah, klik-ubah, tambah di sel kosong).
 
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Assignment, Conflict, ConflictTipe } from '../types';
+import { Assignment, ConflictTipe } from '../types';
 import { useProject } from '../store';
 import { checkConflicts } from '../scheduler';
 import { Legend, Scope, SekolahMatrix, EntityMatrix } from '../timetable';
@@ -13,12 +13,9 @@ import { downloadCSV, uid } from '../utils';
 const LABEL_KONFLIK: Record<ConflictTipe, string> = {
   'kelas-bentrok': 'Kelas Bentrok',
   'guru-bentrok': 'Guru Bentrok',
-  'ruang-bentrok': 'Ruang Bentrok',
   'kurang-jam': 'Kurang Jam',
   'lebih-jam': 'Lebih Jam',
   'guru-lebih-jam': 'Beban Guru Berlebih',
-  kapasitas: 'Kapasitas Ruang',
-  blokir: 'Slot Terblokir Dilanggar',
   istirahat: 'Di Luar Jam Pelajaran',
   nonaktif: 'JP Non-Aktif pada Hari Itu',
   data: 'Masalah Data',
@@ -30,7 +27,6 @@ interface Draft {
   periodeId: string;
   mapelId: string;
   guruId: string;
-  ruangId: string;
   catatan: string;
 }
 
@@ -60,7 +56,6 @@ export function HalJadwal() {
     if (scope === 'sekolah') return [];
     if (scope === 'kelas') return project.kelas.map((x) => ({ id: x.id, label: x.nama }));
     if (scope === 'guru') return project.guru.map((x) => ({ id: x.id, label: x.nama }));
-    if (scope === 'ruang') return project.ruang.map((x) => ({ id: x.id, label: x.nama }));
     return project.siswa.map((x) => ({
       id: x.id,
       label: `${x.nama} · ${project.kelas.find((c) => c.id === x.kelasId)?.nama ?? '?'}`,
@@ -78,7 +73,6 @@ export function HalJadwal() {
     if (scope === 'sekolah') return true;
     if (scope === 'kelas') return j.kelasId === refId;
     if (scope === 'guru') return j.guruId === refId;
-    if (scope === 'ruang') return j.ruangId === refId;
     if (scope === 'siswa') return Boolean(siswa) && j.kelasId === siswa!.kelasId;
     return false;
   };
@@ -95,7 +89,6 @@ export function HalJadwal() {
   const mapelCari = (id: string) => project.mapel.find((m) => m.id === id);
   const guruNama = (id: string) =>
     project.guru.find((g) => g.id === id)?.nama.split(',')[0] ?? '(terhapus)';
-  const ruangNama = (id: string) => project.ruang.find((r) => r.id === id)?.nama ?? '(tanpa ruang)';
 
   const cekBentrok = (cand: Assignment): string[] => {
     const out: string[] = [];
@@ -106,29 +99,8 @@ export function HalJadwal() {
         out.push(`Kelas ${kelasNama(cand.kelasId)} sudah berisi ${mapelCari(j.mapelId)?.nama}`);
       if (j.guruId === cand.guruId)
         out.push(`Guru ${guruNama(cand.guruId)} sudah mengajar ${mapelCari(j.mapelId)?.nama} (${kelasNama(j.kelasId)})`);
-      if (cand.ruangId && j.ruangId === cand.ruangId)
-        out.push(`Ruang ${ruangNama(cand.ruangId)} dipakai ${mapelCari(j.mapelId)?.nama} (${kelasNama(j.kelasId)})`);
     }
     return [...new Set(out)];
-  };
-
-  const autoRoom = (d: Draft): string => {
-    const mapel = mapelCari(d.mapelId);
-    const kelas = project.kelas.find((c) => c.id === d.kelasId);
-    if (!mapel) return '';
-    const busy = new Set(
-      project.jadwal
-        .filter((j) => j.hari === d.hari && j.periodeId === d.periodeId && j.ruangId)
-        .map((j) => j.ruangId),
-    );
-    const cocok = (butuhKapasitas: boolean) =>
-      project.ruang.filter(
-        (r) =>
-          (mapel.tipeRuang === 'semua' || r.tipe === mapel.tipeRuang) &&
-          !busy.has(r.id) &&
-          (!butuhKapasitas || !kelas || r.kapasitas >= kelas.jumlahSiswa),
-      );
-    return cocok(true)[0]?.id ?? cocok(false)[0]?.id ?? '';
   };
 
   const pindah = (a: Assignment, hari: number, periodeId: string) => {
@@ -154,7 +126,6 @@ export function HalJadwal() {
       hari,
       periodeId,
       mapelId: mapelPertama?.id ?? '',
-      ruangId: '',
       guruId: guruPertama?.id ?? '',
       catatan: '',
     });
@@ -162,14 +133,12 @@ export function HalJadwal() {
 
   const simpanTambah = () => {
     if (!tambah || !tambah.kelasId) return;
-    const ruangId = tambah.ruangId || autoRoom(tambah);
     const cand: Assignment = {
       id: uid('j'),
       reqId: '',
       kelasId: tambah.kelasId,
       mapelId: tambah.mapelId,
       guruId: tambah.guruId,
-      ruangId,
       hari: tambah.hari,
       periodeId: tambah.periodeId,
       tetap: false,
@@ -214,7 +183,7 @@ export function HalJadwal() {
       ...(project.info.alamat ? [[project.info.alamat]] : []),
       [`Tahun Ajaran: ${project.info.tahunAjaran || '—'}`],
       [],
-      ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Ruang', 'Tetap'],
+      ['Hari', 'Jam', 'Waktu', 'Kelas', 'Mata Pelajaran', 'Guru', 'Tetap'],
       ...sorted.map((j) => {
         const per = project.periode.find((p) => p.id === j.periodeId);
         return [
@@ -224,7 +193,6 @@ export function HalJadwal() {
           kelasNama(j.kelasId),
           mapelCari(j.mapelId)?.nama ?? '',
           project.guru.find((g) => g.id === j.guruId)?.nama ?? '',
-          ruangNama(j.ruangId),
           j.tetap ? 'Ya' : 'Tidak',
         ];
       }),
@@ -288,29 +256,6 @@ export function HalJadwal() {
     return list.map((g) => ({ value: g.id, label: g.nama }));
   })();
 
-  const mapelUntukLes = bukaLes ? mapelCari(bukaLes.mapelId) : undefined;
-  const ruangOpsiLes = (() => {
-    if (!bukaLes || !mapelUntukLes) return project.ruang.map((r) => ({ value: r.id, label: r.nama }));
-    const busy = new Set(
-      project.jadwal
-        .filter(
-          (j) =>
-            j.id !== bukaLes.id && j.hari === bukaLes.hari && j.periodeId === bukaLes.periodeId && j.ruangId,
-        )
-        .map((j) => j.ruangId),
-    );
-    const cocok = project.ruang.filter(
-      (r) => mapelUntukLes.tipeRuang === 'semua' || r.tipe === mapelUntukLes.tipeRuang,
-    );
-    cocok.sort((a, b) => Number(busy.has(a.id)) - Number(busy.has(b.id)));
-    const lain = project.ruang.filter((r) => !cocok.includes(r));
-    return [
-      { value: '', label: '— Tanpa Ruang —' },
-      ...cocok.map((r) => ({ value: r.id, label: `${r.nama} · ${LABEL_TIPE(r.tipe)}${busy.has(r.id) ? ' (terpakai)' : ''}` })),
-      ...lain.map((r) => ({ value: r.id, label: `${r.nama} · ${LABEL_TIPE(r.tipe)} (tipe berbeda)` })),
-    ];
-  })();
-
   const labelScope =
     scope === 'sekolah'
       ? 'seluruh sekolah'
@@ -318,19 +263,17 @@ export function HalJadwal() {
         ? `kelas ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
         : scope === 'guru'
           ? `guru ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
-          : scope === 'ruang'
-            ? `ruang ${daftar.find((x) => x.id === refId)?.label ?? '?'}`
-            : `kelas ${kelasNama(siswa?.kelasId ?? '')}`;
+          : `kelas ${kelasNama(siswa?.kelasId ?? '')}`;
 
   if (scope === 'sekolah' ? project.kelas.length === 0 : daftar.length === 0) {
     return (
       <>
-        <PageHead title="Jadwal Pelajaran" desc="Grid jadwal mingguan untuk seluruh kelas, guru, dan ruang." />
+        <PageHead title="Jadwal Pelajaran" desc="Grid jadwal mingguan untuk seluruh kelas dan guru." />
         <div className="card">
           <EmptyState
             icon="jadwal"
             title="Belum ada data untuk ditampilkan"
-            desc="Tambahkan data kelas/guru/ruang dulu di menu Data, lalu jalankan generator."
+            desc="Tambahkan data kelas/guru dulu di menu Data, lalu jalankan generator."
           />
         </div>
       </>
@@ -341,7 +284,7 @@ export function HalJadwal() {
     <>
       <PageHead
         title="Jadwal Pelajaran"
-        desc="Seret kartu untuk memindah jam, klik kartu untuk mengubah ruang/menandai tetap/menghapus, klik sel kosong untuk menambah pelajaran."
+        desc="Seret kartu untuk memindah jam, klik kartu untuk menandai tetap/menghapus, klik sel kosong untuk menambah pelajaran."
         actions={
           <>
             <Btn variant="ghost" icon="unduh" onClick={eksporCSV}>
@@ -371,7 +314,6 @@ export function HalJadwal() {
             { id: 'sekolah', label: 'Per Sekolah', icon: 'sekolah' },
             { id: 'kelas', label: 'Per Kelas', icon: 'kelas' },
             { id: 'guru', label: 'Per Guru', icon: 'guru' },
-            { id: 'ruang', label: 'Per Ruang', icon: 'ruang' },
             { id: 'siswa', label: 'Per Siswa', icon: 'siswa' },
           ]}
           value={scope}
@@ -459,7 +401,7 @@ export function HalJadwal() {
       <Modal
         open={bukaLes !== null}
         title="Detail Pelajaran"
-        desc="Ubah ruang, tandai sebagai jadwal tetap, atau hapus pelajaran."
+        desc="Tandai sebagai jadwal tetap, atau hapus pelajaran."
         onClose={() => setBukaLes(null)}
         footer={
           bukaLes ? (
@@ -509,17 +451,6 @@ export function HalJadwal() {
                 {project.periode.find((p) => p.id === bukaLes.periodeId)?.nama}
               </span>
             </div>
-            <FormField
-              def={{
-                key: 'ruangId',
-                label: 'Ruang',
-                type: 'select',
-                options: ruangOpsiLes,
-                hint: 'Urutan: ruang bertipe sesuai & bebas lebih dulu.',
-              }}
-              value={bukaLes.ruangId}
-              onChange={(v) => setBukaLes({ ...bukaLes, ruangId: String(v) })}
-            />
             <FormField
               def={{
                 key: 'guruId',
@@ -590,7 +521,7 @@ export function HalJadwal() {
                 const guruBaru = guruMasihCocok
                   ? tambah.guruId
                   : project.guru.find((g) => g.mapelIds.includes(mapelId))?.id ?? tambah.guruId;
-                setTambah({ ...tambah, mapelId, guruId: guruBaru, ruangId: '' });
+                setTambah({ ...tambah, mapelId, guruId: guruBaru });
               }}
             />
             <FormField
@@ -605,19 +536,6 @@ export function HalJadwal() {
               onChange={(v) => setTambah({ ...tambah, guruId: String(v) })}
             />
             <FormField
-              def={{
-                key: 'ruangId',
-                label: 'Ruang',
-                type: 'select',
-                options: [
-                  { value: '', label: 'Otomatis (pilih ruang bebas yang sesuai)' },
-                  ...project.ruang.map((r) => ({ value: r.id, label: `${r.nama} · ${LABEL_TIPE(r.tipe)}` })),
-                ],
-              }}
-              value={tambah.ruangId}
-              onChange={(v) => setTambah({ ...tambah, ruangId: String(v) })}
-            />
-            <FormField
               def={{ key: 'catatan', label: 'Catatan', type: 'text', placeholder: 'Opsional…' }}
               value={tambah.catatan}
               onChange={(v) => setTambah({ ...tambah, catatan: String(v) })}
@@ -629,10 +547,3 @@ export function HalJadwal() {
   );
 }
 
-function LABEL_TIPE(t: string): string {
-  return (
-    { reguler: 'Reguler', 'lab-komputer': 'Lab Komputer', 'lab-sains': 'Lab Sains', olahraga: 'Lapangan' }[
-      t
-    ] ?? t
-  );
-}

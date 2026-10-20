@@ -12,7 +12,6 @@ import {
 } from 'react';
 import {
   Assignment,
-  Block,
   CollectionKey,
   HARI_BAWAAN,
   HARI_KONFIG_BAWAAN,
@@ -102,33 +101,29 @@ function demoProject(): Project {
     { id: 'p8', nama: 'Jam ke-8', mulai: '12:20', selesai: '13:00', tipe: 'pelajaran', hariAktif: [] },
   ];
 
-  type SubjDef = [string, string, string, string, string, boolean];
+  type SubjDef = [string, string, string, boolean];
   const subjDefs: SubjDef[] = [
-    ['m_mtk', 'Matematika', 'MTK', '#4f46e5', 'reguler', false],
-    ['m_in', 'Bahasa Indonesia', 'IND', '#0ea5e9', 'reguler', false],
-    ['m_eng', 'Bahasa Inggris', 'ING', '#06b6d4', 'reguler', false],
-    ['m_fis', 'Fisika', 'FIS', '#8b5cf6', 'lab-sains', false],
-    ['m_kim', 'Kimia', 'KIM', '#a855f7', 'lab-sains', false],
-    ['m_bio', 'Biologi', 'BIO', '#10b981', 'lab-sains', false],
-    ['m_pkn', 'PPKn', 'PPK', '#f59e0b', 'reguler', false],
-    ['m_sej', 'Sejarah', 'SEJ', '#f97316', 'reguler', false],
-    ['m_geo', 'Geografi', 'GEO', '#ec4899', 'reguler', false],
-    ['m_eko', 'Ekonomi', 'EKO', '#ef4444', 'reguler', false],
-    ['m_inf', 'Informatika', 'INF', '#14b8a6', 'lab-komputer', false],
-    ['m_jok', 'PJOK', 'JOK', '#84cc16', 'olahraga', false],
-    ['m_sen', 'Seni Budaya', 'SEN', '#eab308', 'reguler', true],
-    ['m_jaw', 'Bahasa Jawa', 'JAW', '#64748b', 'reguler', true],
+    ['m_mtk', 'Matematika', 'MTK', false],
+    ['m_in', 'Bahasa Indonesia', 'IND', false],
+    ['m_eng', 'Bahasa Inggris', 'ING', false],
+    ['m_fis', 'Fisika', 'FIS', false],
+    ['m_kim', 'Kimia', 'KIM', false],
+    ['m_bio', 'Biologi', 'BIO', false],
+    ['m_pkn', 'PPKn', 'PPK', false],
+    ['m_sej', 'Sejarah', 'SEJ', false],
+    ['m_geo', 'Geografi', 'GEO', false],
+    ['m_eko', 'Ekonomi', 'EKO', false],
+    ['m_inf', 'Informatika', 'INF', false],
+    ['m_jok', 'PJOK', 'JOK', false],
+    ['m_sen', 'Seni Budaya', 'SEN', true],
+    ['m_jaw', 'Bahasa Jawa', 'JAW', true],
   ];
-  const mapel: Subject[] = subjDefs.map(([id, nama, kode, , tipeRuang, pilihan]) => ({
+  const mapel: Subject[] = subjDefs.map(([id, nama, kode, pilihan]) => ({
     id,
     nama,
     kode,
-    tipeRuang,
     pilihan,
   }));
-  // Warna kartu kini menempel pada guru (bukan mapel).
-  const warnaMapelLama = new Map(subjDefs.map(([id, , , warna]) => [id, warna]));
-
   const pengajar: Record<string, string[]> = {
     m_mtk: ['g_rina', 'g_ahmad'],
     m_in: ['g_sari', 'g_budi'],
@@ -169,9 +164,7 @@ function demoProject(): Project {
     id,
     nama,
     kode,
-    warna:
-      (mapelIds[0] !== undefined ? warnaMapelLama.get(mapelIds[0]) : undefined) ??
-      PALET_GURU[i % PALET_GURU.length],
+    warna: PALET_GURU[i % PALET_GURU.length],
     mapelIds,
     maxJam: 24,
     maxPerHari: 6,
@@ -197,19 +190,6 @@ function demoProject(): Project {
     waliKelasId,
     jumlahSiswa,
   }));
-
-  const ruang = [
-    { id: 'r_r1', nama: 'R-1', kapasitas: 40, tipe: 'reguler' },
-    { id: 'r_r2', nama: 'R-2', kapasitas: 40, tipe: 'reguler' },
-    { id: 'r_r3', nama: 'R-3', kapasitas: 40, tipe: 'reguler' },
-    { id: 'r_r4', nama: 'R-4', kapasitas: 40, tipe: 'reguler' },
-    { id: 'r_r5', nama: 'R-5', kapasitas: 40, tipe: 'reguler' },
-    { id: 'r_lfis', nama: 'Lab Fisika', kapasitas: 40, tipe: 'lab-sains' },
-    { id: 'r_lkim', nama: 'Lab Kimia', kapasitas: 40, tipe: 'lab-sains' },
-    { id: 'r_lbio', nama: 'Lab Biologi', kapasitas: 40, tipe: 'lab-sains' },
-    { id: 'r_lkom', nama: 'Lab Komputer', kapasitas: 40, tipe: 'lab-komputer' },
-    { id: 'r_lap', nama: 'Lapangan Utama', kapasitas: 60, tipe: 'olahraga' },
-  ];
 
   // Kurikulum: [kodeMapel, jam/minggu]
   const kurikulum: Record<string, [string, number][]> = {
@@ -238,7 +218,6 @@ function demoProject(): Project {
         mapelId,
         guruId,
         jumlahJam: jam,
-        ruangId: '',
         polaJP: [],
       });
     }
@@ -270,7 +249,6 @@ function demoProject(): Project {
   });
 
   const jadwal: Assignment[] = [];
-  const blokir: Block[] = [];
 
   return {
     ownerId: null,
@@ -288,11 +266,9 @@ function demoProject(): Project {
     kelas,
     siswa,
     mapel,
-    ruang,
     kebutuhan,
     jadwal,
-    blokir,
-    opsi: { percobaan: 8, rataHari: true, hindariUjung: true, wajibRuang: true },
+    opsi: { percobaan: 8, rataHari: true, hindariUjung: true },
   };
 }
 
@@ -334,7 +310,7 @@ function upsertArr<T extends HasId>(arr: T[], item: T): T[] {
 }
 
 const ARRAYS: CollectionKey[] = [
-  'periode', 'guru', 'kelas', 'siswa', 'mapel', 'ruang', 'kebutuhan', 'jadwal', 'blokir',
+  'periode', 'guru', 'kelas', 'siswa', 'mapel', 'kebutuhan', 'jadwal',
 ];
 
 function hexValid(w: unknown): w is string {
@@ -367,6 +343,7 @@ function migrasiWarna(p: Project, raw: Record<string, unknown>): Project {
   const mapel = p.mapel.map((m) => {
     const sisa = { ...(m as unknown as Record<string, unknown>) };
     delete sisa.warna;
+    delete sisa.tipeRuang;
     return sisa as unknown as Subject;
   });
 
@@ -437,7 +414,6 @@ function rapikanReferensiHari(p: Project): Project {
   return {
     ...p,
     jadwal: p.jadwal.filter((j) => valid(j.hari)),
-    blokir: p.blokir.filter((b) => valid(b.hari)),
     guru: p.guru.map((g) => ({
       ...g,
       slotDiinginkan: g.slotDiinginkan.filter(slotValid),

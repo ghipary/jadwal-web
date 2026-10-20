@@ -64,7 +64,7 @@ const BAB: Bab[] = [
         rute: '/',
         aksi: [
           'Masuk dengan akun Anda, lalu buka halaman Dashboard (menu Utama).',
-          'Perhatikan enam kartu ringkasan: Guru, Kelas, Siswa, Mata Pelajaran, Ruang, dan Jam/Minggu Dibutuhkan.',
+          'Perhatikan kartu ringkasan: Guru, Kelas, Siswa, Mata Pelajaran, dan Jam/Minggu Dibutuhkan.',
           'Lihat bilah kiri: grup "Utama" (Generator, Grid Jadwal, Pemeriksa Konflik), "Data Sekolah", dan "Hasil".',
         ],
         contoh: {
@@ -102,7 +102,7 @@ const BAB: Bab[] = [
         judul: 'Pahami urutan kerja yang benar',
         tujuan: 'Urutan data menentukan keberhasilan generator — data dulu, baru generate.',
         aksi: [
-          'Ikuti urutan: Jam Pelajaran → Guru → Ruang → Mata Pelajaran → Kelas → Siswa → Kebutuhan Jam → Batasan → Generate.',
+          'Ikuti urutan: Jam Pelajaran → Guru → Mata Pelajaran → Kelas → Siswa → Kebutuhan Jam → Generate.',
           'Jangan meng-generate sebelum HARI dan JAM PELAJARAN selesai, karena semua data lain mengacu ke sana.',
         ],
         contoh: {
@@ -120,7 +120,7 @@ const BAB: Bab[] = [
     id: 'data',
     label: 'Mengisi Data Sekolah',
     ikon: 'kelas',
-    ringkas: 'Masukkan jam, hari, guru, kelas, mapel, ruang, dan kebutuhan jam.',
+    ringkas: 'Masukkan jam, hari, guru, kelas, mapel, dan kebutuhan jam.',
     langkah: [
       {
         id: 'hari',
@@ -167,24 +167,23 @@ const BAB: Bab[] = [
         tips: 'Pola JP di guru berlaku untuk semua mapel yang diampu (dapat ditimpa per-kebutuhan). Pola bersifat ketat: blok ditempatkan utuh berurutan, dan sisa jam yang tak sesuai pola dilaporkan gagal.',
       },
       {
-        id: 'ruang',
+        id: 'mapel',
         no: 6,
-        judul: 'Daftarkan ruang & mapel',
-        tujuan: 'Ruang dan mapel memastikan pelajaran ditempatkan di tempat yang tepat.',
-        rute: '/ruang',
+        judul: 'Daftarkan mata pelajaran',
+        tujuan: 'Mapel menentukan apa yang diajarkan dan jam yang dibutuhkan tiap kelas.',
+        rute: '/mapel',
         aksi: [
-          'Buka Data Sekolah → Ruang, isi Nama, Tipe (Reguler / Lab Komputer / Lab Sains / Lapangan), dan Kapasitas.',
-          'Buka Data Sekolah → Mata Pelajaran, isi Kode, Nama, dan Tipe Ruang yang dibutuhkan (mis. "Lab Komputer" untuk TIK).',
+          'Buka Data Sekolah → Mata Pelajaran, isi Kode dan Nama (mis. "MTK" / "Matematika").',
           'Tandai mapel pilihan bila termasuk mata pelajaran pilihan siswa.',
         ],
         contoh: {
-          judul: 'Contoh ruang & mapel',
+          judul: 'Contoh mapel',
           teks:
-            'Ruang "Lab Komputer 1" bertipe Lab Komputer dengan kapasitas 36. Mapel "Informatika" bertipe Lab Komputer → generator hanya menempatkan Informatika di lab komputer, bukan di ruang reguler.',
+            'Mapel "Informatika" berkode "INF", dan "Bahasa Jawa" ditandai sebagai mapel pilihan karena hanya diambil sebagian siswa.',
         },
         bukti:
-          'Saat opsi "Wajib ruang sesuai tipe & kapasitas" aktif, jadwal Informatika selalu berada di ruang lab.',
-        tips: 'Kapasitas ruang diuji terhadap Jumlah Siswa kelas — ruang yang terlalu kecil akan dilaporkan sebagai konflik kapasitas.',
+          'Mapel muncul di daftar, bisa dipilih saat membuat kebutuhan jam dan ditautkan ke guru pengampu.',
+        tips: 'Kode mapel dipakai sebagai singkatan pada matriks cetak — pakai kode pendek yang mudah dikenali.',
       },
       {
         id: 'kelas',
@@ -203,7 +202,7 @@ const BAB: Bab[] = [
         },
         bukti:
           'Kelas muncul di Grid Jadwal sebagai kolom/pilihan dan di bagian "Kebutuhan per Kelas" pada dashboard.',
-        tips: 'Jumlah siswa wajib diisi agar pemeriksa kapasitas ruang bekerja.',
+        tips: 'Jumlah siswa mengisi data rombongan belajar yang tampil pada halaman kelas.',
       },
       {
         id: 'kebutuhan',
@@ -213,35 +212,17 @@ const BAB: Bab[] = [
         rute: '/kebutuhan',
         aksi: [
           'Buka Data Sekolah → Kebutuhan Jam.',
-          'Untuk tiap kelas, tambahkan baris: Kelas, Mata Pelajaran, Guru, jumlah Jam/Minggu, dan Ruang (kosongkan untuk otomatis).',
+          'Untuk tiap kelas, tambahkan baris: Kelas, Mata Pelajaran, Guru, dan jumlah Jam/Minggu.',
           'Isi kolom Pola JP bila mapel ini diajarkan sebagai blok berurutan (mis. "2, 1" atau "2, 2").',
         ],
         contoh: {
           judul: 'Contoh kebutuhan nyata',
           teks:
-            'X-1 · Matematika · Ahmad Fauzi · 4 jam/minggu · pola "2, 2". X-1 · Bahasa Indonesia · Budi Santoso · 4 jam · pola "2, 2". X-1 · Informatika · Sari Rahmawati · 2 jam · ruang Lab Komputer.',
+            'X-1 · Matematika · Ahmad Fauzi · 4 jam/minggu · pola "2, 2". X-1 · Bahasa Indonesia · Budi Santoso · 4 jam · pola "2, 2". X-1 · Informatika · Sari Rahmawati · 2 jam.',
         },
         bukti:
           'Dashboard menampilkan "Jam/Minggu Dibutuhkan" bertambah sesuai isian, dan Generator siap dijalankan.',
         tips: 'Pola bersifat KETAT: potongan hanya dibuat seukuran pola dan blok selalu ditempatkan utuh berurutan. Pastikan jumlah jam pas dibagi pola (mis. 6 JP dengan "3" atau 4 JP dengan "2, 2"). Bila tidak pas, sisa jam dilaporkan gagal — bukan diisi setengah-setengah.',
-      },
-      {
-        id: 'batasan',
-        no: 9,
-        judul: 'Pasang batasan & blokir (opsional)',
-        tujuan: 'Blokir mengunci slot agar generator tidak menaruh pelajaran di waktu tertentu.',
-        rute: '/batasan',
-        aksi: [
-          'Buka Data Sekolah → Batasan & Blokir.',
-          'Tambahkan blokir untuk kelas, guru, atau ruang pada hari & jam tertentu beserta alasannya.',
-        ],
-        contoh: {
-          judul: 'Contoh blokir nyata',
-          teks:
-            'Guru "Dewi Lestari" tidak bisa mengajar Jumat jam 5–6 karena tugas luar, dan "Lapangan" diblokir Sabtu untuk kegiatan ekstrakurikuler.',
-        },
-        bukti:
-          'Generator menghindari slot terblokir; bila tetap dilanggar, Pemeriksa Konflik menandainya sebagai "Slot Terblokir Dilanggar".',
       },
     ],
   },
@@ -253,14 +234,14 @@ const BAB: Bab[] = [
     langkah: [
       {
         id: 'generate',
-        no: 10,
+        no: 9,
         judul: 'Jalankan Generator Jadwal',
         tujuan: 'Menyusun seluruh jadwal otomatis dari daftar kebutuhan.',
         rute: '/generate',
         aksi: [
           'Buka menu Utama → Generator Jadwal.',
           'Periksa Ringkasan: total kebutuhan jam, jadwal tetap, dan slot aktif.',
-          'Sesuaikan opsi (sebar rata, hindari jam ujung, wajib ruang) dan jumlah percobaan (5–15).',
+          'Sesuaikan opsi (sebar rata, hindari jam ujung) dan jumlah percobaan (5–15).',
           'Tekan tombol besar Generate Jadwal dan tunggu hingga selesai.',
         ],
         contoh: {
@@ -271,13 +252,13 @@ const BAB: Bab[] = [
         bukti:
           'Laporan Hijau muncul dengan jumlah jam ditempatkan sama dengan total kebutuhan; Grid Jadwal kini terisi.',
         tips:
-          'Blok JP (pola) selalu ditempatkan utuh berurutan: bila tidak ada slot berurutan yang cukup, solver membatalkan blok itu dan mencoba menata ulang (backtrack) — bukan mengisi setengah-setengah. Bila tetap gagal (biasanya slot kurang atau blokir terlalu ketat), tambah hari/jam atau longgarkan batasan lalu Generate Ulang.',
+          'Blok JP (pola) selalu ditempatkan utuh berurutan: bila tidak ada slot berurutan yang cukup, solver membatalkan blok itu dan mencoba menata ulang (backtrack) — bukan mengisi setengah-setengah. Bila tetap gagal (biasanya slot kurang), tambah hari/jam lalu Generate Ulang.',
       },
       {
         id: 'konflik',
-        no: 11,
+        no: 10,
         judul: 'Periksa & selesaikan konflik',
-        tujuan: 'Memastikan tidak ada bentrok kelas, guru, ruang, atau batasan.',
+        tujuan: 'Memastikan tidak ada bentrok kelas, guru, atau pelanggaran lainnya.',
         rute: '/konflik',
         aksi: [
           'Buka menu Utama → Pemeriksa Konflik.',
@@ -293,19 +274,19 @@ const BAB: Bab[] = [
         bukti:
           'Badge pada menu Pemeriksa Konflik (angka merah) hilang, dan dashboard menampilkan "Jadwal aktif tanpa konflik keras".',
         tips:
-          'Jadwal bertanda "tetap" (terkunci) tidak akan diubah auto-fix. Untuk konflik yang sulit, tambah slot/hari atau longgarkan blokir.',
+          'Jadwal bertanda "tetap" (terkunci) tidak akan diubah auto-fix. Untuk konflik yang sulit, tambah slot/hari.',
       },
       {
         id: 'grid',
-        no: 12,
+        no: 11,
         judul: 'Rapikan di Grid Jadwal',
         tujuan: 'Menyesuaikan hasil generator agar cocok dengan pertimbangan manusiawi.',
         rute: '/jadwal',
         aksi: [
           'Buka menu Utama → Grid Jadwal.',
           'Tab "Per Sekolah" menampilkan seluruh kelas sekaligus ala tabel Excel (baris = hari × jam, kolom = kelas).',
-          'Pilih tab Per Kelas, Guru, atau Ruang untuk melihat hari di kolom seperti agenda mingguan.',
-          'Klik kartu pelajaran untuk mengubah ruang/menandai tetap/menghapus, seret kartu ke sel lain untuk memindah.',
+          'Pilih tab Per Kelas atau Per Guru untuk melihat hari di kolom seperti agenda mingguan.',
+          'Klik kartu pelajaran untuk menandai tetap/menghapus, seret kartu ke sel lain untuk memindah.',
           'Klik sel kosong untuk menambah pelajaran baru, atau gunakan tombol Salin untuk meniru jadwal antar hari.',
         ],
         contoh: {
@@ -327,7 +308,7 @@ const BAB: Bab[] = [
     langkah: [
       {
         id: 'matriks',
-        no: 13,
+        no: 12,
         judul: 'Cetak Matriks Jadwal',
         tujuan: 'Menghasilkan lembar jadwal resmi untuk ditempel di kelas & ruang guru.',
         rute: '/jadwal-matriks',
@@ -347,7 +328,7 @@ const BAB: Bab[] = [
       },
       {
         id: 'excel',
-        no: 14,
+        no: 13,
         judul: 'Ekspor Excel & impor massal',
         tujuan: 'Memindahkan data ke spreadsheet atau memuat data dari berkas Excel.',
         rute: '/berkas',
@@ -369,7 +350,7 @@ const BAB: Bab[] = [
       },
       {
         id: 'publikasi',
-        no: 15,
+        no: 14,
         judul: 'Bagikan jadwal ke siswa & guru',
         tujuan: 'Menerbitkan jadwal sebagai tautan yang bisa dibuka siapa saja (read-only).',
         rute: '/publikasi',
@@ -389,7 +370,7 @@ const BAB: Bab[] = [
       },
       {
         id: 'rutin',
-        no: 16,
+        no: 15,
         judul: 'Simpan cadangan & perbarui setiap semester',
         tujuan: 'Menjaga data aman dan proses siap diulang di semester berikutnya.',
         rute: '/berkas',
@@ -559,7 +540,7 @@ export function HalPetunjuk() {
           <Icon name="info" size={26} />
         </div>
         <div>
-          <h2>Dari nol sampai jadwal siap cetak, dalam 16 langkah</h2>
+          <h2>Dari nol sampai jadwal siap cetak, dalam 15 langkah</h2>
           <p>
             Ikuti tab di bawah berurutan. Setiap langkah memuat daftar perintah, satu contoh yang bisa
             Anda tiru persis, dan bukti yang menandakan langkah itu berhasil. Anda juga bisa langsung
@@ -604,11 +585,11 @@ export function HalPetunjuk() {
               Periksa Konflik
             </Btn>
           }>
-            Ada <b>{jumlahError}</b> konflik keras pada jadwal. Ikuti langkah 11 untuk menyelesaikannya.
+            Ada <b>{jumlahError}</b> konflik keras pada jadwal. Ikuti langkah 10 untuk menyelesaikannya.
           </Banner>
         ) : project.jadwal.length > 0 && totalKebutuhan > 0 && project.jadwal.length === totalKebutuhan ? (
           <Banner tone="sukses" icon="cek">
-            Jadwal tampak lengkap dan bebas konflik keras. Lanjutkan ke langkah 13 untuk mencetak.
+            Jadwal tampak lengkap dan bebas konflik keras. Lanjutkan ke langkah 12 untuk mencetak.
           </Banner>
         ) : null}
       </Card>
